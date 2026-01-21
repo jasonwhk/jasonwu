@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jason's Landing Page</title>
+    <script src="https://cdn.jsdelivr.net/npm/astronomy-engine/astronomy.js"></script>
     <style>
       * {
         margin: 0;
@@ -124,6 +125,69 @@
       .kp-high {
         background: #f8d7da;
         color: #721c24;
+      }
+      
+      .celestial-section {
+        margin-top: 40px;
+        padding: 25px;
+        background: #f8f9fa;
+        border-radius: 15px;
+        border: 2px solid #e9ecef;
+      }
+      
+      .celestial-title {
+        color: #667eea;
+        font-size: 1em;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 20px;
+      }
+      
+      .celestial-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+      }
+      
+      .celestial-object {
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+        border-left: 4px solid #667eea;
+      }
+      
+      .celestial-object.moon {
+        border-left-color: #764ba2;
+      }
+      
+      .celestial-name {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 1.05em;
+      }
+      
+      .celestial-info {
+        font-size: 0.85em;
+        color: #666;
+        line-height: 1.6;
+      }
+      
+      .celestial-info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        padding: 5px 0;
+      }
+      
+      .celestial-label {
+        font-weight: 500;
+        color: #667eea;
+      }
+      
+      .celestial-value {
+        color: #333;
       }
       
       .error {
@@ -293,6 +357,10 @@
           flex-direction: column;
         }
         
+        .celestial-grid {
+          grid-template-columns: 1fr;
+        }
+        
         .container {
           padding: 40px 20px;
         }
@@ -300,6 +368,53 @@
         h1 {
           font-size: 2em;
         }
+        
+        .subtitle {
+          font-size: 1em;
+        }
+        
+        .translation-title {
+          font-size: 1em;
+        }
+        
+        .celestial-title {
+          font-size: 0.95em;
+        }
+        
+        .celestial-section {
+          padding: 20px;
+          margin-top: 30px;
+        }
+        
+        .widget {
+          padding: 20px 15px;
+        }
+        
+        .widget-title {
+          font-size: 0.85em;
+        }
+        
+        .widget-value {
+          font-size: 1.5em;
+        }
+        
+        .moon-emoji,
+        .temp-emoji,
+        .kp-emoji {
+          font-size: 2em;
+          margin: 8px 0;
+        }
+        
+        textarea,
+        .language-select {
+          font-size: 16px;
+        }
+        
+        button {
+          font-size: 0.9em;
+          padding: 10px 15px;
+        }
+      }
       }
     </style>
   </head>
@@ -333,6 +448,55 @@
       </div>
       
       <p style="color: #999; font-size: 0.9em; margin-top: 30px;">Last updated: <span id="lastUpdated">Just now</span></p>
+      
+      <div class="celestial-section">
+        <div class="celestial-title">☀️ 🌙 Sun & Moon (Bonn)</div>
+        <div class="celestial-grid">
+          <div class="celestial-object">
+            <div class="celestial-name">☀️ Sun</div>
+            <div class="celestial-info">
+              <div class="celestial-info-row">
+                <span class="celestial-label">Azimuth:</span>
+                <span class="celestial-value" id="sunAzimuth">--°</span>
+              </div>
+              <div class="celestial-info-row">
+                <span class="celestial-label">Elevation:</span>
+                <span class="celestial-value" id="sunElevation">--°</span>
+              </div>
+              <div class="celestial-info-row">
+                <span class="celestial-label">Rise:</span>
+                <span class="celestial-value" id="sunRise">--:--</span>
+              </div>
+              <div class="celestial-info-row">
+                <span class="celestial-label">Set:</span>
+                <span class="celestial-value" id="sunSet">--:--</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="celestial-object moon">
+            <div class="celestial-name">🌙 Moon</div>
+            <div class="celestial-info">
+              <div class="celestial-info-row">
+                <span class="celestial-label">Azimuth:</span>
+                <span class="celestial-value" id="moonAzimuth">--°</span>
+              </div>
+              <div class="celestial-info-row">
+                <span class="celestial-label">Elevation:</span>
+                <span class="celestial-value" id="moonElevation">--°</span>
+              </div>
+              <div class="celestial-info-row">
+                <span class="celestial-label">Rise:</span>
+                <span class="celestial-value" id="moonRise">--:--</span>
+              </div>
+              <div class="celestial-info-row">
+                <span class="celestial-label">Set:</span>
+                <span class="celestial-value" id="moonSet">--:--</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       
       <div class="translation-section">
         <div class="translation-title">🌐 Text Translator</div>
@@ -495,10 +659,74 @@
         document.getElementById('lastUpdated').textContent = timeString;
       }
 
+      // Get celestial rise/set times and current position
+      async function getCelestialData() {
+        try {
+          // Bonn coordinates
+          const latitude = 50.7353;
+          const longitude = 7.0622;
+          
+          // Get sunrise/sunset from Open-Meteo
+          const today = new Date();
+          const dateStr = today.toISOString().split('T')[0];
+          
+          const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=sunrise,sunset&timezone=auto`);
+          const data = await response.json();
+          
+          if (data.daily) {
+            const todayIndex = 0;
+            const sunrise = data.daily.sunrise[todayIndex];
+            const sunset = data.daily.sunset[todayIndex];
+            
+            // Parse times
+            const sunriseTime = new Date(sunrise).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const sunsetTime = new Date(sunset).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            document.getElementById('sunRise').textContent = sunriseTime;
+            document.getElementById('sunSet').textContent = sunsetTime;
+          }
+          
+          // Calculate current Sun and Moon position using astronomy-engine
+          if (typeof Astronomy !== 'undefined') {
+            const observer = new Astronomy.Observer(latitude, longitude, 58);
+            const now = new Date();
+            
+            // Sun position
+            const sunInfo = Astronomy.SearchRiseSet('Sun', observer, 0, now);
+            const sunNow = Astronomy.Equator('Sun', now, observer, false, true);
+            const sunHorizontal = Astronomy.Horizon(now, observer, sunNow.ra, sunNow.dec);
+            
+            document.getElementById('sunAzimuth').textContent = Math.round(sunHorizontal.azimuth) + '°';
+            document.getElementById('sunElevation').textContent = Math.round(sunHorizontal.altitude) + '°';
+            
+            // Moon position
+            const moonNow = Astronomy.Equator('Moon', now, observer, false, true);
+            const moonHorizontal = Astronomy.Horizon(now, observer, moonNow.ra, moonNow.dec);
+            
+            document.getElementById('moonAzimuth').textContent = Math.round(moonHorizontal.azimuth) + '°';
+            document.getElementById('moonElevation').textContent = Math.round(moonHorizontal.altitude) + '°';
+            
+            // Get moon rise/set for today
+            const moonRise = Astronomy.SearchRiseSet('Moon', observer, 1, now);
+            const moonSet = Astronomy.SearchRiseSet('Moon', observer, -1, now);
+            
+            if (moonRise && moonRise.rise) {
+              document.getElementById('moonRise').textContent = moonRise.rise.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+            if (moonSet && moonSet.set) {
+              document.getElementById('moonSet').textContent = moonSet.set.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching celestial data:', error);
+        }
+      }
+
       // Initial load
       getMoonPhase();
       getTemperature();
       getSpaceWeather();
+      getCelestialData();
       updateTime();
 
       // Refresh data every 5 minutes
@@ -506,6 +734,7 @@
         getMoonPhase();
         getTemperature();
         getSpaceWeather();
+        getCelestialData();
         updateTime();
       }, 5 * 60 * 1000);
 
