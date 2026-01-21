@@ -672,12 +672,12 @@
             const now = new Date();
             
             // Get sun rise/set for today
-            const sunTimes = Astronomy.SunTimes(now, observer);
-            if (sunTimes.rise) {
-              document.getElementById('sunRise').textContent = sunTimes.rise.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const sunTimes = Astronomy.SunTimes(observer, now);
+            if (sunTimes && sunTimes.rise && sunTimes.rise.date) {
+              document.getElementById('sunRise').textContent = sunTimes.rise.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             }
-            if (sunTimes.set) {
-              document.getElementById('sunSet').textContent = sunTimes.set.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            if (sunTimes && sunTimes.set && sunTimes.set.date) {
+              document.getElementById('sunSet').textContent = sunTimes.set.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             }
             
             // Sun position
@@ -688,12 +688,14 @@
             document.getElementById('sunElevation').textContent = Math.round(sunHorizontal.altitude) + '°';
             
             // Get moon rise/set for today
-            const moonTimes = Astronomy.MoonTimes(now, observer);
-            if (moonTimes.rise) {
-              document.getElementById('moonRise').textContent = moonTimes.rise.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const moonTimes = Astronomy.SearchMoonRise(observer, now);
+            const moonTimesSet = Astronomy.SearchMoonSet(observer, now);
+            
+            if (moonTimes && moonTimes.date) {
+              document.getElementById('moonRise').textContent = moonTimes.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             }
-            if (moonTimes.set) {
-              document.getElementById('moonSet').textContent = moonTimes.set.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            if (moonTimesSet && moonTimesSet.date) {
+              document.getElementById('moonSet').textContent = moonTimesSet.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             }
             
             // Moon position
