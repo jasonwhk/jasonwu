@@ -61,16 +61,41 @@ function padPow2(arr) {
    ------------------------------------------------------------- */
 function computeFFT(signal) {
   const N = signal.length;
-  const fft = new FFT(N);
-  const out = fft.createComplexArray();
-  fft.realTransform(out, signal);
-  fft.completeSpectrum(out);
-
-  const complex = [];
-  for (let i = 0; i < out.length; i += 2) {
-    complex.push({ re: out[i], im: out[i + 1] });
+  // radix‑2 Cooley‑Tukey FFT (in‑place)
+  const bits = Math.floor(Math.log2(N));
+  // bit‑reversal permutation
+  const rev = new Uint32Array(N);
+  for (let i = 0; i < N; i++) {
+    let j = 0;
+    for (let k = 0; k < bits; k++) if (i & (1 << k)) j |= 1 << (bits - 1 - k);
+    rev[i] = j;
   }
-  return complex;
+  const data = new Array(N);
+  for (let i = 0; i < N; i++) data[i] = { re: signal[rev[i]], im: 0 };
+
+  for (let size = 2; size <= N; size <<= 1) {
+    const half = size >> 1;
+    const theta = (-2 * Math.PI) / size;
+    const wtemp = Math.sin(0.5 * theta);
+    const wpr = -2.0 * wtemp * wtemp;
+    const wpi = Math.sin(theta);
+    let wre = 1, wim = 0;
+    for (let m = 0; m < half; m++) {
+      for (let i = m; i < N; i += size) {
+        const j = i + half;
+        const tempr = wre * data[j].re - wim * data[j].im;
+        const tempi = wre * data[j].im + wim * data[j].re;
+        data[j].re = data[i].re - tempr;
+        data[j].im = data[i].im - tempi;
+        data[i].re += tempr;
+        data[i].im += tempi;
+      }
+      const wr = wre;
+      wre = wr * wpr - wim * wpi + wre;
+      wim = wim * wpr + wr * wpi + wim;
+    }
+  }
+  return data;
 }
 
 /* -------------------------------------------------------------
