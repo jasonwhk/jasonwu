@@ -116,6 +116,8 @@ function drawCanvas(mag, phase, showPhase, sampleRate) {
   const ctx = canvas.getContext("2d");
   const w = canvas.width,
         h = canvas.height;
+  const labelHeight = 20; // Reserve space at bottom for labels
+  const plotHeight = h - labelHeight;
   ctx.clearRect(0, 0, w, h);
 
   // Magnitude bar chart (primary colour)
@@ -123,8 +125,8 @@ function drawCanvas(mag, phase, showPhase, sampleRate) {
   const barW = w / mag.length;
   ctx.fillStyle = "var(--color-primary)";
   mag.forEach((v, i) => {
-    const barH = (v / maxMag) * h;
-    ctx.fillRect(i * barW, h - barH, barW - 1, barH);
+    const barH = (v / maxMag) * plotHeight;
+    ctx.fillRect(i * barW, plotHeight - barH, barW - 1, barH);
   });
 
   // Phase line plot (secondary colour) if toggled
@@ -137,7 +139,7 @@ function drawCanvas(mag, phase, showPhase, sampleRate) {
     ctx.beginPath();
     phase.forEach((p, i) => {
       const x = i * barW + barW / 2;
-      const y = h - ((p - minPhase) / range) * h;
+      const y = plotHeight - ((p - minPhase) / range) * plotHeight;
       if (i === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
     });
@@ -146,8 +148,8 @@ function drawCanvas(mag, phase, showPhase, sampleRate) {
   // X‑axis frequency labels
   ctx.strokeStyle = "#000";
   ctx.beginPath();
-  ctx.moveTo(0, h);
-  ctx.lineTo(w, h);
+  ctx.moveTo(0, plotHeight);
+  ctx.lineTo(w, plotHeight);
   ctx.stroke();
   ctx.fillStyle = "#000";
   ctx.textAlign = "center";
@@ -157,7 +159,7 @@ function drawCanvas(mag, phase, showPhase, sampleRate) {
   for (let i = 0; i < mag.length; i += labelStep) {
     const xPos = i * barW + barW / 2;
     const freqLabel = (i * binFreq).toFixed(1);
-    ctx.fillText(freqLabel + "Hz", xPos, h + 12);
+    ctx.fillText(freqLabel + "Hz", xPos, plotHeight + 15);
   }
 }
 
