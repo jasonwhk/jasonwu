@@ -341,22 +341,16 @@
             try {
               const moonRise = AstronomyLib.SearchRiseSet('Moon', observer, 1, now, 300);
               if (moonRise && moonRise.date) {
-                const riseDate = moonRise.date;
-                // Only show if it's today
-                if (riseDate.toDateString() === now.toDateString()) {
-                  document.getElementById('moonRise').textContent = riseDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                }
+                document.getElementById('moonRise').textContent = moonRise.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                console.log('Moon rise set to:', moonRise.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
               } else {
                 console.log('Moon rise result:', moonRise);
               }
               
               const moonSet = AstronomyLib.SearchRiseSet('Moon', observer, -1, now, 300);
               if (moonSet && moonSet.date) {
-                const setDate = moonSet.date;
-                // Only show if it's today
-                if (setDate.toDateString() === now.toDateString()) {
-                  document.getElementById('moonSet').textContent = setDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                }
+                document.getElementById('moonSet').textContent = moonSet.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                console.log('Moon set set to:', moonSet.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
               } else {
                 console.log('Moon set result:', moonSet);
               }
