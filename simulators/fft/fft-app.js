@@ -111,7 +111,7 @@ function getPhase(complexArr) {
 /* -------------------------------------------------------------
    Canvas drawing (magnitude bars + optional phase line)
    ------------------------------------------------------------- */
-function drawCanvas(mag, phase, showPhase) {
+function drawCanvas(mag, phase, showPhase, sampleRate) {
   const canvas = document.getElementById("fftChart");
   const ctx = canvas.getContext("2d");
   const w = canvas.width,
@@ -142,6 +142,22 @@ function drawCanvas(mag, phase, showPhase) {
       else ctx.lineTo(x, y);
     });
     ctx.stroke();
+  }
+  // X‑axis frequency labels
+  ctx.strokeStyle = "#000";
+  ctx.beginPath();
+  ctx.moveTo(0, h);
+  ctx.lineTo(w, h);
+  ctx.stroke();
+  ctx.fillStyle = "#000";
+  ctx.textAlign = "center";
+  ctx.font = "10px sans-serif";
+  const binFreq = sampleRate / mag.length;
+  const labelStep = Math.max(1, Math.floor(mag.length / 10));
+  for (let i = 0; i < mag.length; i += labelStep) {
+    const xPos = i * barW + barW / 2;
+    const freqLabel = (i * binFreq).toFixed(1);
+    ctx.fillText(freqLabel + "Hz", xPos, h + 12);
   }
 }
 
@@ -191,7 +207,7 @@ document.getElementById("runBtn").addEventListener("click", () => {
     const mag = getMagnitude(complex);
     const phase = getPhase(complex);
     const showPhase = document.getElementById("phaseToggle").checked;
-    drawCanvas(mag, phase, showPhase);
+    drawCanvas(mag, phase, showPhase, +document.getElementById("srSlider").value);
     setStatus("FFT completed", "success");
   } catch (e) {
     console.error(e);
