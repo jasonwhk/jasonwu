@@ -200,8 +200,6 @@
       // Fetch Moon Phase Data
       async function getMoonPhase() {
         try {
-          const response = await fetch('https://api.weatherapi.com/v1/current.json?key=demo&q=London');
-          // Using weatherapi for demo, but we'll calculate moon phase locally
           const today = new Date();
           const phases = ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'];
           const phaseNames = ['New Moon', 'Waxing Crescent', 'First Quarter', 'Waxing Gibbous', 'Full Moon', 'Waning Gibbous', 'Last Quarter', 'Waning Crescent'];
@@ -216,7 +214,7 @@
           document.getElementById('moonPhase').textContent = phaseNames[phaseIndex];
           document.getElementById('moonDescription').textContent = `${Math.round((daysSinceNewMoon % moonCycle) / moonCycle * 100)}% illuminated`;
         } catch (error) {
-          document.getElementById('moonPhase').innerHTML = '<span class="error">Unable to fetch</span>';
+          document.getElementById('moonPhase').innerHTML = '<span class="error">Unable to calculate</span>';
         }
       }
 
