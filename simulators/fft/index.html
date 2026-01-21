@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FFT Simulator – Jason's Homepage</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    /* Make the canvas look a bit “scientific” while still using existing colours */
+    #fftChart { max-width:100%; height:auto; border:1px solid var(--color-border); background:#fdfdfd; }
+    .control-group { margin-top:1rem; }
+    .control-label { display:block; margin-bottom:0.25rem; font-weight:600; }
+    .toggle-label { cursor:pointer; }
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+  <a href="#main" class="skip-to-main">Skip to main content</a>
+
+  <!-- Navigation – copy from other pages -->
+  <nav>
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/games/">Games</a></li>
+      <li><a href="/tools/">Tools</a></li>
+      <li><a href="/simulators/">Simulators</a></li>
+      <li><a href="/lab/">Lab</a></li>
+    </ul>
+  </nav>
+
+  <main id="main">
+    <div class="container">
+      <h1>🔢 FFT Simulator</h1>
+      <p class="subtitle">Generate a sine tone with Gaussian noise, compute its FFT and view magnitude / phase.</p>
+
+      <!-- ==== SOURCE SELECTION ==== -->
+      <section>
+        <h2>Signal source</h2>
+
+        <div class="control-group">
+          <label class="control-label" for="srcSelect">Source</label>
+          <select id="srcSelect">
+            <option value="tone">Generated tone + noise</option>
+            <option value="manual">Manual data (textarea)</option>
+          </select>
+        </div>
+
+        <!-- Manual textarea (hidden unless selected) -->
+        <div id="manualBox" class="control-group" style="display:none;">
+          <label class="control-label" for="inputData">
+            Numbers (comma/space/newline separated)
+          </label>
+          <textarea id="inputData" rows="5"
+            placeholder="e.g. 0, 1, 0, -1, …"></textarea>
+        </div>
+
+        <!-- Tone generator controls (visible by default) -->
+        <div id="toneBox" class="control-group">
+          <label class="control-label">Frequency (Hz)</label>
+          <input type="range" id="freqSlider" min="1" max="500" value="50">
+          <span id="freqVal">50</span> Hz
+
+          <label class="control-label mt-2">Amplitude</label>
+          <input type="range" id="ampSlider" min="0.1" max="5" step="0.1" value="1">
+          <span id="ampVal">1</span>
+
+          <label class="control-label mt-2">Duration (seconds)</label>
+          <input type="range" id="durSlider" min="0.1" max="5" step="0.1" value="1">
+          <span id="durVal">1</span> s
+
+          <label class="control-label mt-2">Sample rate (samples / s)</label>
+          <input type="range" id="srSlider" min="64" max="2048" step="64" value="512">
+          <span id="srVal">512</span> Hz
+
+          <label class="control-label mt-2">Noise level (0 → 1)</label>
+          <input type="range" id="noiseSlider" min="0" max="1" step="0.01" value="0">
+          <span id="noiseVal">0</span>
+        </div>
+
+        <div class="mt-2">
+          <button id="runBtn" class="button">Run FFT</button>
+        </div>
+      </section>
+
+      <!-- ==== DISPLAY OPTIONS ==== -->
+      <section class="mt-3">
+        <h2>Display</h2>
+        <label class="toggle-label">
+          <input type="checkbox" id="phaseToggle">
+          Show phase plot (overlays on the same canvas)
+        </label>
+      </section>
+
+      <!-- ==== RESULT CANVAS ==== -->
+      <section class="mt-3">
+        <h2>Spectrum</h2>
+        <canvas id="fftChart" width="800" height="400"></canvas>
+      </section>
+
+      <div id="status" class="status-message"></div>
+    </div>
+  </main>
+</div>
+
+<!-- CDN‑hosted FFT library (tiny, ~3 KB) -->
+<script src="https://cdn.jsdelivr.net/npm/fft.js@0.3.0/dist/fft.min.js"></script>
+
+<!-- Application logic -->
+<script src="/simulators/fft/fft-app.js"></script>
+</body>
+</html>

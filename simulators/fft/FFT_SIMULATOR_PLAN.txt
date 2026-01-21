@@ -1,0 +1,42 @@
+# FFT Simulator Implementation Plan
+
+This document summarizes the design and implementation details for the client‑side FFT simulator added to the Simulators section.
+
+## Features
+- Tone generation (sine wave) with user‑controlled frequency, amplitude, duration, sample rate.
+- Gaussian noise added via Box‑Muller transform, noise level controlled by a slider.
+- FFT computation using the CDN‑hosted `fft.js` library.
+- Visualization:
+  - Magnitude bar chart (default).
+  - Optional phase line plot toggled via a checkbox.
+- UI uses existing navigation, skip‑to‑main, responsive layout, and colour palette (`--color-primary`, `--color-secondary`).
+- Fully client‑side – only external request is the `fft.js` script.
+
+## File Structure
+```
+/simulators/
+│   index.html          ← existing page (updated with new card)
+└───fft/
+    │   index.html      ← main UI page
+    │   fft-app.js      ← JavaScript logic (tone generation, FFT, drawing, UI handling)
+    │   FFT_SIMULATOR_PLAN.txt ← this reference file
+```
+
+## Implementation Steps
+1. Create `simulators/fft/` folder.
+2. Add `index.html` with navigation, controls (source selector, sliders, textarea), canvas for output, and a checkbox to toggle phase display. Include the `fft.js` CDN script and link to `fft-app.js`.
+3. Add `fft-app.js` containing:
+   - Helper functions for status messages.
+   - Parsing manual input.
+   - Gaussian noise generator (Box‑Muller).
+   - Tone generation function.
+   - Padding to next power of two.
+   - FFT computation using `fft.js` (`new FFT(N)`, `realTransform`, `completeSpectrum`).
+   - Functions to compute magnitude and phase arrays.
+   - Canvas drawing: magnitude as vertical bars (primary colour), optional phase overlay (secondary colour).
+   - UI event listeners for source selection, sliders, run button, and phase toggle.
+4. Update `simulators/index.html` to include a new card linking to `/simulators/fft/`.
+5. Test locally: generate tones, adjust noise, toggle phase, verify magnitude peaks.
+6. Commit changes.
+
+The code in `index.html` and `fft-app.js` follows the above description and uses only vanilla JavaScript and the existing CSS variables to maintain a scientific look.
