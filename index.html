@@ -299,48 +299,67 @@
           // Bonn coordinates
           const latitude = 50.7353;
           const longitude = 7.0622;
+          const elevation = 58; // meters
           
           // Calculate current Sun and Moon position using astronomy-engine
           if (typeof Astronomy !== 'undefined') {
-            const observer = new Astronomy.Observer(latitude, longitude, 58);
+            const observer = new Astronomy.Observer(latitude, longitude, elevation);
             const now = new Date();
             
             // Get sun rise/set for today
-            const sunTimes = Astronomy.SunTimes(observer, now);
-            if (sunTimes && sunTimes.rise && sunTimes.rise.date) {
-              document.getElementById('sunRise').textContent = sunTimes.rise.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            }
-            if (sunTimes && sunTimes.set && sunTimes.set.date) {
-              document.getElementById('sunSet').textContent = sunTimes.set.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            try {
+              const sunTimes = Astronomy.SunTimes(observer, now);
+              if (sunTimes) {
+                if (sunTimes.rise && sunTimes.rise.date) {
+                  document.getElementById('sunRise').textContent = sunTimes.rise.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                }
+                if (sunTimes.set && sunTimes.set.date) {
+                  document.getElementById('sunSet').textContent = sunTimes.set.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                }
+              }
+            } catch (e) {
+              console.warn('Error getting sun times:', e);
             }
             
             // Sun position
-            const sunNow = Astronomy.Equator('Sun', now, observer, false, true);
-            const sunHorizontal = Astronomy.Horizon(now, observer, sunNow.ra, sunNow.dec);
-            
-            document.getElementById('sunAzimuth').textContent = Math.round(sunHorizontal.azimuth) + '°';
-            document.getElementById('sunElevation').textContent = Math.round(sunHorizontal.altitude) + '°';
+            try {
+              const sunNow = Astronomy.Equator('Sun', now, observer, false, true);
+              const sunHorizontal = Astronomy.Horizon(now, observer, sunNow.ra, sunNow.dec);
+              
+              document.getElementById('sunAzimuth').textContent = Math.round(sunHorizontal.azimuth) + '°';
+              document.getElementById('sunElevation').textContent = Math.round(sunHorizontal.altitude) + '°';
+            } catch (e) {
+              console.warn('Error getting sun position:', e);
+            }
             
             // Get moon rise/set for today
-            const moonTimes = Astronomy.SearchMoonRise(observer, now);
-            const moonTimesSet = Astronomy.SearchMoonSet(observer, now);
-            
-            if (moonTimes && moonTimes.date) {
-              document.getElementById('moonRise').textContent = moonTimes.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            }
-            if (moonTimesSet && moonTimesSet.date) {
-              document.getElementById('moonSet').textContent = moonTimesSet.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            try {
+              const moonTimes = Astronomy.SearchMoonRise(observer, now);
+              const moonTimesSet = Astronomy.SearchMoonSet(observer, now);
+              
+              if (moonTimes && moonTimes.date) {
+                document.getElementById('moonRise').textContent = moonTimes.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+              }
+              if (moonTimesSet && moonTimesSet.date) {
+                document.getElementById('moonSet').textContent = moonTimesSet.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+              }
+            } catch (e) {
+              console.warn('Error getting moon times:', e);
             }
             
             // Moon position
-            const moonNow = Astronomy.Equator('Moon', now, observer, false, true);
-            const moonHorizontal = Astronomy.Horizon(now, observer, moonNow.ra, moonNow.dec);
-            
-            document.getElementById('moonAzimuth').textContent = Math.round(moonHorizontal.azimuth) + '°';
-            document.getElementById('moonElevation').textContent = Math.round(moonHorizontal.altitude) + '°';
+            try {
+              const moonNow = Astronomy.Equator('Moon', now, observer, false, true);
+              const moonHorizontal = Astronomy.Horizon(now, observer, moonNow.ra, moonNow.dec);
+              
+              document.getElementById('moonAzimuth').textContent = Math.round(moonHorizontal.azimuth) + '°';
+              document.getElementById('moonElevation').textContent = Math.round(moonHorizontal.altitude) + '°';
+            } catch (e) {
+              console.warn('Error getting moon position:', e);
+            }
           }
         } catch (error) {
-          console.error('Error fetching celestial data:', error);
+          console.error('Error in getCelestialData:', error);
         }
       }
 
