@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jason's Landing Page</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+      
+      .container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 60px 40px;
+        max-width: 600px;
+        text-align: center;
+      }
+      
+      h1 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 2.5em;
+      }
+      
+      .subtitle {
+        color: #666;
+        margin-bottom: 50px;
+        font-size: 1.1em;
+      }
+      
+      .widgets {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 40px;
+      }
+      
+      .widget {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 30px 20px;
+        border: 2px solid #e9ecef;
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+      
+      .widget:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+      
+      .widget-title {
+        color: #667eea;
+        font-size: 0.9em;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 15px;
+        letter-spacing: 1px;
+      }
+      
+      .widget-value {
+        font-size: 2em;
+        color: #333;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+      
+      .widget-description {
+        color: #999;
+        font-size: 0.9em;
+      }
+      
+      .moon-emoji {
+        font-size: 3em;
+        margin: 10px 0;
+      }
+      
+      .temp-emoji {
+        font-size: 3em;
+        margin: 10px 0;
+      }
+      
+      .loading {
+        color: #999;
+        font-size: 0.9em;
+      }
+      
+      .error {
+        color: #e74c3c;
+        font-size: 0.9em;
+      }
+      
+      @media (max-width: 500px) {
+        .widgets {
+          grid-template-columns: 1fr;
+        }
+        
+        .container {
+          padding: 40px 20px;
+        }
+        
+        h1 {
+          font-size: 2em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>👋 Welcome!</h1>
+      <p class="subtitle">Here's what's happening right now...</p>
+      
+      <div class="widgets">
+        <div class="widget">
+          <div class="widget-title">🌙 Moon Phase</div>
+          <div class="moon-emoji" id="moonEmoji">🌕</div>
+          <div class="widget-value" id="moonPhase"><span class="loading">Loading...</span></div>
+          <div class="widget-description" id="moonDescription"></div>
+        </div>
+        
+        <div class="widget">
+          <div class="widget-title">🌡️ Temperature in Bonn</div>
+          <div class="temp-emoji" id="tempEmoji">🌤️</div>
+          <div class="widget-value" id="temperature"><span class="loading">Loading...</span></div>
+          <div class="widget-description" id="tempDescription"></div>
+        </div>
+      </div>
+      
+      <p style="color: #999; font-size: 0.9em; margin-top: 30px;">Last updated: <span id="lastUpdated">Just now</span></p>
+    </div>
+
+    <script>
+      // Fetch Moon Phase Data
+      async function getMoonPhase() {
+        try {
+          const response = await fetch('https://api.weatherapi.com/v1/current.json?key=demo&q=London');
+          // Using weatherapi for demo, but we'll calculate moon phase locally
+          const today = new Date();
+          const phases = ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'];
+          const phaseNames = ['New Moon', 'Waxing Crescent', 'First Quarter', 'Waxing Gibbous', 'Full Moon', 'Waning Gibbous', 'Last Quarter', 'Waning Crescent'];
+          
+          // Simple moon phase calculation
+          const knownNewMoon = new Date(2000, 0, 6);
+          const moonCycle = 29.53;
+          const daysSinceNewMoon = (today - knownNewMoon) / (1000 * 60 * 60 * 24);
+          const phaseIndex = Math.floor((daysSinceNewMoon % moonCycle) / (moonCycle / 8)) % 8;
+          
+          document.getElementById('moonEmoji').textContent = phases[phaseIndex];
+          document.getElementById('moonPhase').textContent = phaseNames[phaseIndex];
+          document.getElementById('moonDescription').textContent = `${Math.round((daysSinceNewMoon % moonCycle) / moonCycle * 100)}% illuminated`;
+        } catch (error) {
+          document.getElementById('moonPhase').innerHTML = '<span class="error">Unable to fetch</span>';
+        }
+      }
+
+      // Fetch Temperature in Bonn
+      async function getTemperature() {
+        try {
+          const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=50.7353&longitude=7.0622&current=temperature_2m,weather_code&timezone=auto');
+          const data = await response.json();
+          const temp = data.current.temperature_2m;
+          const weatherCode = data.current.weather_code;
+          
+          // Map weather code to emoji
+          let emoji = '🌤️';
+          if (weatherCode === 0 || weatherCode === 1) emoji = '☀️';
+          else if (weatherCode === 2 || weatherCode === 3) emoji = '⛅';
+          else if (weatherCode >= 45) emoji = '🌧️';
+          
+          document.getElementById('tempEmoji').textContent = emoji;
+          document.getElementById('temperature').textContent = `${temp}°C`;
+          document.getElementById('tempDescription').textContent = 'In Bonn, Germany';
+        } catch (error) {
+          document.getElementById('temperature').innerHTML = '<span class="error">Unable to fetch</span>';
+        }
+      }
+
+      // Update last modified time
+      function updateTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        document.getElementById('lastUpdated').textContent = timeString;
+      }
+
+      // Initial load
+      getMoonPhase();
+      getTemperature();
+      updateTime();
+
+      // Refresh data every 5 minutes
+      setInterval(() => {
+        getMoonPhase();
+        getTemperature();
+        updateTime();
+      }, 5 * 60 * 1000);
+    </script>
+  </body>
+</html>
