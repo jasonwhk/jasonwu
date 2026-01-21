@@ -310,10 +310,16 @@
               if (sunTimes) {
                 if (sunTimes.rise && sunTimes.rise.date) {
                   document.getElementById('sunRise').textContent = sunTimes.rise.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                } else {
+                  console.log('Sun rise data:', sunTimes.rise);
                 }
                 if (sunTimes.set && sunTimes.set.date) {
                   document.getElementById('sunSet').textContent = sunTimes.set.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                } else {
+                  console.log('Sun set data:', sunTimes.set);
                 }
+              } else {
+                console.log('SunTimes result:', sunTimes);
               }
             } catch (e) {
               console.warn('Error getting sun times:', e);
@@ -330,16 +336,32 @@
               console.warn('Error getting sun position:', e);
             }
             
-            // Get moon rise/set for today
+            // Get moon rise/set for today - SearchMoonRise expects a starting point and searches forward
             try {
-              const moonTimes = Astronomy.SearchMoonRise(observer, now);
-              const moonTimesSet = Astronomy.SearchMoonSet(observer, now);
+              // Get beginning of today
+              const startOfDay = new Date(now);
+              startOfDay.setHours(0, 0, 0, 0);
               
-              if (moonTimes && moonTimes.date) {
-                document.getElementById('moonRise').textContent = moonTimes.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+              const moonRise = Astronomy.SearchMoonRise(observer, startOfDay);
+              if (moonRise && moonRise.date) {
+                const riseDate = moonRise.date;
+                // Only show if it's today
+                if (riseDate.toDateString() === now.toDateString()) {
+                  document.getElementById('moonRise').textContent = riseDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                }
+              } else {
+                console.log('Moon rise result:', moonRise);
               }
-              if (moonTimesSet && moonTimesSet.date) {
-                document.getElementById('moonSet').textContent = moonTimesSet.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+              
+              const moonSet = Astronomy.SearchMoonSet(observer, startOfDay);
+              if (moonSet && moonSet.date) {
+                const setDate = moonSet.date;
+                // Only show if it's today
+                if (setDate.toDateString() === now.toDateString()) {
+                  document.getElementById('moonSet').textContent = setDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                }
+              } else {
+                console.log('Moon set result:', moonSet);
               }
             } catch (e) {
               console.warn('Error getting moon times:', e);
