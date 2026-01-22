@@ -14,6 +14,14 @@ export function createInput(canvas, { onPointerLockChange } = {}) {
   let mouseDx = 0;
   let mouseDy = 0;
 
+  function reset() {
+    down.clear();
+    pressedPending.clear();
+    pressedFrame = new Set();
+    mouseDx = 0;
+    mouseDy = 0;
+  }
+
   function isPointerLocked() {
     return document.pointerLockElement === canvas;
   }
@@ -64,11 +72,7 @@ export function createInput(canvas, { onPointerLockChange } = {}) {
   }
 
   function handleBlur() {
-    down.clear();
-    pressedPending.clear();
-    pressedFrame = new Set();
-    mouseDx = 0;
-    mouseDy = 0;
+    reset();
   }
 
   window.addEventListener("keydown", handleKeyDown, { passive: false });
@@ -147,5 +151,6 @@ export function createInput(canvas, { onPointerLockChange } = {}) {
     isPointerLocked,
     isDown,
     requestPointerLock,
+    reset,
   };
 }

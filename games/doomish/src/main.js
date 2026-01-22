@@ -2,24 +2,44 @@ import { createInput } from "./engine/input.js";
 import { loadSpriteTextures, loadWallTextures } from "./engine/assets.js";
 import { castRayDDA, createRenderer } from "./engine/renderer.js";
 import { moveAndCollide } from "./engine/physics.js";
-import { createLevel1 } from "./game/level.js";
+import { LevelManager } from "./game/levels.js";
 
 const canvas = document.getElementById("game");
 const hud = document.getElementById("hud");
 const overlay = document.getElementById("overlay");
 const playButton = document.getElementById("play");
+const resumeButton = document.getElementById("resume");
 const restartButton = document.getElementById("restart");
+const nextButton = document.getElementById("next");
+const quitButton = document.getElementById("quit");
 const titleEl = document.getElementById("title");
 const descEl = document.getElementById("desc");
 const screenFlash = document.getElementById("screenFlash");
 const damageFlash = document.getElementById("damageFlash");
 const hitIndicator = document.getElementById("hitIndicator");
 
-let level = createLevel1();
+const levelManager = new LevelManager({
+  levelUrls: ["../levels/level01.json", "../levels/level02.json", "../levels/level03.json"].map((p) =>
+    new URL(p, import.meta.url).toString(),
+  ),
+});
+
+const GAME_STATE = {
+  LOADING: "loading",
+  MENU: "menu",
+  PLAYING: "playing",
+  PAUSED: "paused",
+  LEVEL_COMPLETE: "levelComplete",
+  GAME_OVER: "gameOver",
+};
+
+let gameState = GAME_STATE.LOADING;
+
+let level = null;
 const player = {
-  x: level.spawn.x,
-  y: level.spawn.y,
-  a: level.spawn.a,
+  x: 1.5,
+  y: 1.5,
+  a: 0,
   radius: 0.22,
   maxHealth: 100,
   health: 100,
@@ -29,15 +49,17 @@ const player = {
   fireCooldown: 0,
 };
 
-let gameOver = false;
-
 const RES_SCALES = [1, 0.75, 0.5];
 let resScaleIndex = 0;
 
 const renderer = createRenderer(canvas, { resolutionScale: RES_SCALES[resScaleIndex] });
 const input = createInput(canvas, {
   onPointerLockChange: (locked) => {
-    overlay.style.display = locked ? "none" : "grid";
+    if (locked) {
+      if (gameState === GAME_STATE.MENU || gameState === GAME_STATE.PAUSED) setGameState(GAME_STATE.PLAYING);
+    } else {
+      if (gameState === GAME_STATE.PLAYING) setGameState(GAME_STATE.PAUSED);
+    }
   },
 });
 
@@ -53,20 +75,25 @@ loadSpriteTextures(import.meta.url, {
   pickup_health: "../assets/sprites/pickup_health.png",
   pickup_ammo: "../assets/sprites/pickup_ammo.png",
   enemy_dummy: "../assets/sprites/enemy_dummy.png",
+  exit: "../assets/sprites/exit.svg",
 })
   .then((textures) => renderer.setSpriteTextures(textures))
   .catch((err) => console.warn("[doomish] sprite load failed:", err));
 
-playButton.addEventListener("click", async () => {
-  if (gameOver) restartLevel({ requestPointerLock: false });
-  await input.requestPointerLock();
+playButton?.addEventListener("click", async () => {
+  await startNewGame({ requestPointerLock: true });
+});
+resumeButton?.addEventListener("click", async () => {
+  await resumeGame();
 });
 restartButton?.addEventListener("click", async () => {
-  restartLevel({ requestPointerLock: false });
-  await input.requestPointerLock();
+  await restartFromOverlay();
 });
-canvas.addEventListener("click", async () => {
-  if (!input.isPointerLocked()) await input.requestPointerLock();
+nextButton?.addEventListener("click", async () => {
+  await nextFromOverlay();
+});
+quitButton?.addEventListener("click", () => {
+  quitToMenu();
 });
 
 function resize() {
@@ -93,16 +120,35 @@ function tick(now) {
   acc += realDt;
 
   input.beginFrame();
-  player.a = normalizeAngle(player.a + input.consumeMouseDeltaX() * 0.0022);
-  if (input.consumePressed("KeyM")) minimap = !minimap;
+  if (gameState === GAME_STATE.PLAYING) player.a = normalizeAngle(player.a + input.consumeMouseDeltaX() * 0.0022);
+
+  if (input.consumePressed("KeyM") && gameState === GAME_STATE.PLAYING) minimap = !minimap;
   if (input.consumePressed("F3")) debug = !debug;
   if (input.consumePressed("KeyV")) {
     resScaleIndex = (resScaleIndex + 1) % RES_SCALES.length;
     renderer.setResolutionScale(RES_SCALES[resScaleIndex]);
     renderer.resize();
   }
-  if (input.consumePressed("KeyR")) {
-    restartLevel({ requestPointerLock: input.isPointerLocked() });
+
+  if (input.consumePressed("KeyR") && gameState !== GAME_STATE.LOADING) {
+    if (gameState === GAME_STATE.PLAYING) {
+      void restartLevelInPlace();
+    } else {
+      void restartFromOverlay();
+    }
+  }
+
+  if (input.consumePressed("KeyP") && gameState !== GAME_STATE.LOADING) {
+    if (gameState === GAME_STATE.PLAYING) pauseGame();
+    else if (gameState === GAME_STATE.PAUSED) void resumeGame();
+  }
+  if (input.consumePressed("Escape") && gameState !== GAME_STATE.LOADING) {
+    if (gameState === GAME_STATE.PLAYING) pauseGame();
+    else if (gameState === GAME_STATE.PAUSED) void resumeGame();
+  }
+
+  if (input.consumePressed("KeyN") && gameState === GAME_STATE.LEVEL_COMPLETE) {
+    void nextFromOverlay({ requestPointerLock: true });
   }
 
   muzzleFlashT = Math.max(0, muzzleFlashT - realDt);
@@ -115,9 +161,9 @@ function tick(now) {
   while (acc >= SIM_DT) {
     const intent = input.getIntent();
     const turnSpeed = 2.5;
-    player.a = normalizeAngle(player.a + intent.turn * turnSpeed * SIM_DT);
+    if (gameState === GAME_STATE.PLAYING) player.a = normalizeAngle(player.a + intent.turn * turnSpeed * SIM_DT);
 
-    if (!gameOver) {
+    if (gameState === GAME_STATE.PLAYING) {
       const moveSpeed = 3.2 * (intent.sprint ? 1.55 : 1.0);
       const strafeSpeed = 3.0 * (intent.sprint ? 1.55 : 1.0);
       const forward = intent.move;
@@ -133,6 +179,11 @@ function tick(now) {
 
       moveAndCollide(player, level, vx * SIM_DT, vy * SIM_DT);
       collectPickups(player, level);
+      if (checkExitTrigger(player, level)) {
+        completeLevel();
+        acc -= SIM_DT;
+        continue;
+      }
 
       updateEnemies(level, player, SIM_DT, {
         onPlayerDamaged: () => {
@@ -159,26 +210,27 @@ function tick(now) {
 
   fpsSmooth = fpsSmooth * 0.92 + (1 / Math.max(1e-6, realDt)) * 0.08;
 
-  renderer.render(level, player, {
+  if (level) {
+    renderer.render(level, player, {
     minimap,
-  });
+    });
+  }
 
   if (debug) {
     hud.textContent =
-      `WASD move | Mouse look | LMB fire | F/Ctrl fire | M minimap | V res | R restart | F3 debug | Esc unlock\n` +
+      `WASD move | Mouse look | LMB fire | F/Ctrl fire | M minimap | V res | R restart | P/Esc pause | N next\n` +
       `fps ${fpsSmooth.toFixed(0)} | res ${Math.round(renderer.getResolutionScale() * 100)}% | ` +
       `pos ${player.x.toFixed(2)},${player.y.toFixed(2)} | a ${(player.a * (180 / Math.PI)).toFixed(0)}°\n` +
-      `weapon ${player.currentWeapon} | health ${player.health}/${player.maxHealth} | ammo ${player.ammo} | entities ${(level.entities?.length ?? 0) | 0}`;
+      `${level?.name ?? "?"} (${(levelManager.getCurrentIndex() + 1) | 0}/${levelManager.getLevelCount()}) | ` +
+      `weapon ${player.currentWeapon} | health ${player.health}/${player.maxHealth} | ammo ${player.ammo} | entities ${(level?.entities?.length ?? 0) | 0}`;
   } else {
     hud.textContent =
+      `${level?.name ?? "?"} (${(levelManager.getCurrentIndex() + 1) | 0}/${levelManager.getLevelCount()}) | ` +
       `weapon ${player.currentWeapon} | health ${player.health}/${player.maxHealth} | ammo ${player.ammo}\n` +
-      `WASD move | Mouse look | LMB fire | F/Ctrl fire | M minimap | V res | R restart | F3 debug | Esc unlock | ${fpsSmooth.toFixed(
-        0,
-      )} fps`;
+      `WASD move | Mouse look | LMB fire | F/Ctrl fire | M minimap | V res | R restart | P/Esc pause | ${fpsSmooth.toFixed(0)} fps`;
   }
   requestAnimationFrame(tick);
 }
-requestAnimationFrame(tick);
 
 function normalizeAngle(a) {
   const twoPi = Math.PI * 2;
@@ -273,34 +325,194 @@ function applyHitscanDamage(level, ox, oy, rdx, rdy, maxDist, damage) {
   return true;
 }
 
-function restartLevel({ requestPointerLock } = {}) {
-  level = createLevel1();
-  player.x = level.spawn.x;
-  player.y = level.spawn.y;
-  player.a = level.spawn.a;
-  player.maxHealth = 100;
-  player.health = player.maxHealth;
-  player.ammo = 24;
-  player.fireCooldown = 0;
-  gameOver = false;
+let loadSeq = 0;
 
-  setOverlayGameOver(false);
-
-  if (requestPointerLock) {
-    // Best-effort; may fail without a user gesture.
-    input.requestPointerLock();
+async function startNewGame({ requestPointerLock } = {}) {
+  const seq = ++loadSeq;
+  setGameState(GAME_STATE.LOADING);
+  try {
+    level = await levelManager.loadLevel(0);
+    if (seq !== loadSeq) return;
+    resetPlayerForLevel(level, { resetStats: true });
+    setGameState(GAME_STATE.MENU);
+    if (requestPointerLock) await input.requestPointerLock();
+  } catch (err) {
+    console.warn("[doomish] failed to start game:", err);
+    setGameState(GAME_STATE.MENU);
   }
 }
 
-function setOverlayGameOver(isGameOver) {
-  if (restartButton) restartButton.style.display = isGameOver ? "inline-block" : "none";
-  if (titleEl) titleEl.textContent = isGameOver ? "Game Over" : "Doomish — Milestone 5";
-  if (descEl) {
-    descEl.innerHTML = isGameOver
-      ? `You died. Press <code>R</code> or use <b>Restart Level</b>.`
-      : `Controls: <code>WASD</code> move, <code>←/→</code> or <code>Q/E</code> turn, mouse look (pointer lock),
-            <code>LMB</code> fire, <code>F</code>/<code>Ctrl</code> fire (no pointer lock), <code>M</code> minimap,
-            <code>V</code> resolution, <code>R</code> restart, <code>F3</code> debug, <code>Esc</code> unlock.`;
+async function restartLevelInPlace() {
+  const seq = ++loadSeq;
+  try {
+    const newLevel = await levelManager.restartLevel();
+    if (seq !== loadSeq) return;
+    level = newLevel;
+    resetPlayerForLevel(level, { resetStats: true });
+  } catch (err) {
+    console.warn("[doomish] restart failed:", err);
+  }
+}
+
+async function restartFromOverlay({ requestPointerLock = true } = {}) {
+  const seq = ++loadSeq;
+  setGameState(GAME_STATE.LOADING);
+  try {
+    level = await levelManager.restartLevel();
+    if (seq !== loadSeq) return;
+    resetPlayerForLevel(level, { resetStats: true });
+    setGameState(GAME_STATE.MENU);
+    if (requestPointerLock) await input.requestPointerLock();
+  } catch (err) {
+    console.warn("[doomish] restart failed:", err);
+    setGameState(GAME_STATE.MENU);
+  }
+}
+
+async function nextFromOverlay({ requestPointerLock = true } = {}) {
+  const seq = ++loadSeq;
+  setGameState(GAME_STATE.LOADING);
+  try {
+    level = await levelManager.nextLevel();
+    if (seq !== loadSeq) return;
+    resetPlayerForLevel(level, { resetStats: true });
+    setGameState(GAME_STATE.MENU);
+    if (requestPointerLock) await input.requestPointerLock();
+  } catch (err) {
+    console.warn("[doomish] next level failed:", err);
+    setGameState(GAME_STATE.MENU);
+  }
+}
+
+function resetPlayerForLevel(level, { resetStats } = {}) {
+  player.x = level.spawn.x;
+  player.y = level.spawn.y;
+  player.a = level.spawn.a;
+  player.fireCooldown = 0;
+
+  if (resetStats) {
+    player.maxHealth = 100;
+    player.health = player.maxHealth;
+    player.ammo = 24;
+    player.currentWeapon = "pistol";
+    player.fireRate = 4;
+  }
+}
+
+function pauseGame() {
+  if (gameState !== GAME_STATE.PLAYING) return;
+  setGameState(GAME_STATE.PAUSED);
+  input.reset();
+  try {
+    document.exitPointerLock?.();
+  } catch {
+    // ignore
+  }
+}
+
+async function resumeGame() {
+  if (gameState !== GAME_STATE.PAUSED) return;
+  await input.requestPointerLock();
+}
+
+function completeLevel() {
+  if (gameState !== GAME_STATE.PLAYING) return;
+  setGameState(GAME_STATE.LEVEL_COMPLETE);
+  input.reset();
+  try {
+    document.exitPointerLock?.();
+  } catch {
+    // ignore
+  }
+}
+
+function quitToMenu() {
+  input.reset();
+  try {
+    document.exitPointerLock?.();
+  } catch {
+    // ignore
+  }
+  void startNewGame({ requestPointerLock: false });
+}
+
+function setGameState(next) {
+  gameState = next;
+  renderOverlay();
+}
+
+function renderOverlay() {
+  if (!overlay) return;
+  overlay.style.display = gameState === GAME_STATE.PLAYING ? "none" : "grid";
+
+  const levelLabel = level
+    ? `${level.name} (${(levelManager.getCurrentIndex() + 1) | 0}/${levelManager.getLevelCount()})`
+    : "";
+
+  if (gameState === GAME_STATE.LOADING) {
+    if (titleEl) titleEl.textContent = "Loading…";
+    if (descEl) descEl.textContent = "Loading level data…";
+    if (playButton) playButton.style.display = "none";
+    if (resumeButton) resumeButton.style.display = "none";
+    if (restartButton) restartButton.style.display = "none";
+    if (nextButton) nextButton.style.display = "none";
+    if (quitButton) quitButton.style.display = "none";
+    return;
+  }
+
+  if (gameState === GAME_STATE.MENU) {
+    if (titleEl) titleEl.textContent = "Doomish";
+    if (descEl) {
+      descEl.innerHTML = `Start at <b>${levelLabel || "Level 1"}</b>.<br/>
+        Controls: <code>WASD</code> move, <code>←/→</code> or <code>Q/E</code> turn, mouse look (pointer lock),
+        <code>LMB</code> fire, <code>F</code>/<code>Ctrl</code> fire (no pointer lock),
+        <code>R</code> restart, <code>P</code>/<code>Esc</code> pause, <code>M</code> minimap, <code>V</code> resolution.`;
+    }
+    if (playButton) playButton.style.display = "inline-block";
+    if (resumeButton) resumeButton.style.display = "none";
+    if (restartButton) restartButton.style.display = "none";
+    if (nextButton) nextButton.style.display = "none";
+    if (quitButton) quitButton.style.display = "none";
+    return;
+  }
+
+  if (gameState === GAME_STATE.PAUSED) {
+    if (titleEl) titleEl.textContent = "Paused";
+    if (descEl) {
+      descEl.innerHTML = `${levelLabel ? `<b>${levelLabel}</b><br/>` : ""}Press <code>P</code> / <code>Esc</code> to resume.`;
+    }
+    if (playButton) playButton.style.display = "none";
+    if (resumeButton) resumeButton.style.display = "inline-block";
+    if (restartButton) restartButton.style.display = "inline-block";
+    if (nextButton) nextButton.style.display = "none";
+    if (quitButton) quitButton.style.display = "inline-block";
+    return;
+  }
+
+  if (gameState === GAME_STATE.LEVEL_COMPLETE) {
+    if (titleEl) titleEl.textContent = "Level Complete";
+    if (descEl) {
+      descEl.innerHTML = `${levelLabel ? `<b>${levelLabel}</b><br/>` : ""}Press <code>N</code> to continue or <code>R</code> to replay.`;
+    }
+    if (playButton) playButton.style.display = "none";
+    if (resumeButton) resumeButton.style.display = "none";
+    if (restartButton) restartButton.style.display = "inline-block";
+    if (nextButton) nextButton.style.display = "inline-block";
+    if (quitButton) quitButton.style.display = "inline-block";
+    return;
+  }
+
+  if (gameState === GAME_STATE.GAME_OVER) {
+    if (titleEl) titleEl.textContent = "Game Over";
+    if (descEl) {
+      descEl.innerHTML = `You died on ${levelLabel || "this level"}. Press <code>R</code> to restart or quit to menu.`;
+    }
+    if (playButton) playButton.style.display = "none";
+    if (resumeButton) resumeButton.style.display = "none";
+    if (restartButton) restartButton.style.display = "inline-block";
+    if (nextButton) nextButton.style.display = "none";
+    if (quitButton) quitButton.style.display = "inline-block";
+    return;
   }
 }
 
@@ -423,15 +635,15 @@ function tryMoveEnemy(level, enemy, dx, dy) {
 }
 
 function applyPlayerDamage(player, damage, { onPlayerDamaged, onPlayerDied } = {}) {
-  if (gameOver) return;
+  if (gameState !== GAME_STATE.PLAYING) return;
   if (!(damage > 0)) return;
   const prev = player.health | 0;
   player.health = Math.max(0, (prev - (damage | 0)) | 0);
   if (player.health < prev) onPlayerDamaged?.();
   if (player.health <= 0) {
-    gameOver = true;
+    setGameState(GAME_STATE.GAME_OVER);
     onPlayerDied?.();
-    setOverlayGameOver(true);
+    input.reset();
     try {
       document.exitPointerLock?.();
     } catch {
@@ -439,3 +651,33 @@ function applyPlayerDamage(player, damage, { onPlayerDamaged, onPlayerDied } = {
     }
   }
 }
+
+function checkExitTrigger(player, level) {
+  const entities = level?.entities;
+  if (!Array.isArray(entities) || entities.length === 0) return false;
+
+  const pr = player.radius;
+  for (const e of entities) {
+    if (!e || e.type !== "exit") continue;
+    const er = typeof e.radius === "number" ? e.radius : 0.45;
+    const dx = e.x - player.x;
+    const dy = e.y - player.y;
+    if (dx * dx + dy * dy <= (pr + er) * (pr + er)) return true;
+  }
+  return false;
+}
+
+async function init() {
+  setGameState(GAME_STATE.LOADING);
+  try {
+    level = await levelManager.loadLevel(0);
+    resetPlayerForLevel(level, { resetStats: true });
+    setGameState(GAME_STATE.MENU);
+  } catch (err) {
+    console.warn("[doomish] level init failed:", err);
+    setGameState(GAME_STATE.MENU);
+  }
+  requestAnimationFrame(tick);
+}
+
+init();

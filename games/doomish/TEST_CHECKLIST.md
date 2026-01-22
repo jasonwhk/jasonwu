@@ -19,13 +19,16 @@
 - [ ] Holding Shift increases speed (sprint).
 - [ ] Space triggers “use” (noop acceptable early).
 - [ ] `R` restarts the level (works during gameplay and after death).
+- [ ] `P` / `Esc` opens the pause menu during gameplay.
+- [ ] `P` / `Esc` resumes from pause (or Resume button works).
+- [ ] `N` advances to the next level (only on the level complete screen).
 - [ ] Arrow keys and Space do not scroll the page during gameplay.
 
 ### Pointer Lock / Mouse Look
 - [ ] Clicking “Play” locks pointer (cursor disappears).
 - [ ] Mouse movement rotates view smoothly.
-- [ ] Pressing Esc exits pointer lock and returns cursor.
-- [ ] Re-clicking “Play” re-enters pointer lock.
+- [ ] Pressing `P` / `Esc` releases pointer lock and shows pause menu.
+- [ ] Clicking “Resume” re-enters pointer lock and continues gameplay.
 
 ### Mobile (if implemented)
 - [ ] Touch controls appear and allow movement + looking.
@@ -97,9 +100,12 @@
 ## H. Levels & Progression (when added)
 - [ ] Level JSON loads correctly.
 - [ ] Player spawn location and angle are correct.
-- [ ] Exit trigger completes level.
-- [ ] Next level loads and starts cleanly.
-- [ ] Restart level resets entities and player stats correctly.
+- [ ] At least 3 levels are playable end-to-end.
+- [ ] Exit trigger completes level and shows “Level Complete” overlay.
+- [ ] “Next Level” button loads the next level and starts cleanly.
+- [ ] `N` key advances to the next level when “Level Complete” is visible.
+- [ ] Restart level resets entities and player stats correctly (health/ammo back to defaults, enemies/pickups restored).
+- [ ] “Quit to Menu” returns to the start screen and allows starting again.
 - [ ] Level select (if present) loads selected level.
 
 ---
