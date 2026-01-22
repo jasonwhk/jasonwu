@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Family Dice</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="top" aria-label="Family Dice header">
+        <a class="back" href="/games/" aria-label="Back to games">← Games</a>
+        <h1 class="title">🎲 Family Dice</h1>
+      </header>
+
+      <section class="controls" aria-label="Dice settings">
+        <div class="segmented" role="group" aria-label="Display mode">
+          <button id="modeNumbers" class="segmented-btn" type="button" aria-pressed="true">
+            Numbers
+          </button>
+          <button id="modeDots" class="segmented-btn" type="button" aria-pressed="false">
+            Dots
+          </button>
+        </div>
+
+        <div class="stepper" role="group" aria-label="Maximum value">
+          <button id="maxDown" class="stepper-btn" type="button" aria-label="Decrease max value">
+            −
+          </button>
+          <div class="stepper-readout" aria-label="Current max value">
+            <div class="stepper-label">Max</div>
+            <output id="maxValue" class="stepper-value">20</output>
+          </div>
+          <button id="maxUp" class="stepper-btn" type="button" aria-label="Increase max value">
+            +
+          </button>
+        </div>
+      </section>
+
+      <main class="main" aria-label="Dice roller">
+        <button id="dice" class="dice" type="button" aria-label="Tap to roll">
+          <div id="diceFace" class="dice-face" aria-hidden="true"></div>
+        </button>
+
+        <div class="history" aria-label="Roll history">
+          <div class="history-label">Last 5</div>
+          <div id="historyRow" class="history-row" aria-label="Last five rolls"></div>
+        </div>
+      </main>
+
+      <footer class="bottom" aria-label="Actions">
+        <button id="rollBtn" class="roll-btn" type="button" aria-label="Roll">
+          ROLL
+        </button>
+        <button id="resetBtn" class="reset-btn" type="button" aria-label="Reset result">
+          Reset
+        </button>
+        <div id="srStatus" class="sr-only" role="status" aria-live="polite"></div>
+      </footer>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
+
