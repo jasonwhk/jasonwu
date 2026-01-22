@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>Doomish (Milestone 4)</title>
+    <title>Doomish (Milestone 5)</title>
     <style>
       :root {
         color-scheme: dark;
@@ -48,6 +48,14 @@
         opacity: 0;
         background: rgba(255, 255, 255, 0.23);
         mix-blend-mode: screen;
+      }
+      #damageFlash {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0;
+        background: rgba(255, 40, 40, 0.22);
+        mix-blend-mode: multiply;
       }
       #hitIndicator {
         position: absolute;
@@ -103,7 +111,24 @@
         font-weight: 600;
         cursor: pointer;
       }
+      #restart {
+        pointer-events: auto;
+        appearance: none;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.92);
+        padding: 10px 14px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-left: 10px;
+        display: none;
+      }
       #play:active {
+        transform: translateY(1px);
+      }
+      #restart:active {
         transform: translateY(1px);
       }
       #hint {
@@ -117,17 +142,21 @@
     <div id="wrap">
       <canvas id="game" aria-label="Doomish game canvas"></canvas>
       <div id="screenFlash"></div>
+      <div id="damageFlash"></div>
       <div id="hitIndicator">HIT</div>
       <div id="hud"></div>
       <div id="overlay">
         <div id="card">
-          <h1>Doomish — Milestone 4</h1>
-          <p>
+          <h1 id="title">Doomish — Milestone 5</h1>
+          <p id="desc">
             Controls: <code>WASD</code> move, <code>←/→</code> or <code>Q/E</code> turn, mouse look (pointer lock),
             <code>LMB</code> fire, <code>F</code>/<code>Ctrl</code> fire (no pointer lock), <code>M</code> minimap,
-            <code>R</code> resolution, <code>F3</code> debug, <code>Esc</code> unlock.
+            <code>V</code> resolution, <code>R</code> restart, <code>F3</code> debug, <code>Esc</code> unlock.
           </p>
-          <button id="play" type="button">Click to Play</button>
+          <div>
+            <button id="play" type="button">Click to Play</button>
+            <button id="restart" type="button">Restart Level</button>
+          </div>
           <div id="hint">Tip: serve via a local web server (ES modules won’t run from <code>file://</code>).</div>
         </div>
       </div>

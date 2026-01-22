@@ -18,6 +18,7 @@
 - [ ] Arrow keys rotate (or Q/E rotate if implemented).
 - [ ] Holding Shift increases speed (sprint).
 - [ ] Space triggers “use” (noop acceptable early).
+- [ ] `R` restarts the level (works during gameplay and after death).
 - [ ] Arrow keys and Space do not scroll the page during gameplay.
 
 ### Pointer Lock / Mouse Look
@@ -79,6 +80,7 @@
 - [ ] Ammo does not go negative; firing at 0 ammo produces no shot.
 - [ ] Ammo/health pickups change player stats.
 - [ ] Muzzle flash / hit indicator feedback appears and fades quickly (if implemented).
+- [ ] Taking damage shows a brief red screen flash (if implemented).
 
 ---
 
@@ -88,6 +90,7 @@
 - [ ] Enemies attack when in range.
 - [ ] Player takes damage and health decreases visibly.
 - [ ] Player can die → “Game Over” shown.
+- [ ] “Restart Level” works via on-screen button and `R`.
 
 ---
 
