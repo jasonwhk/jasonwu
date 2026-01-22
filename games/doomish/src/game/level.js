@@ -33,7 +33,7 @@ export function createLevel1() {
     grid,
     w: grid[0].length,
     h: grid.length,
-    spawn: { x: 2.5, y: 2.5, a: Math.PI * 0.15 },
+    spawn: { x: 1.5, y: 1.5, a: Math.PI * 0.15 },
     entities,
   };
 }
