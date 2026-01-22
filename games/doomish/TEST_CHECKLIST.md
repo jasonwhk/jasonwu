@@ -69,12 +69,16 @@
 ---
 
 ## F. Combat (when added)
-- [ ] Left click (or key) fires the weapon.
+- [ ] Left click fires the weapon (while pointer locked).
+- [ ] Keyboard fallback fires the weapon (e.g., `F` or `Ctrl`) when not pointer locked.
 - [ ] Fire rate respects cooldown (no infinite rapid fire).
 - [ ] Hitscan does not shoot through walls.
+- [ ] Shooting an enemy behind a wall does not register a hit.
 - [ ] Enemies take damage and can die.
 - [ ] Ammo decreases (if ammo system enabled).
+- [ ] Ammo does not go negative; firing at 0 ammo produces no shot.
 - [ ] Ammo/health pickups change player stats.
+- [ ] Muzzle flash / hit indicator feedback appears and fades quickly (if implemented).
 
 ---
 

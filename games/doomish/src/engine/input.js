@@ -39,6 +39,26 @@ export function createInput(canvas, { onPointerLockChange } = {}) {
     mouseDy += e.movementY || 0;
   }
 
+  function mouseCode(button) {
+    return `Mouse${button | 0}`;
+  }
+
+  function handleMouseDown(e) {
+    if (isPointerLocked() || document.activeElement === canvas) e.preventDefault();
+    const code = mouseCode(e.button);
+    if (!down.has(code)) pressedPending.add(code);
+    down.add(code);
+  }
+
+  function handleMouseUp(e) {
+    if (isPointerLocked() || document.activeElement === canvas) e.preventDefault();
+    down.delete(mouseCode(e.button));
+  }
+
+  function handleContextMenu(e) {
+    if (isPointerLocked() || document.activeElement === canvas) e.preventDefault();
+  }
+
   function handlePointerLockChange() {
     onPointerLockChange?.(isPointerLocked());
   }
@@ -54,6 +74,9 @@ export function createInput(canvas, { onPointerLockChange } = {}) {
   window.addEventListener("keydown", handleKeyDown, { passive: false });
   window.addEventListener("keyup", handleKeyUp, { passive: false });
   window.addEventListener("mousemove", handleMouseMove);
+  window.addEventListener("mousedown", handleMouseDown, { passive: false });
+  window.addEventListener("mouseup", handleMouseUp, { passive: false });
+  window.addEventListener("contextmenu", handleContextMenu, { passive: false });
   window.addEventListener("blur", handleBlur);
   document.addEventListener("pointerlockchange", handlePointerLockChange);
 
@@ -102,13 +125,16 @@ export function createInput(canvas, { onPointerLockChange } = {}) {
       (isDown("ArrowRight") || isDown("KeyE") ? 1 : 0) + (isDown("ArrowLeft") || isDown("KeyQ") ? -1 : 0);
     const sprint = isDown("ShiftLeft") || isDown("ShiftRight");
 
+    const fireMouse = isPointerLocked() && isDown("Mouse0");
+    const fireKey = isDown("KeyF") || isDown("ControlLeft") || isDown("ControlRight");
+
     return {
       move: forward,
       strafe,
       turn,
       sprint,
       use: isDown("Space"),
-      fire: isDown("Mouse0"),
+      fire: fireMouse || fireKey,
     };
   }
 

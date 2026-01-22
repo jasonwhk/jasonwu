@@ -108,7 +108,7 @@ export function createRenderer(canvas, { resolutionScale = 1 } = {}) {
   return { resize, render, setWallTextures, setSpriteTextures, setResolutionScale, getResolutionScale };
 }
 
-function castRayDDA(level, ox, oy, rdx, rdy) {
+export function castRayDDA(level, ox, oy, rdx, rdy) {
   let mapX = Math.floor(ox);
   let mapY = Math.floor(oy);
 
