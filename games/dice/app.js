@@ -9,6 +9,7 @@
 
   const MAX_MIN = 1;
   const MAX_MAX = 20;
+  const DOTS_MAX = 6;
   const HISTORY_LEN = 5;
 
   const elements = {
@@ -101,15 +102,23 @@
     return (x % range) + min;
   }
 
+  function maxUpperBoundForMode(mode) {
+    return mode === "dots" ? DOTS_MAX : MAX_MAX;
+  }
+
   function setMode(mode) {
     state.mode = mode === "dots" ? "dots" : "numbers";
     setStoredString(KEYS.mode, state.mode);
+    if (state.max > maxUpperBoundForMode(state.mode)) {
+      state.max = maxUpperBoundForMode(state.mode);
+      setStoredString(KEYS.max, String(state.max));
+    }
     renderControls();
     renderDice();
   }
 
   function setMax(newMax) {
-    state.max = clampInt(newMax, MAX_MIN, MAX_MAX);
+    state.max = clampInt(newMax, MAX_MIN, maxUpperBoundForMode(state.mode));
     setStoredString(KEYS.max, String(state.max));
     renderControls();
     renderDice();
@@ -206,7 +215,7 @@
 
     elements.maxValue.textContent = String(state.max);
     elements.maxDown.disabled = state.max <= MAX_MIN;
-    elements.maxUp.disabled = state.max >= MAX_MAX;
+    elements.maxUp.disabled = state.max >= maxUpperBoundForMode(state.mode);
   }
 
   function announce(text) {
@@ -266,7 +275,7 @@
     const storedMaxRaw = getStoredString(KEYS.max);
     if (storedMaxRaw != null && storedMaxRaw !== "") {
       const parsed = Number(storedMaxRaw);
-      if (Number.isFinite(parsed)) state.max = clampInt(parsed, MAX_MIN, MAX_MAX);
+      if (Number.isFinite(parsed)) state.max = clampInt(parsed, MAX_MIN, maxUpperBoundForMode(state.mode));
     }
 
     const storedLastRaw = getStoredString(KEYS.last);
