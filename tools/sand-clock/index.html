@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sand Clock</title>
+    <meta name="description" content="A client-side animated sand clock (hourglass) timer rendered on canvas." />
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="wrap">
+        <h1>Sand Clock</h1>
+        <p class="subhead">Canvas hourglass timer with start/pause/reset and keyboard shortcuts.</p>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section class="panel canvas-panel" aria-label="Animated sand clock">
+        <div class="canvas-frame">
+          <canvas id="glass" width="900" height="520" aria-label="Animated hourglass canvas"></canvas>
+        </div>
+      </section>
+
+      <section class="panel controls" aria-label="Timer controls">
+        <div class="row">
+          <div class="control">
+            <label for="duration">Duration (seconds)</label>
+            <div class="duration-inputs">
+              <input id="duration" type="number" inputmode="numeric" min="5" max="900" step="1" value="60" />
+              <input id="durationRange" type="range" min="5" max="900" step="1" value="60" aria-label="Duration slider" />
+            </div>
+            <p class="hint">Range: 5–900s</p>
+          </div>
+        </div>
+
+        <div class="row buttons">
+          <button id="startBtn" type="button">Start</button>
+          <button id="pauseBtn" type="button">Pause</button>
+          <button id="resetBtn" type="button" class="secondary">Reset</button>
+        </div>
+
+        <div class="row status">
+          <dl class="stats" aria-label="Timer status">
+            <div class="stat">
+              <dt>Duration</dt>
+              <dd id="durationLabel">1:00</dd>
+            </div>
+            <div class="stat">
+              <dt>Remaining</dt>
+              <dd id="remainingLabel">1:00.0</dd>
+            </div>
+            <div class="stat">
+              <dt>Status</dt>
+              <dd id="statusLabel">Ready</dd>
+            </div>
+          </dl>
+          <p class="shortcuts" aria-label="Keyboard shortcuts">
+            <span class="kbd">Space</span> start/pause
+            <span class="sep">•</span>
+            <span class="kbd">R</span> reset
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="wrap footer">
+      <p>
+        No external dependencies. Runs entirely in your browser.
+      </p>
+    </footer>
+  </body>
+</html>
+
