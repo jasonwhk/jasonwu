@@ -1,0 +1,221 @@
+export function createRenderer(canvas) {
+  const ctx = canvas.getContext("2d", { alpha: false });
+
+  const state = {
+    w: 0,
+    h: 0,
+    scale: 1,
+    fov: Math.PI / 3,
+  };
+
+  function resize() {
+    const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    const cssW = Math.max(1, Math.floor(canvas.clientWidth));
+    const cssH = Math.max(1, Math.floor(canvas.clientHeight));
+    canvas.width = Math.floor(cssW * dpr);
+    canvas.height = Math.floor(cssH * dpr);
+
+    state.w = canvas.width;
+    state.h = canvas.height;
+
+    ctx.imageSmoothingEnabled = false;
+  }
+
+  function render(level, player, { minimap } = {}) {
+    const w = state.w | 0;
+    const h = state.h | 0;
+    if (w <= 0 || h <= 0) return;
+
+    const halfH = (h / 2) | 0;
+    ctx.fillStyle = "#11141a";
+    ctx.fillRect(0, 0, w, halfH);
+    ctx.fillStyle = "#08090b";
+    ctx.fillRect(0, halfH, w, h - halfH);
+
+    const fov = state.fov;
+    const planeDist = w / (2 * Math.tan(fov / 2));
+
+    const ca = Math.cos(player.a);
+    const sa = Math.sin(player.a);
+
+    for (let x = 0; x < w; x++) {
+      const cameraX = (2 * (x + 0.5)) / w - 1;
+      const rayAngle = player.a + Math.atan(cameraX * Math.tan(fov / 2));
+      const ra = normalizeAngle(rayAngle);
+      const rdx = Math.cos(ra);
+      const rdy = Math.sin(ra);
+
+      const hit = castRayDDA(level, player.x, player.y, rdx, rdy);
+      if (!hit) continue;
+
+      const perpDist = hit.dist * (rdx * ca + rdy * sa);
+      const dist = Math.max(0.0001, perpDist);
+
+      const wallHeight = Math.min(h, (planeDist / dist) | 0);
+      const startY = ((halfH - wallHeight / 2) | 0) + 0.5;
+
+      const shade = shadeForDist(dist);
+      const base = wallColor(hit.tile);
+      ctx.fillStyle = shadeColor(base, shade);
+      ctx.fillRect(x, startY, 1, wallHeight);
+    }
+
+    if (minimap) drawMinimap(ctx, level, player, w, h);
+
+    drawCrosshair(ctx, w, h);
+  }
+
+  return { resize, render };
+}
+
+function castRayDDA(level, ox, oy, rdx, rdy) {
+  let mapX = Math.floor(ox);
+  let mapY = Math.floor(oy);
+
+  const deltaDistX = rdx === 0 ? 1e30 : Math.abs(1 / rdx);
+  const deltaDistY = rdy === 0 ? 1e30 : Math.abs(1 / rdy);
+
+  let stepX = 0;
+  let stepY = 0;
+  let sideDistX = 0;
+  let sideDistY = 0;
+
+  if (rdx < 0) {
+    stepX = -1;
+    sideDistX = (ox - mapX) * deltaDistX;
+  } else {
+    stepX = 1;
+    sideDistX = (mapX + 1.0 - ox) * deltaDistX;
+  }
+
+  if (rdy < 0) {
+    stepY = -1;
+    sideDistY = (oy - mapY) * deltaDistY;
+  } else {
+    stepY = 1;
+    sideDistY = (mapY + 1.0 - oy) * deltaDistY;
+  }
+
+  const maxSteps = 1024;
+  for (let i = 0; i < maxSteps; i++) {
+    let side = 0;
+    if (sideDistX < sideDistY) {
+      sideDistX += deltaDistX;
+      mapX += stepX;
+      side = 0;
+    } else {
+      sideDistY += deltaDistY;
+      mapY += stepY;
+      side = 1;
+    }
+
+    const tile = sampleTile(level, mapX, mapY);
+    if (tile > 0) {
+      const dist = side === 0 ? sideDistX - deltaDistX : sideDistY - deltaDistY;
+      return { dist, tile, mapX, mapY, side };
+    }
+  }
+  return null;
+}
+
+function sampleTile(level, tx, ty) {
+  if (tx < 0 || ty < 0 || tx >= level.w || ty >= level.h) return 1;
+  return level.grid[ty][tx] | 0;
+}
+
+function shadeForDist(dist) {
+  const fogStart = 1.5;
+  const fogEnd = 14;
+  const t = (dist - fogStart) / (fogEnd - fogStart);
+  const k = 1 - clamp01(t);
+  return 0.2 + 0.8 * k;
+}
+
+function wallColor(tile) {
+  switch (tile | 0) {
+    case 2:
+      return [80, 140, 255];
+    case 3:
+      return [240, 120, 90];
+    default:
+      return [190, 190, 190];
+  }
+}
+
+function shadeColor([r, g, b], s) {
+  const rr = Math.max(0, Math.min(255, (r * s) | 0));
+  const gg = Math.max(0, Math.min(255, (g * s) | 0));
+  const bb = Math.max(0, Math.min(255, (b * s) | 0));
+  return `rgb(${rr},${gg},${bb})`;
+}
+
+function drawCrosshair(ctx, w, h) {
+  const cx = (w / 2) | 0;
+  const cy = (h / 2) | 0;
+  ctx.strokeStyle = "rgba(255,255,255,0.6)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(cx - 7, cy);
+  ctx.lineTo(cx + 7, cy);
+  ctx.moveTo(cx, cy - 7);
+  ctx.lineTo(cx, cy + 7);
+  ctx.stroke();
+}
+
+function drawMinimap(ctx, level, player, w, h) {
+  const pad = 10;
+  const size = Math.min(220, Math.floor(Math.min(w, h) * 0.32));
+  const tile = Math.max(6, Math.floor(size / Math.max(level.w, level.h)));
+  const mapW = level.w * tile;
+  const mapH = level.h * tile;
+
+  const x0 = pad;
+  const y0 = h - pad - mapH;
+
+  ctx.save();
+  ctx.globalAlpha = 0.92;
+  ctx.fillStyle = "rgba(0,0,0,0.55)";
+  ctx.fillRect(x0 - 6, y0 - 6, mapW + 12, mapH + 12);
+
+  for (let y = 0; y < level.h; y++) {
+    for (let x = 0; x < level.w; x++) {
+      const v = level.grid[y][x];
+      if (v > 0) {
+        const c = wallColor(v);
+        ctx.fillStyle = `rgb(${c[0]},${c[1]},${c[2]})`;
+        ctx.fillRect(x0 + x * tile, y0 + y * tile, tile, tile);
+      } else {
+        ctx.fillStyle = "rgba(255,255,255,0.06)";
+        ctx.fillRect(x0 + x * tile, y0 + y * tile, tile, tile);
+      }
+    }
+  }
+
+  const px = x0 + player.x * tile;
+  const py = y0 + player.y * tile;
+  ctx.fillStyle = "rgba(255,255,255,0.95)";
+  ctx.beginPath();
+  ctx.arc(px, py, Math.max(2, player.radius * tile), 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.strokeStyle = "rgba(255,255,255,0.95)";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(px, py);
+  ctx.lineTo(px + Math.cos(player.a) * tile * 0.85, py + Math.sin(player.a) * tile * 0.85);
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+function clamp01(t) {
+  return Math.max(0, Math.min(1, t));
+}
+
+function normalizeAngle(a) {
+  const twoPi = Math.PI * 2;
+  a %= twoPi;
+  if (a < 0) a += twoPi;
+  return a;
+}
+
