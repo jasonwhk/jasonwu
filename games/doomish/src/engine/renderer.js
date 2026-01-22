@@ -7,7 +7,7 @@ export function createRenderer(canvas, { resolutionScale = 1 } = {}) {
     resolutionScale: clamp(resolutionScale, 0.25, 1),
     fov: Math.PI / 3,
     wallTextures: {},
-    nearPlane: 0.18,
+    nearPlane: 0.06,
   };
 
   function resize() {
@@ -67,31 +67,22 @@ export function createRenderer(canvas, { resolutionScale = 1 } = {}) {
       const dist = Math.max(nearPlane, perpDist);
 
       const lineHeight = planeDist / dist;
-      const unclippedStart = halfH - lineHeight / 2;
-      let drawStart = Math.floor(unclippedStart);
-      let drawEnd = Math.floor(halfH + lineHeight / 2);
-      if (drawStart < 0) drawStart = 0;
-      if (drawEnd > h) drawEnd = h;
-      const drawH = drawEnd - drawStart;
-      if (drawH <= 0) continue;
+      const startY = Math.floor(halfH - lineHeight / 2);
+      const wallHeight = Math.ceil(lineHeight);
 
       const shade = shadeForDist(dist) * (hit.side === 1 ? 0.88 : 1);
       const tex = state.wallTextures[hit.tile | 0];
       if (tex && tex.width > 0 && tex.height > 0) {
         const texX = computeTextureX(tex.width, hit, player.x, player.y, rdx, rdy);
-        const texStep = tex.height / lineHeight;
-        const texY = (drawStart - unclippedStart) * texStep;
-        const sy = clamp(Math.floor(texY), 0, tex.height - 1);
-        const sh = clamp(Math.ceil(drawH * texStep), 1, tex.height - sy);
-        ctx.drawImage(tex, texX, sy, 1, sh, x, drawStart, 1, drawH);
+        ctx.drawImage(tex, texX, 0, 1, tex.height, x, startY, 1, wallHeight);
         if (shade < 0.999) {
           ctx.fillStyle = `rgba(0,0,0,${(1 - shade).toFixed(4)})`;
-          ctx.fillRect(x, drawStart, 1, drawH);
+          ctx.fillRect(x, startY, 1, wallHeight);
         }
       } else {
         const base = wallColor(hit.tile);
         ctx.fillStyle = shadeColor(base, shade);
-        ctx.fillRect(x, drawStart, 1, drawH);
+        ctx.fillRect(x, startY, 1, wallHeight);
       }
     }
 
