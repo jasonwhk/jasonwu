@@ -2,13 +2,16 @@
   "use strict";
 
   const LEVELS = [
-    [
-      "#####",
-      "#@  #",
-      "# $ #",
-      "# . #",
-      "#####",
-    ],
+    ["#####", "#@  #", "# $ #", "# . #", "#####"],
+    ["#######", "#     #", "#  .  #", "#  $  #", "#  @  #", "#     #", "#######"],
+    ["#########", "#       #", "#   .   #", "#   $   #", "#   .   #", "#   $ @ #", "#########"],
+    ["#########", "#       #", "#   ### #", "# . $ @ #", "#   #   #", "#       #", "#########"],
+    ["#########", "#   .   #", "#   $   #", "#   .   #", "#   $   #", "#   @   #", "#########"],
+    ["#########", "#       #", "#  @ $ .#", "#       #", "#       #", "#       #", "#########"],
+    ["##########", "#        #", "#  @ $$..#", "#        #", "#        #", "#        #", "##########"],
+    ["##########", "#        #", "#   ...  #", "#   $$$  #", "#    @   #", "#        #", "##########"],
+    ["###########", "#         #", "#    ...  #", "#    $$$  #", "#     @   #", "#         #", "###########"],
+    ["###########", "#         #", "#   . .   #", "#   $ $   #", "#    @    #", "#         #", "###########"],
   ];
 
   function parseLevel(levelRows) {
@@ -97,17 +100,11 @@
     return ch === "+" ? "." : " ";
   }
 
-  function applyMove(state, dir) {
-    const deltas = {
-      ArrowUp: [-1, 0],
-      ArrowDown: [1, 0],
-      ArrowLeft: [0, -1],
-      ArrowRight: [0, 1],
-    };
-    const delta = deltas[dir];
-    if (!delta) return false;
+  function applyMove(state, dr, dc) {
+    const isCardinal =
+      (dr === -1 && dc === 0) || (dr === 1 && dc === 0) || (dr === 0 && dc === -1) || (dr === 0 && dc === 1);
+    if (!isCardinal) return false;
 
-    const [dr, dc] = delta;
     const r0 = state.playerRow;
     const c0 = state.playerCol;
     const r1 = r0 + dr;
@@ -204,37 +201,182 @@
     if (playerCount !== 1) throw new Error(`State invariant broken: expected 1 player, found ${playerCount}.`);
   }
 
+  function cloneStateSnapshot(state) {
+    return {
+      grid: state.grid.map((row) => row.slice()),
+      playerRow: state.playerRow,
+      playerCol: state.playerCol,
+      hasWon: state.hasWon,
+    };
+  }
+
   function init() {
+    const gameEl = document.getElementById("sokobanGame");
     const gridEl = document.getElementById("sokobanGrid");
     const winBannerEl = document.getElementById("winBanner");
-    if (!gridEl || !winBannerEl) return;
+    const levelLabelEl = document.getElementById("levelLabel");
+    const moveLabelEl = document.getElementById("moveLabel");
+    const prevLevelBtn = document.getElementById("prevLevelBtn");
+    const nextLevelBtn = document.getElementById("nextLevelBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const undoBtn = document.getElementById("undoBtn");
+    const dpadEl = document.querySelector(".sokoban-dpad");
 
-    const state = parseLevel(LEVELS[0]);
-    const tiles = buildBoard(gridEl, state);
-    render(state, tiles);
-
-    function maybeShowWin() {
-      if (state.hasWon) return;
-      if (!isWin(state.grid)) return;
-      state.hasWon = true;
-      winBannerEl.hidden = false;
+    if (
+      !gameEl ||
+      !gridEl ||
+      !winBannerEl ||
+      !levelLabelEl ||
+      !moveLabelEl ||
+      !prevLevelBtn ||
+      !nextLevelBtn ||
+      !resetBtn ||
+      !undoBtn
+    ) {
+      return;
     }
 
-    document.addEventListener(
+    let currentLevelIndex = 0;
+    let state = null;
+    let tiles = null;
+    let moveCount = 0;
+    let undoStack = [];
+
+    function updateHud() {
+      levelLabelEl.textContent = `Level ${currentLevelIndex + 1} / ${LEVELS.length}`;
+      moveLabelEl.textContent = `Moves: ${moveCount}`;
+      undoBtn.disabled = undoStack.length === 0;
+      prevLevelBtn.disabled = currentLevelIndex === 0;
+      nextLevelBtn.disabled = currentLevelIndex === LEVELS.length - 1;
+    }
+
+    function setWinBannerVisibility() {
+      winBannerEl.hidden = !state?.hasWon;
+    }
+
+    function maybeShowWin() {
+      if (!state || state.hasWon) return;
+      if (!isWin(state.grid)) return;
+      state.hasWon = true;
+      setWinBannerVisibility();
+    }
+
+    function loadLevel(levelIndex) {
+      if (!Number.isInteger(levelIndex)) return;
+      if (levelIndex < 0 || levelIndex >= LEVELS.length) return;
+
+      currentLevelIndex = levelIndex;
+      state = parseLevel(LEVELS[currentLevelIndex]);
+      tiles = buildBoard(gridEl, state);
+      undoStack = [];
+      moveCount = 0;
+      setWinBannerVisibility();
+      render(state, tiles);
+      updateHud();
+      gameEl.focus();
+    }
+
+    function resetLevel() {
+      loadLevel(currentLevelIndex);
+    }
+
+    function undoMove() {
+      if (undoStack.length === 0 || !state) return;
+      const snapshot = undoStack.pop();
+      state.grid = snapshot.grid.map((row) => row.slice());
+      state.playerRow = snapshot.playerRow;
+      state.playerCol = snapshot.playerCol;
+      state.hasWon = snapshot.hasWon;
+      moveCount = snapshot.moveCount;
+      setWinBannerVisibility();
+      render(state, tiles);
+      updateHud();
+    }
+
+    function move(dr, dc) {
+      if (!state) return;
+      const snapshot = { ...cloneStateSnapshot(state), moveCount };
+      const moved = applyMove(state, dr, dc);
+      if (!moved) return;
+
+      undoStack.push(snapshot);
+      moveCount += 1;
+      assertStateIntegrity(state);
+      render(state, tiles);
+      maybeShowWin();
+      updateHud();
+    }
+
+    function handleArrowKey(key) {
+      if (key === "ArrowUp") move(-1, 0);
+      else if (key === "ArrowDown") move(1, 0);
+      else if (key === "ArrowLeft") move(0, -1);
+      else if (key === "ArrowRight") move(0, 1);
+    }
+
+    gameEl.addEventListener("click", () => {
+      gameEl.focus();
+    });
+
+    gameEl.addEventListener(
       "keydown",
       (e) => {
         if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) return;
         e.preventDefault();
-
-        const moved = applyMove(state, e.key);
-        if (!moved) return;
-
-        assertStateIntegrity(state);
-        render(state, tiles);
-        maybeShowWin();
+        handleArrowKey(e.key);
       },
       { passive: false },
     );
+
+    resetBtn.addEventListener("click", resetLevel);
+    undoBtn.addEventListener("click", undoMove);
+    prevLevelBtn.addEventListener("click", () => loadLevel(currentLevelIndex - 1));
+    nextLevelBtn.addEventListener("click", () => loadLevel(currentLevelIndex + 1));
+
+    if (dpadEl) {
+      dpadEl.addEventListener("pointerdown", (e) => {
+        const btn = e.target?.closest?.("button[data-dir]");
+        if (!btn) return;
+        const dir = btn.getAttribute("data-dir");
+        if (dir === "up") move(-1, 0);
+        else if (dir === "down") move(1, 0);
+        else if (dir === "left") move(0, -1);
+        else if (dir === "right") move(0, 1);
+      });
+    }
+
+    let swipeStart = null;
+    gridEl.addEventListener("pointerdown", (e) => {
+      if (!e.isPrimary) return;
+      swipeStart = { x: e.clientX, y: e.clientY };
+    });
+
+    function clearSwipeStart() {
+      swipeStart = null;
+    }
+
+    gridEl.addEventListener("pointerup", (e) => {
+      if (!e.isPrimary || !swipeStart) return;
+      const dx = e.clientX - swipeStart.x;
+      const dy = e.clientY - swipeStart.y;
+      swipeStart = null;
+
+      const minDistance = 26;
+      const absX = Math.abs(dx);
+      const absY = Math.abs(dy);
+      if (absX < minDistance && absY < minDistance) return;
+
+      if (absX > absY * 1.15) {
+        move(0, dx > 0 ? 1 : -1);
+      } else if (absY > absX * 1.15) {
+        move(dy > 0 ? 1 : -1, 0);
+      }
+    });
+
+    gridEl.addEventListener("pointercancel", clearSwipeStart);
+    gridEl.addEventListener("pointerleave", clearSwipeStart);
+
+    loadLevel(0);
   }
 
   if (document.readyState === "loading") {
@@ -243,4 +385,3 @@
     init();
   }
 })();
-
