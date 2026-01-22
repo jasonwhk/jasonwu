@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sokoban - Jason's Homepage</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <a href="#main" class="skip-to-main">Skip to main content</a>
+
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/games/">Games</a></li>
+          <li><a href="/tools/">Tools</a></li>
+          <li><a href="/simulators/">Simulators</a></li>
+          <li><a href="/lab/">Lab</a></li>
+        </ul>
+      </nav>
+
+      <main id="main">
+        <div class="container">
+          <div class="sokoban-header">
+            <h1>Sokoban (倉庫番)</h1>
+            <p class="subtitle">Use arrow keys to move and push boxes onto targets.</p>
+          </div>
+
+          <div class="sokoban-layout">
+            <section class="sokoban-panel" aria-label="Game board">
+              <div id="sokobanGrid" class="sokoban-grid" aria-label="Sokoban grid"></div>
+              <div id="winBanner" class="win-banner" role="status" aria-live="polite" hidden>
+                Level complete!
+              </div>
+            </section>
+
+            <aside class="sokoban-help" aria-label="Help">
+              <h2>Controls</h2>
+              <ul>
+                <li>Arrow keys: move</li>
+              </ul>
+
+              <h2>Tiles</h2>
+              <ul class="legend">
+                <li><span class="legend-swatch tile wall"></span>Wall</li>
+                <li><span class="legend-swatch tile floor"></span>Floor</li>
+                <li><span class="legend-swatch tile target"></span>Target</li>
+                <li><span class="legend-swatch tile floor box"></span>Box</li>
+                <li><span class="legend-swatch tile floor player"></span>Player</li>
+                <li><span class="legend-swatch tile target box"></span>Box on target</li>
+                <li><span class="legend-swatch tile target player"></span>Player on target</li>
+              </ul>
+            </aside>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="./sokoban.js"></script>
+  </body>
+</html>
+
