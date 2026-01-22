@@ -7,6 +7,7 @@ export function createRenderer(canvas, { resolutionScale = 1 } = {}) {
     resolutionScale: clamp(resolutionScale, 0.25, 1),
     fov: Math.PI / 3,
     wallTextures: {},
+    nearPlane: 0.18,
   };
 
   function resize() {
@@ -50,6 +51,7 @@ export function createRenderer(canvas, { resolutionScale = 1 } = {}) {
 
     const ca = Math.cos(player.a);
     const sa = Math.sin(player.a);
+    const nearPlane = state.nearPlane;
 
     for (let x = 0; x < w; x++) {
       const cameraX = (2 * (x + 0.5)) / w - 1;
@@ -62,24 +64,34 @@ export function createRenderer(canvas, { resolutionScale = 1 } = {}) {
       if (!hit) continue;
 
       const perpDist = hit.dist * (rdx * ca + rdy * sa);
-      const dist = Math.max(0.0001, perpDist);
+      const dist = Math.max(nearPlane, perpDist);
 
-      const wallHeight = Math.min(h, (planeDist / dist) | 0);
-      const startY = ((halfH - wallHeight / 2) | 0) + 0.5;
+      const lineHeight = planeDist / dist;
+      const unclippedStart = halfH - lineHeight / 2;
+      let drawStart = Math.floor(unclippedStart);
+      let drawEnd = Math.floor(halfH + lineHeight / 2);
+      if (drawStart < 0) drawStart = 0;
+      if (drawEnd > h) drawEnd = h;
+      const drawH = drawEnd - drawStart;
+      if (drawH <= 0) continue;
 
       const shade = shadeForDist(dist) * (hit.side === 1 ? 0.88 : 1);
       const tex = state.wallTextures[hit.tile | 0];
       if (tex && tex.width > 0 && tex.height > 0) {
         const texX = computeTextureX(tex.width, hit, player.x, player.y, rdx, rdy);
-        ctx.drawImage(tex, texX, 0, 1, tex.height, x, startY, 1, wallHeight);
+        const texStep = tex.height / lineHeight;
+        const texY = (drawStart - unclippedStart) * texStep;
+        const sy = clamp(Math.floor(texY), 0, tex.height - 1);
+        const sh = clamp(Math.ceil(drawH * texStep), 1, tex.height - sy);
+        ctx.drawImage(tex, texX, sy, 1, sh, x, drawStart, 1, drawH);
         if (shade < 0.999) {
           ctx.fillStyle = `rgba(0,0,0,${(1 - shade).toFixed(4)})`;
-          ctx.fillRect(x, startY, 1, wallHeight);
+          ctx.fillRect(x, drawStart, 1, drawH);
         }
       } else {
         const base = wallColor(hit.tile);
         ctx.fillStyle = shadeColor(base, shade);
-        ctx.fillRect(x, startY, 1, wallHeight);
+        ctx.fillRect(x, drawStart, 1, drawH);
       }
     }
 
