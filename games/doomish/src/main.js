@@ -1,5 +1,5 @@
 import { createInput } from "./engine/input.js";
-import { loadWallTextures } from "./engine/assets.js";
+import { loadSpriteTextures, loadWallTextures } from "./engine/assets.js";
 import { createRenderer } from "./engine/renderer.js";
 import { moveAndCollide } from "./engine/physics.js";
 import { createLevel1 } from "./game/level.js";
@@ -15,6 +15,8 @@ const player = {
   y: level.spawn.y,
   a: level.spawn.a,
   radius: 0.22,
+  health: 100,
+  ammo: 24,
 };
 
 const RES_SCALES = [1, 0.75, 0.5];
@@ -34,6 +36,14 @@ loadWallTextures(import.meta.url, {
 })
   .then((textures) => renderer.setWallTextures(textures))
   .catch((err) => console.warn("[doomish] texture load failed:", err));
+
+loadSpriteTextures(import.meta.url, {
+  pickup_health: "../assets/sprites/pickup_health.png",
+  pickup_ammo: "../assets/sprites/pickup_ammo.png",
+  enemy_dummy: "../assets/sprites/enemy_dummy.png",
+})
+  .then((textures) => renderer.setSpriteTextures(textures))
+  .catch((err) => console.warn("[doomish] sprite load failed:", err));
 
 playButton.addEventListener("click", async () => {
   await input.requestPointerLock();
@@ -90,6 +100,7 @@ function tick(now) {
     const vy = sa * f * moveSpeed + ca * s * strafeSpeed;
 
     moveAndCollide(player, level, vx * SIM_DT, vy * SIM_DT);
+    collectPickups(player, level);
 
     acc -= SIM_DT;
   }
@@ -104,11 +115,12 @@ function tick(now) {
     hud.textContent =
       `WASD move | Mouse look | M minimap | R res | F3 debug | Esc unlock\n` +
       `fps ${fpsSmooth.toFixed(0)} | res ${Math.round(renderer.getResolutionScale() * 100)}% | ` +
-      `pos ${player.x.toFixed(2)},${player.y.toFixed(2)} | a ${(player.a * (180 / Math.PI)).toFixed(0)}°`;
+      `pos ${player.x.toFixed(2)},${player.y.toFixed(2)} | a ${(player.a * (180 / Math.PI)).toFixed(0)}°\n` +
+      `health ${player.health} | ammo ${player.ammo} | entities ${(level.entities?.length ?? 0) | 0}`;
   } else {
-    hud.textContent = `WASD move | Mouse look | M minimap | R res | F3 debug | Esc unlock | ${fpsSmooth.toFixed(
-      0,
-    )} fps`;
+    hud.textContent =
+      `health ${player.health} | ammo ${player.ammo}\n` +
+      `WASD move | Mouse look | M minimap | R res | F3 debug | Esc unlock | ${fpsSmooth.toFixed(0)} fps`;
   }
   requestAnimationFrame(tick);
 }
@@ -119,4 +131,29 @@ function normalizeAngle(a) {
   a %= twoPi;
   if (a < 0) a += twoPi;
   return a;
+}
+
+function collectPickups(player, level) {
+  const entities = level.entities;
+  if (!Array.isArray(entities) || entities.length === 0) return;
+
+  const pr = player.radius;
+  for (let i = entities.length - 1; i >= 0; i--) {
+    const e = entities[i];
+    if (!e || typeof e.x !== "number" || typeof e.y !== "number") continue;
+    if (e.type !== "pickup_health" && e.type !== "pickup_ammo") continue;
+
+    const er = typeof e.radius === "number" ? e.radius : 0.28;
+    const dx = e.x - player.x;
+    const dy = e.y - player.y;
+    if (dx * dx + dy * dy > (pr + er) * (pr + er)) continue;
+
+    if (e.type === "pickup_health") {
+      player.health = Math.min(100, player.health + 25);
+    } else if (e.type === "pickup_ammo") {
+      player.ammo = Math.min(999, player.ammo + 12);
+    }
+
+    entities.splice(i, 1);
+  }
 }

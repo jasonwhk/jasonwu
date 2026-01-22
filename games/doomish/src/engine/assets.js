@@ -31,3 +31,14 @@ export async function loadWallTextures(baseUrl, mapping) {
   return Object.fromEntries(entries);
 }
 
+export async function loadSpriteTextures(baseUrl, mapping) {
+  const entries = await Promise.all(
+    Object.entries(mapping).map(async ([key, filename]) => {
+      const url = new URL(filename, baseUrl).toString();
+      const img = await loadImage(url);
+      return [key, img];
+    }),
+  );
+
+  return Object.fromEntries(entries);
+}

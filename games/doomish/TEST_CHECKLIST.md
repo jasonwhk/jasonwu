@@ -63,6 +63,8 @@
 - [ ] Sprites are correctly occluded by walls.
 - [ ] Multiple sprites render in correct depth order.
 - [ ] Pickups disappear when collected.
+- [ ] Collecting ammo/health updates the HUD immediately.
+- [ ] Pickups do not clip through walls (not visible through walls when behind them).
 
 ---
 

@@ -7,7 +7,9 @@ export function createRenderer(canvas, { resolutionScale = 1 } = {}) {
     resolutionScale: clamp(resolutionScale, 0.25, 1),
     fov: Math.PI / 3,
     wallTextures: {},
+    spriteTextures: {},
     nearPlane: 0.06,
+    zBuffer: new Float32Array(0),
   };
 
   function resize() {
@@ -19,12 +21,17 @@ export function createRenderer(canvas, { resolutionScale = 1 } = {}) {
 
     state.w = canvas.width;
     state.h = canvas.height;
+    state.zBuffer = new Float32Array(state.w);
 
     ctx.imageSmoothingEnabled = false;
   }
 
   function setWallTextures(wallTextures) {
     state.wallTextures = wallTextures || {};
+  }
+
+  function setSpriteTextures(spriteTextures) {
+    state.spriteTextures = spriteTextures || {};
   }
 
   function setResolutionScale(scale) {
@@ -52,6 +59,7 @@ export function createRenderer(canvas, { resolutionScale = 1 } = {}) {
     const ca = Math.cos(player.a);
     const sa = Math.sin(player.a);
     const nearPlane = state.nearPlane;
+    const zBuffer = state.zBuffer.length === w ? state.zBuffer : (state.zBuffer = new Float32Array(w));
 
     for (let x = 0; x < w; x++) {
       const cameraX = (2 * (x + 0.5)) / w - 1;
@@ -61,10 +69,14 @@ export function createRenderer(canvas, { resolutionScale = 1 } = {}) {
       const rdy = Math.sin(ra);
 
       const hit = castRayDDA(level, player.x, player.y, rdx, rdy);
-      if (!hit) continue;
+      if (!hit) {
+        zBuffer[x] = Infinity;
+        continue;
+      }
 
       const perpDist = hit.dist * (rdx * ca + rdy * sa);
       const dist = Math.max(nearPlane, perpDist);
+      zBuffer[x] = dist;
 
       const lineHeight = planeDist / dist;
       const startY = Math.floor(halfH - lineHeight / 2);
@@ -86,12 +98,14 @@ export function createRenderer(canvas, { resolutionScale = 1 } = {}) {
       }
     }
 
-    if (minimap) drawMinimap(ctx, level, player, w, h);
+    drawSprites(ctx, state, level, player, { planeDist, halfH, w, h, ca, sa, nearPlane, zBuffer });
+
+    if (minimap) drawMinimap(ctx, level, player, level.entities, w, h);
 
     drawCrosshair(ctx, w, h);
   }
 
-  return { resize, render, setWallTextures, setResolutionScale, getResolutionScale };
+  return { resize, render, setWallTextures, setSpriteTextures, setResolutionScale, getResolutionScale };
 }
 
 function castRayDDA(level, ox, oy, rdx, rdy) {
@@ -210,7 +224,7 @@ function drawCrosshair(ctx, w, h) {
   ctx.fillRect(cx, cy, 1, 1);
 }
 
-function drawMinimap(ctx, level, player, w, h) {
+function drawMinimap(ctx, level, player, entities, w, h) {
   const pad = 10;
   const size = Math.min(220, Math.floor(Math.min(w, h) * 0.32));
   const tile = Math.max(6, Math.floor(size / Math.max(level.w, level.h)));
@@ -253,7 +267,73 @@ function drawMinimap(ctx, level, player, w, h) {
   ctx.lineTo(px + Math.cos(player.a) * tile * 0.85, py + Math.sin(player.a) * tile * 0.85);
   ctx.stroke();
 
+  if (Array.isArray(entities)) {
+    for (const e of entities) {
+      const ex = x0 + e.x * tile;
+      const ey = y0 + e.y * tile;
+      ctx.fillStyle = e.type === "enemy_dummy" ? "rgba(255,80,200,0.95)" : "rgba(80,255,160,0.95)";
+      ctx.beginPath();
+      ctx.arc(ex, ey, 2.2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
   ctx.restore();
+}
+
+function drawSprites(ctx, state, level, player, { planeDist, halfH, w, h, ca, sa, nearPlane, zBuffer }) {
+  const entities = level.entities;
+  if (!Array.isArray(entities) || entities.length === 0) return;
+
+  const fov = state.fov;
+  const tanHalfFov = Math.tan(fov / 2);
+
+  const visible = [];
+  for (let i = 0; i < entities.length; i++) {
+    const e = entities[i];
+    const tex = state.spriteTextures?.[e.type];
+    if (!tex || tex.width <= 0 || tex.height <= 0) continue;
+
+    const dx = e.x - player.x;
+    const dy = e.y - player.y;
+
+    const depth = dx * ca + dy * sa;
+    if (depth <= nearPlane) continue;
+
+    const side = -dx * sa + dy * ca;
+    const cameraX = side / depth;
+    if (cameraX < -tanHalfFov * 1.25 || cameraX > tanHalfFov * 1.25) continue;
+
+    const screenX = (w / 2 + (cameraX / tanHalfFov) * (w / 2)) | 0;
+
+    const spriteH = planeDist / depth;
+    const spriteW = spriteH * (tex.width / tex.height);
+    const drawH = Math.min(h * 2, Math.max(1, spriteH | 0));
+    const drawW = Math.min(w * 2, Math.max(1, spriteW | 0));
+
+    const startX = (screenX - drawW / 2) | 0;
+    const endX = (screenX + drawW / 2) | 0;
+    const startY = (halfH - drawH / 2) | 0;
+
+    visible.push({ depth, tex, startX, endX, startY, drawH, drawW });
+  }
+
+  if (visible.length === 0) return;
+  visible.sort((a, b) => b.depth - a.depth);
+
+  for (const s of visible) {
+    const { depth, tex, startX, endX, startY, drawH, drawW } = s;
+    const clampedStartX = Math.max(0, startX);
+    const clampedEndX = Math.min(w - 1, endX);
+    if (clampedStartX > clampedEndX) continue;
+
+    for (let x = clampedStartX; x <= clampedEndX; x++) {
+      if (!(depth < zBuffer[x])) continue;
+      const u = (x - startX) / Math.max(1e-6, endX - startX);
+      const sx = clamp(Math.floor(u * tex.width), 0, tex.width - 1);
+      ctx.drawImage(tex, sx, 0, 1, tex.height, x, startY, 1, drawH);
+    }
+  }
 }
 
 function clamp01(t) {

@@ -1,7 +1,7 @@
-# Doomish (Milestone 2)
+# Doomish (Milestone 3)
 
-Minimal “Doom-ish” browser FPS prototype: 2.5D raycaster, movement + collision, pointer-lock mouse look, minimap,
-and textured wall rendering.
+Minimal “Doom-ish” browser FPS prototype: 2.5D raycaster, movement + collision, pointer-lock mouse look, minimap/HUD,
+textured wall rendering, and billboard sprites (pickups + dummy enemy).
 
 ## Run locally
 ES modules require an HTTP server (not `file://`).
@@ -23,3 +23,7 @@ Open `http://localhost:8000/` in a modern browser.
 - `R`: cycle resolution scale
 - `F3`: toggle debug HUD
 - `Esc`: exit pointer lock
+
+## Notes
+- Pickups: walk into `pickup_health` / `pickup_ammo` sprites to collect; HUD shows current health/ammo.
+- Sprite assets live in `games/doomish/assets/sprites/` (placeholders).

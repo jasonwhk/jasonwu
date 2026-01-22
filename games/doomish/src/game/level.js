@@ -18,12 +18,20 @@ export function createLevel1() {
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
   ];
 
+  const entities = [
+    { type: "pickup_health", x: 3.5, y: 1.5, radius: 0.28 },
+    { type: "pickup_ammo", x: 12.5, y: 1.5, radius: 0.28 },
+    { type: "pickup_ammo", x: 13.5, y: 14.5, radius: 0.28 },
+    { type: "pickup_health", x: 1.5, y: 14.5, radius: 0.28 },
+    { type: "enemy_dummy", x: 11.5, y: 9.5, radius: 0.34 },
+  ];
+
   return {
     name: "Level 1",
     grid,
     w: grid[0].length,
     h: grid.length,
     spawn: { x: 2.5, y: 2.5, a: Math.PI * 0.15 },
+    entities,
   };
 }
-
