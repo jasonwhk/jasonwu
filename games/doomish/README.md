@@ -1,6 +1,7 @@
-# Doomish (Milestone 1)
+# Doomish (Milestone 2)
 
-Minimal “Doom-ish” browser FPS prototype: 2.5D raycaster, movement + collision, pointer-lock mouse look, minimap.
+Minimal “Doom-ish” browser FPS prototype: 2.5D raycaster, movement + collision, pointer-lock mouse look, minimap,
+and textured wall rendering.
 
 ## Run locally
 ES modules require an HTTP server (not `file://`).
@@ -19,5 +20,6 @@ Open `http://localhost:8000/` in a modern browser.
 - Mouse: look (pointer lock)
 - `Shift`: sprint
 - `M`: toggle minimap
+- `R`: cycle resolution scale
+- `F3`: toggle debug HUD
 - `Esc`: exit pointer lock
-

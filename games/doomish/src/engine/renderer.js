@@ -1,24 +1,37 @@
-export function createRenderer(canvas) {
+export function createRenderer(canvas, { resolutionScale = 1 } = {}) {
   const ctx = canvas.getContext("2d", { alpha: false });
 
   const state = {
     w: 0,
     h: 0,
-    scale: 1,
+    resolutionScale: clamp(resolutionScale, 0.25, 1),
     fov: Math.PI / 3,
+    wallTextures: {},
   };
 
   function resize() {
     const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
     const cssW = Math.max(1, Math.floor(canvas.clientWidth));
     const cssH = Math.max(1, Math.floor(canvas.clientHeight));
-    canvas.width = Math.floor(cssW * dpr);
-    canvas.height = Math.floor(cssH * dpr);
+    canvas.width = Math.max(1, Math.floor(cssW * dpr * state.resolutionScale));
+    canvas.height = Math.max(1, Math.floor(cssH * dpr * state.resolutionScale));
 
     state.w = canvas.width;
     state.h = canvas.height;
 
     ctx.imageSmoothingEnabled = false;
+  }
+
+  function setWallTextures(wallTextures) {
+    state.wallTextures = wallTextures || {};
+  }
+
+  function setResolutionScale(scale) {
+    state.resolutionScale = clamp(scale, 0.25, 1);
+  }
+
+  function getResolutionScale() {
+    return state.resolutionScale;
   }
 
   function render(level, player, { minimap } = {}) {
@@ -54,10 +67,20 @@ export function createRenderer(canvas) {
       const wallHeight = Math.min(h, (planeDist / dist) | 0);
       const startY = ((halfH - wallHeight / 2) | 0) + 0.5;
 
-      const shade = shadeForDist(dist);
-      const base = wallColor(hit.tile);
-      ctx.fillStyle = shadeColor(base, shade);
-      ctx.fillRect(x, startY, 1, wallHeight);
+      const shade = shadeForDist(dist) * (hit.side === 1 ? 0.88 : 1);
+      const tex = state.wallTextures[hit.tile | 0];
+      if (tex && tex.width > 0 && tex.height > 0) {
+        const texX = computeTextureX(tex.width, hit, player.x, player.y, rdx, rdy);
+        ctx.drawImage(tex, texX, 0, 1, tex.height, x, startY, 1, wallHeight);
+        if (shade < 0.999) {
+          ctx.fillStyle = `rgba(0,0,0,${(1 - shade).toFixed(4)})`;
+          ctx.fillRect(x, startY, 1, wallHeight);
+        }
+      } else {
+        const base = wallColor(hit.tile);
+        ctx.fillStyle = shadeColor(base, shade);
+        ctx.fillRect(x, startY, 1, wallHeight);
+      }
     }
 
     if (minimap) drawMinimap(ctx, level, player, w, h);
@@ -65,7 +88,7 @@ export function createRenderer(canvas) {
     drawCrosshair(ctx, w, h);
   }
 
-  return { resize, render };
+  return { resize, render, setWallTextures, setResolutionScale, getResolutionScale };
 }
 
 function castRayDDA(level, ox, oy, rdx, rdy) {
@@ -123,6 +146,20 @@ function sampleTile(level, tx, ty) {
   return level.grid[ty][tx] | 0;
 }
 
+function computeTextureX(texW, hit, ox, oy, rdx, rdy) {
+  let wallX = 0;
+  if (hit.side === 0) {
+    const hitY = oy + hit.dist * rdy;
+    wallX = hitY - Math.floor(hitY);
+    if (rdx > 0) wallX = 1 - wallX;
+  } else {
+    const hitX = ox + hit.dist * rdx;
+    wallX = hitX - Math.floor(hitX);
+    if (rdy < 0) wallX = 1 - wallX;
+  }
+  return clamp(Math.floor(wallX * texW), 0, texW - 1);
+}
+
 function shadeForDist(dist) {
   const fogStart = 1.5;
   const fogEnd = 14;
@@ -152,14 +189,22 @@ function shadeColor([r, g, b], s) {
 function drawCrosshair(ctx, w, h) {
   const cx = (w / 2) | 0;
   const cy = (h / 2) | 0;
-  ctx.strokeStyle = "rgba(255,255,255,0.6)";
+  ctx.strokeStyle = "rgba(255,255,255,0.72)";
   ctx.lineWidth = 1;
+  ctx.lineCap = "square";
   ctx.beginPath();
-  ctx.moveTo(cx - 7, cy);
-  ctx.lineTo(cx + 7, cy);
-  ctx.moveTo(cx, cy - 7);
-  ctx.lineTo(cx, cy + 7);
+  ctx.moveTo(cx - 9, cy);
+  ctx.lineTo(cx - 3, cy);
+  ctx.moveTo(cx + 3, cy);
+  ctx.lineTo(cx + 9, cy);
+  ctx.moveTo(cx, cy - 9);
+  ctx.lineTo(cx, cy - 3);
+  ctx.moveTo(cx, cy + 3);
+  ctx.lineTo(cx, cy + 9);
   ctx.stroke();
+
+  ctx.fillStyle = "rgba(255,255,255,0.55)";
+  ctx.fillRect(cx, cy, 1, 1);
 }
 
 function drawMinimap(ctx, level, player, w, h) {
@@ -212,10 +257,13 @@ function clamp01(t) {
   return Math.max(0, Math.min(1, t));
 }
 
+function clamp(v, a, b) {
+  return Math.max(a, Math.min(b, v));
+}
+
 function normalizeAngle(a) {
   const twoPi = Math.PI * 2;
   a %= twoPi;
   if (a < 0) a += twoPi;
   return a;
 }
-

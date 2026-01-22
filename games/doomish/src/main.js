@@ -1,4 +1,5 @@
 import { createInput } from "./engine/input.js";
+import { loadWallTextures } from "./engine/assets.js";
 import { createRenderer } from "./engine/renderer.js";
 import { moveAndCollide } from "./engine/physics.js";
 import { createLevel1 } from "./game/level.js";
@@ -16,12 +17,23 @@ const player = {
   radius: 0.22,
 };
 
-const renderer = createRenderer(canvas);
+const RES_SCALES = [1, 0.75, 0.5];
+let resScaleIndex = 0;
+
+const renderer = createRenderer(canvas, { resolutionScale: RES_SCALES[resScaleIndex] });
 const input = createInput(canvas, {
   onPointerLockChange: (locked) => {
     overlay.style.display = locked ? "none" : "grid";
   },
 });
+
+loadWallTextures(import.meta.url, {
+  1: "../assets/textures/brick.png",
+  2: "../assets/textures/metal.png",
+  3: "../assets/textures/hazard.png",
+})
+  .then((textures) => renderer.setWallTextures(textures))
+  .catch((err) => console.warn("[doomish] texture load failed:", err));
 
 playButton.addEventListener("click", async () => {
   await input.requestPointerLock();
@@ -41,6 +53,7 @@ let last = performance.now();
 let acc = 0;
 
 let minimap = true;
+let debug = false;
 let fpsSmooth = 60;
 
 function tick(now) {
@@ -51,6 +64,12 @@ function tick(now) {
   input.beginFrame();
   player.a = normalizeAngle(player.a + input.consumeMouseDeltaX() * 0.0022);
   if (input.consumePressed("KeyM")) minimap = !minimap;
+  if (input.consumePressed("F3")) debug = !debug;
+  if (input.consumePressed("KeyR")) {
+    resScaleIndex = (resScaleIndex + 1) % RES_SCALES.length;
+    renderer.setResolutionScale(RES_SCALES[resScaleIndex]);
+    renderer.resize();
+  }
 
   while (acc >= SIM_DT) {
     const intent = input.getIntent();
@@ -81,7 +100,16 @@ function tick(now) {
     minimap,
   });
 
-  hud.textContent = `WASD move | Mouse look | M minimap | Esc unlock | ${fpsSmooth.toFixed(0)} fps`;
+  if (debug) {
+    hud.textContent =
+      `WASD move | Mouse look | M minimap | R res | F3 debug | Esc unlock\n` +
+      `fps ${fpsSmooth.toFixed(0)} | res ${Math.round(renderer.getResolutionScale() * 100)}% | ` +
+      `pos ${player.x.toFixed(2)},${player.y.toFixed(2)} | a ${(player.a * (180 / Math.PI)).toFixed(0)}°`;
+  } else {
+    hud.textContent = `WASD move | Mouse look | M minimap | R res | F3 debug | Esc unlock | ${fpsSmooth.toFixed(
+      0,
+    )} fps`;
+  }
   requestAnimationFrame(tick);
 }
 requestAnimationFrame(tick);
