@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Temperature Conversion Dials (°C ⇄ °F)</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="header">
+        <h1 class="title">Temperature Converter</h1>
+        <p class="subtitle">Scroll either dial to convert (°C ⇄ °F)</p>
+      </header>
+
+      <section class="picker-shell" aria-label="Temperature conversion dials">
+        <div class="center-highlight" aria-hidden="true"></div>
+
+        <div class="dial-block">
+          <div class="dial-label" aria-hidden="true">°C</div>
+          <div id="cDial" class="dial" aria-label="Celsius dial">
+            <div class="dial-spacer" aria-hidden="true"></div>
+            <ul id="cList" class="dial-list" aria-hidden="true"></ul>
+            <div class="dial-spacer" aria-hidden="true"></div>
+          </div>
+        </div>
+
+        <div class="dial-block">
+          <div class="dial-label" aria-hidden="true">°F</div>
+          <div id="fDial" class="dial" aria-label="Fahrenheit dial">
+            <div class="dial-spacer" aria-hidden="true"></div>
+            <ul id="fList" class="dial-list" aria-hidden="true"></ul>
+            <div class="dial-spacer" aria-hidden="true"></div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <div class="sr-only" aria-live="polite" id="liveRegion"></div>
+      </footer>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
