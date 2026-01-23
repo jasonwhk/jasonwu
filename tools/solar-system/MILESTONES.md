@@ -83,3 +83,19 @@ How to test:
 - Switch View between “Tilted” and “Top-down”; confirm a smooth camera move and no console errors.
 - Change Focus to Mars/Jupiter; confirm the camera recenters smoothly on that planet.
 - Enable “Track focus”, press “Play”, and confirm the camera follows the selected planet while it moves.
+
+## Milestone 6.5 — Moons (v1)
+- Added a data-driven moon system (parent–child transforms) and implemented Earth’s Moon.
+- Moons animate using the existing simulation time.
+- Added UI toggles:
+  - “Show Moons”
+  - “Show Moon Orbits”
+  - “Moon Visibility Scale”
+
+How to test:
+- Open `/tools/solar-system/index.html`.
+- Confirm the Moon orbits Earth while Earth orbits the Sun.
+- Toggle “Show Moons” and confirm the Moon sphere shows/hides.
+- Toggle “Show Moon Orbits” and confirm the Moon orbit ring shows/hides.
+- Toggle “Moon Visibility Scale” and confirm the Moon size changes without affecting its orbit radius.
+- Press “Play” and change Speed; confirm the Moon keeps orbiting smoothly with no console errors.

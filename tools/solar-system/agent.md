@@ -145,6 +145,34 @@ After completing a milestone:
 - Optional target tracking
 
 ---
+### Milestone 6.5 — Moons (v1)
+
+Add a simple, extensible moon system that integrates with the existing
+time simulation and camera focus logic.
+
+Scope:
+- Add Earth’s Moon as the first implementation.
+- Structure code so adding more moons later requires only data entries.
+
+Requirements:
+- Represent moons via parent–child transforms (moon orbits planet).
+- Circular orbit approximation is sufficient.
+- Add UI toggles:
+  - Show Moons
+  - Show Moon Orbits
+  - Moon Visibility Scale
+- Moons must animate with simulation time.
+- Moon orbit rings are optional but recommended.
+
+Acceptance:
+- Moon orbits Earth smoothly while Earth orbits Sun.
+- Toggles work on mobile Safari.
+- No console errors.
+- Works when opening index.html directly.
+
+Do NOT:
+- Add external APIs
+- Break existing planet focus/track behavior
 
 ### Milestone 7 — UX Polish
 - Label jitter reduction

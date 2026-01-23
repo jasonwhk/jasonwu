@@ -2,6 +2,9 @@ const VIEWPORT_ID = 'viewport';
 const STATUS_ID = 'status';
 const TOGGLE_VISIBILITY_SCALE_ID = 'toggleVisibilityScale';
 const TOGGLE_LABELS_ID = 'toggleLabels';
+const TOGGLE_MOONS_ID = 'toggleMoons';
+const TOGGLE_MOON_ORBITS_ID = 'toggleMoonOrbits';
+const TOGGLE_MOON_VISIBILITY_SCALE_ID = 'toggleMoonVisibilityScale';
 const BTN_NOW_ID = 'btnNow';
 const BTN_PLAY_PAUSE_ID = 'btnPlayPause';
 const SPEED_SELECT_ID = 'speedSelect';
@@ -155,6 +158,12 @@ function normalizeRadians(rad) {
 function dateToJulianDay(date) {
   const ms = date instanceof Date ? date.getTime() : Date.now();
   return ms / 86400000 + 2440587.5;
+}
+
+function timeMsToJulianDay(ms) {
+  const n = Number(ms);
+  if (!Number.isFinite(n)) return dateToJulianDay(new Date());
+  return n / 86400000 + 2440587.5;
 }
 
 function centuriesSinceJ2000(jd) {
@@ -419,6 +428,7 @@ async function createThreeApp({ viewportEl, canvas }) {
 
   const planetGeometry = new THREE.SphereGeometry(1, 32, 16);
   const planetEntries = [];
+  const planetEntryByName = new Map();
 
   for (const planet of PLANETS) {
     const material = new THREE.MeshStandardMaterial({
@@ -439,7 +449,90 @@ async function createThreeApp({ viewportEl, canvas }) {
     mesh.add(labelObj);
 
     planetsGroup.add(mesh);
-    planetEntries.push({ mesh, material, baseRadius: planet.radius, labelObj, name: planet.name });
+    const entry = { mesh, material, baseRadius: planet.radius, labelObj, name: planet.name };
+    planetEntries.push(entry);
+    planetEntryByName.set(entry.name, entry);
+  }
+
+  const MOONS = [
+    {
+      name: 'Moon',
+      parent: 'Earth',
+      color: 0xd9d9d9,
+      radius: 0.018,
+      orbitRadiusAU: 0.00257,
+      periodDays: 27.321661,
+      phaseDeg: 0,
+    },
+  ];
+
+  const moonGeometry = new THREE.SphereGeometry(1, 24, 12);
+  const moonEntries = [];
+
+  function createMoonOrbitRing(radiusAU) {
+    const segments = clampOrbitSegments(256);
+    const positions = new Float32Array(segments * 3);
+    for (let i = 0; i < segments; i += 1) {
+      const theta = (i / segments) * TAU;
+      const base = i * 3;
+      positions[base + 0] = Math.cos(theta) * radiusAU;
+      positions[base + 1] = 0;
+      positions[base + 2] = Math.sin(theta) * radiusAU;
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+    const material = new THREE.LineBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.35,
+      depthWrite: false,
+    });
+
+    const line = new THREE.LineLoop(geometry, material);
+    line.renderOrder = 2;
+    return { line, geometry, material };
+  }
+
+  for (const moon of MOONS) {
+    const parentEntry = planetEntryByName.get(moon.parent);
+    if (!parentEntry) continue;
+
+    const pivot = new THREE.Group();
+    pivot.name = `${moon.parent}-${moon.name}-Pivot`;
+    parentEntry.mesh.add(pivot);
+
+    const material = new THREE.MeshStandardMaterial({
+      color: moon.color,
+      roughness: 0.92,
+      metalness: 0.0,
+    });
+
+    const mesh = new THREE.Mesh(moonGeometry, material);
+    mesh.name = moon.name;
+    mesh.position.set(Math.max(0, Number(moon.orbitRadiusAU) || 0), 0, 0);
+    mesh.scale.setScalar(Math.max(0.0001, Number(moon.radius) || 0.01));
+    pivot.add(mesh);
+
+    const orbit = createMoonOrbitRing(Math.max(0, Number(moon.orbitRadiusAU) || 0));
+    pivot.add(orbit.line);
+
+    moonEntries.push({
+      name: moon.name,
+      parentName: moon.parent,
+      parentMesh: parentEntry.mesh,
+      pivot,
+      mesh,
+      material,
+      orbitLine: orbit.line,
+      orbitGeometry: orbit.geometry,
+      orbitMaterial: orbit.material,
+      baseRadius: Math.max(0.0001, Number(moon.radius) || 0.01),
+      orbitRadiusAU: Math.max(0, Number(moon.orbitRadiusAU) || 0),
+      periodDays: Math.max(0.0001, Number(moon.periodDays) || 27.321661),
+      phaseRad: degreesToRadians(Number(moon.phaseDeg) || 0),
+    });
   }
 
   const grid = new THREE.GridHelper(60, 60, 0x223366, 0x112244);
@@ -576,6 +669,9 @@ async function createThreeApp({ viewportEl, canvas }) {
 
   let useVisibilityScale = true;
   let labelsVisible = true;
+  let moonsVisible = true;
+  let moonOrbitsVisible = false;
+  let useMoonVisibilityScale = true;
 
   function applyPlanetScale() {
     const visibilityMultiplier = useVisibilityScale ? 4.5 : 1;
@@ -583,6 +679,7 @@ async function createThreeApp({ viewportEl, canvas }) {
       entry.mesh.scale.setScalar(entry.baseRadius * visibilityMultiplier);
       entry.labelObj.position.set(0, entry.mesh.scale.y + 0.4, 0);
     }
+    applyMoonScale();
   }
 
   function applyLabelsVisible() {
@@ -594,10 +691,45 @@ async function createThreeApp({ viewportEl, canvas }) {
   applyPlanetScale();
   applyLabelsVisible();
 
+  function applyMoonScale() {
+    if (moonEntries.length === 0) return;
+
+    const moonVisibilityMultiplier = useMoonVisibilityScale ? 6.0 : 1.0;
+
+    for (const entry of moonEntries) {
+      const parentScale = entry.parentMesh?.scale?.x ?? 1;
+      const inv = parentScale > 0 ? 1 / parentScale : 1;
+      entry.pivot.scale.setScalar(inv);
+      entry.mesh.scale.setScalar(entry.baseRadius * moonVisibilityMultiplier);
+      entry.mesh.position.set(entry.orbitRadiusAU, 0, 0);
+    }
+  }
+
+  function applyMoonVisibility() {
+    for (const entry of moonEntries) {
+      entry.mesh.visible = moonsVisible;
+      entry.orbitLine.visible = moonOrbitsVisible;
+    }
+  }
+
+  applyMoonScale();
+  applyMoonVisibility();
+
   function updatePlanetPositions(jd) {
     for (const entry of planetEntries) {
       const pos = computeHeliocentricEclipticXYZ_AU(entry.name, jd);
       entry.mesh.position.set(pos.x, pos.z, pos.y);
+    }
+  }
+
+  function updateMoonPositions(jd) {
+    if (moonEntries.length === 0) return;
+    const daysSinceJ2000 = Number(jd) - 2451545.0;
+
+    for (const entry of moonEntries) {
+      const cycles = daysSinceJ2000 / entry.periodDays;
+      const angle = entry.phaseRad + TAU * cycles;
+      entry.pivot.rotation.y = normalizeRadians(angle);
     }
   }
 
@@ -688,11 +820,13 @@ async function createThreeApp({ viewportEl, canvas }) {
     applyCameraTransition(performance.now());
     controls.update();
     simTimeMs = computeSimTimeMs();
+    const simJd = timeMsToJulianDay(simTimeMs);
     const simSecond = Math.floor(simTimeMs / 1000);
     if (simSecond !== lastUpdateSimSecond) {
       lastUpdateSimSecond = simSecond;
-      updatePlanetPositions(dateToJulianDay(new Date(simTimeMs)));
+      updatePlanetPositions(simJd);
     }
+    updateMoonPositions(simJd);
 
     if (!cameraTransition && trackFocus) {
       const focusObj = getFocusObject(focusName);
@@ -711,6 +845,7 @@ async function createThreeApp({ viewportEl, canvas }) {
   }
 
   updatePlanetPositions(dateToJulianDay(new Date(simTimeMs)));
+  updateMoonPositions(timeMsToJulianDay(simTimeMs));
   updateSimStatus(true);
 
   rafId = window.requestAnimationFrame(frame);
@@ -724,6 +859,18 @@ async function createThreeApp({ viewportEl, canvas }) {
     setLabelsVisible(visible) {
       labelsVisible = Boolean(visible);
       applyLabelsVisible();
+    },
+    setMoonsVisible(visible) {
+      moonsVisible = Boolean(visible);
+      applyMoonVisibility();
+    },
+    setMoonOrbitsVisible(visible) {
+      moonOrbitsVisible = Boolean(visible);
+      applyMoonVisibility();
+    },
+    setMoonVisibilityScale(enabled) {
+      useMoonVisibilityScale = Boolean(enabled);
+      applyMoonScale();
     },
     getTimeState() {
       return { playing: isPlaying, speedMultiplier, offsetDays: timeOffsetDays };
@@ -763,6 +910,13 @@ async function createThreeApp({ viewportEl, canvas }) {
       for (const entry of planetEntries) {
         entry.material.dispose();
         if (entry.labelObj?.element?.remove) entry.labelObj.element.remove();
+      }
+      moonGeometry.dispose();
+      for (const entry of moonEntries) {
+        entry.material.dispose();
+        entry.orbitGeometry.dispose();
+        entry.orbitMaterial.dispose();
+        entry.pivot.removeFromParent();
       }
       planetsGroup.removeFromParent();
       labelRenderer.domElement.remove();
@@ -839,6 +993,24 @@ function init() {
       if (labelsToggle) {
         app.setLabelsVisible(labelsToggle.checked);
         labelsToggle.addEventListener('change', () => app.setLabelsVisible(labelsToggle.checked));
+      }
+
+      const moonsToggle = getToggle(TOGGLE_MOONS_ID);
+      if (moonsToggle) {
+        app.setMoonsVisible(moonsToggle.checked);
+        moonsToggle.addEventListener('change', () => app.setMoonsVisible(moonsToggle.checked));
+      }
+
+      const moonOrbitsToggle = getToggle(TOGGLE_MOON_ORBITS_ID);
+      if (moonOrbitsToggle) {
+        app.setMoonOrbitsVisible(moonOrbitsToggle.checked);
+        moonOrbitsToggle.addEventListener('change', () => app.setMoonOrbitsVisible(moonOrbitsToggle.checked));
+      }
+
+      const moonVisibilityScaleToggle = getToggle(TOGGLE_MOON_VISIBILITY_SCALE_ID);
+      if (moonVisibilityScaleToggle) {
+        app.setMoonVisibilityScale(moonVisibilityScaleToggle.checked);
+        moonVisibilityScaleToggle.addEventListener('change', () => app.setMoonVisibilityScale(moonVisibilityScaleToggle.checked));
       }
 
       const nowBtn = getButton(BTN_NOW_ID);
