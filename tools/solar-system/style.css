@@ -220,6 +220,25 @@
   color: rgba(0, 0, 0, 0.75);
 }
 
+.ss-doc {
+  display: grid;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.ss-doc-title {
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.78);
+}
+
+.ss-doc-list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+}
+
 .ss-help-key {
   display: inline-block;
   min-width: 74px;
