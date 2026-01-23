@@ -85,8 +85,35 @@ body {
   cursor: pointer;
 }
 
+.results-controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-button {
+  border: 1px solid var(--border);
+  background: #f5f7ff;
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.filter-button.is-active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
 .reset-button:focus-visible,
+.filter-button:focus-visible,
 .results-button:focus-visible,
+.plate-button:focus-visible,
+.favorite-button:focus-visible,
+.share-button:focus-visible,
 input[type="text"]:focus-visible,
 input[type="search"]:focus-visible {
   outline: 2px solid rgba(37, 99, 235, 0.4);
@@ -170,8 +197,14 @@ input[type="text"] {
   overflow-y: auto;
 }
 
+.results-item {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
 .results-button {
-  width: 100%;
+  flex: 1;
   text-align: left;
   border-radius: 12px;
   border: 1px solid var(--border);
@@ -197,6 +230,23 @@ input[type="text"] {
 .results-button.is-active {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.favorite-button {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #fdf7e2;
+  color: #7a4f00;
+  padding: 0 12px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  min-width: 44px;
+}
+
+.favorite-button.is-active {
+  background: #f5b914;
+  border-color: #f5b914;
+  color: #231700;
 }
 
 .highlight-ring {
@@ -243,6 +293,30 @@ input[type="text"] {
   margin: 0;
   font-weight: 600;
   font-size: 1rem;
+}
+
+.share-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.share-button {
+  border: 1px solid var(--border);
+  background: #f5f7ff;
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.share-link {
+  font-size: 0.85rem;
+  color: var(--muted);
+  word-break: break-all;
 }
 
 .map {
