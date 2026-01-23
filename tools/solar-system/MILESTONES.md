@@ -99,3 +99,24 @@ How to test:
 - Toggle “Show Moon Orbits” and confirm the Moon orbit ring shows/hides.
 - Toggle “Moon Visibility Scale” and confirm the Moon size changes without affecting its orbit radius.
 - Press “Play” and change Speed; confirm the Moon keeps orbiting smoothly with no console errors.
+
+## Milestone 6.6 — Moons (v2: All major moons, performant)
+- Extended the moon system to include major moons for Earth, Mars, Jupiter, Saturn, Uranus, and Neptune (Mercury/Venus none).
+- Kept the system data-driven via a single `MOONS` dataset (no moon name special-casing).
+- Added UI controls:
+  - “Moons” master toggle
+  - “Moon orbits” toggle
+  - “Moon labels” toggle (separate from planet labels)
+  - “Moon size” boost (Off / ×20 / ×50 / ×100 / ×200)
+  - “Moon density” (Major only; Expanded reserved/disabled)
+  - “Moons only for focus” (optional performance/clarity mode)
+- Implemented a throttled moon-label updater (10 Hz) for iPhone-friendly performance.
+- Default body sizes are physical; use the size-boost controls to make planets/moons easier to see.
+
+How to test:
+- Open `/tools/solar-system/index.html`.
+- Toggle “Moons” ON and confirm moons appear around Earth, Mars, Jupiter, Saturn, Uranus, Neptune.
+- Toggle “Moon labels” ON and confirm moon names show/hide and remain stable during interaction.
+- Toggle “Moon orbits” ON/OFF and confirm rings show/hide.
+- Focus Jupiter, enable “Moons only for focus”, and confirm only Jupiter’s moons remain visible.
+- Press “Play” at 600× and confirm moons orbit smoothly with no console errors.

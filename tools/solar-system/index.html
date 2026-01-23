@@ -26,11 +26,11 @@
         <div class="ss-viewport" id="viewport" aria-label="Solar System viewport">
           <div class="ss-overlay" aria-label="Status panel">
             <div class="ss-title">Solar System</div>
-            <div class="ss-subtitle">Milestone 6.5: Moons (v1)</div>
+            <div class="ss-subtitle">Milestone 6.6: Moons (v2)</div>
             <div class="ss-status" id="status">Loading…</div>
             <div class="ss-controls" aria-label="View options">
               <label class="ss-control">
-                <input type="checkbox" id="toggleVisibilityScale" checked>
+                <input type="checkbox" id="toggleVisibilityScale">
                 Planet visibility scale
               </label>
               <label class="ss-control">
@@ -39,15 +39,36 @@
               </label>
               <label class="ss-control">
                 <input type="checkbox" id="toggleMoons" checked>
-                Show Moons
+                Moons
               </label>
               <label class="ss-control">
                 <input type="checkbox" id="toggleMoonOrbits">
-                Show Moon Orbits
+                Moon orbits
               </label>
               <label class="ss-control">
-                <input type="checkbox" id="toggleMoonVisibilityScale" checked>
-                Moon Visibility Scale
+                <input type="checkbox" id="toggleMoonLabels">
+                Moon labels
+              </label>
+              <label class="ss-control-row">
+                <span class="ss-time-label">Moon size</span>
+                <select class="ss-select" id="moonSizeBoost" aria-label="Moon size boost">
+                  <option value="1" selected>Off</option>
+                  <option value="20">×20</option>
+                  <option value="50">×50</option>
+                  <option value="100">×100</option>
+                  <option value="200">×200</option>
+                </select>
+              </label>
+              <label class="ss-control-row">
+                <span class="ss-time-label">Moon density</span>
+                <select class="ss-select" id="moonDensity" aria-label="Moon density">
+                  <option value="major" selected>Major only</option>
+                  <option value="expanded" disabled>(Reserved) Expanded</option>
+                </select>
+              </label>
+              <label class="ss-control">
+                <input type="checkbox" id="toggleMoonsFocusOnly">
+                Moons only for focus
               </label>
             </div>
             <div class="ss-time" aria-label="Time controls">

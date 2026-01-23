@@ -174,6 +174,147 @@ Do NOT:
 - Add external APIs
 - Break existing planet focus/track behavior
 
+### Milestone 6.6 — Moons (v2: All major moons, performant)
+
+**Goal:** Extend the moon system from Milestone 6.5 to include **major moons for all planets** (where relevant) while keeping iPhone performance smooth. The implementation must remain **data-driven**: adding moons should require only adding entries to a dataset, not writing new logic.
+
+This milestone builds on Milestone 6.5 (Earth’s Moon system already exists and works).
+
+---
+
+## Scope
+
+### Must include (major moons set)
+Implement at least the commonly referenced “major” moons below (don’t aim for every tiny irregular moon; that would be too many). Use this set as the default dataset:
+
+- **Earth:** Moon
+- **Mars:** Phobos, Deimos
+- **Jupiter:** Io, Europa, Ganymede, Callisto
+- **Saturn:** Titan, Rhea, Iapetus, Dione, Tethys, Enceladus, Mimas
+- **Uranus:** Titania, Oberon, Umbriel, Ariel, Miranda
+- **Neptune:** Triton, Proteus, Nereid
+- **Mercury/Venus:** none
+
+(Optionally allow “All included moons” to be expanded later, but do not add more than this set in this milestone.)
+
+---
+
+## UI Requirements (touch-first, compact)
+
+Add the following controls to the existing overlay:
+
+1) **Moons** (master toggle)
+2) **Moon orbits** toggle
+3) **Moon labels** toggle (separate from planet labels)
+4) **Moon size boost** slider (or discrete steps)  
+   - Suggested steps: Off / x20 / x50 / x100 / x200
+5) **Moon density** dropdown:
+   - “Major only” (default) — this milestone’s set
+   - “(Reserved) Expanded” — show disabled option or omit; do not implement expanded
+
+Optional but good:
+- “Show moons only for focused planet” toggle (default OFF)
+  - When ON: render moons only for currently focused planet (huge performance and clarity win)
+
+---
+
+## Rendering & Performance Constraints
+
+- Keep the total number of moon meshes modest (this milestone’s set is fine).
+- Use **shared geometries/materials**:
+  - One sphere geometry reused for all moons (scaled per moon)
+  - Reuse materials per parent planet or a small palette
+- Update moon label positions at a throttled rate (e.g., 10 Hz), not every frame.
+- Orbit rings must be lightweight and optionally hidden by default.
+
+Target: **smooth interaction on iPhone Safari**.
+
+---
+
+## Data Model (strict)
+
+Create/extend a `MOONS` array of objects with at least:
+
+- `name` (string)
+- `parent` (string planet name)
+- `radiusKm` (number)
+- `semiMajorAxisKm` (number) — average orbital distance
+- `orbitalPeriodDays` (number)
+- `inclinationDeg` (number, optional; can be 0 if you don’t have it)
+- `phaseAtJ2000` (number radians, optional)
+
+**Rule:** The logic must not special-case any moon by name.
+
+---
+
+## Orbital Motion (visual approximation)
+
+Continue to use a simple circular model (consistent with 6.5):
+
+- Compute `tDays = (simJD - J2000_JD)` in days.
+- Angular speed `n = 2π / orbitalPeriodDays`.
+- Angle `theta = phaseAtJ2000 + n * tDays`.
+- Local position: `(a*cos(theta), 0, a*sin(theta))` then apply inclination rotation.
+- Convert km → AU → scene units using existing constants and scales.
+
+---
+
+## Scene Graph (parent-child)
+
+- Each planet has a `planetGroup` anchor.
+- Moons attach to their planet’s group.
+- Each moon should have:
+  - `moonGroup` or mesh
+  - optional `orbitLine` (child of planetGroup)
+  - optional label handle
+
+Toggles must show/hide these efficiently (don’t rebuild every time unless needed).
+
+---
+
+## Focus Integration
+
+If the user has selected a focused planet (Milestone 6):
+- When “Show moons only for focused planet” is ON:
+  - Render/enable only moons where `parent === focusedPlanet`.
+  - Others are hidden and not label-updated.
+
+---
+
+## Acceptance Criteria
+
+- [ ] All listed moons appear (when Moons toggle ON).
+- [ ] Moons orbit their correct parent planet and animate with time simulation.
+- [ ] “Moon labels” toggle shows/hides moon names (stable, readable).
+- [ ] “Moon orbits” toggle shows/hides orbit rings.
+- [ ] “Moon size boost” makes moons visible without overwhelming the planets.
+- [ ] Performance remains good on iPhone Safari (no obvious stutter during rotate/zoom).
+- [ ] No console errors.
+- [ ] `tools/solar-system/MILESTONES.md` updated with Milestone 6.6 notes.
+- [ ] Full code printed for all changed files.
+
+---
+
+## Test Checklist
+
+1) Toggle Moons ON → see moons around Earth, Mars, Jupiter, Saturn, Uranus, Neptune.
+2) Focus Jupiter → moons remain with Jupiter; enable “moons only for focused planet” → only Jupiter’s moons show.
+3) Play at 600x → moons visibly orbit (fast for inner moons like Io).
+4) Toggle Moon labels ON → labels appear and don’t jitter excessively.
+5) Toggle Moon orbits ON → orbit rings appear; OFF → disappear.
+6) Toggle Moon size boost between steps → sizes adjust predictably.
+
+---
+
+## Deliverables
+Update only as needed:
+- `tools/solar-system/index.html` (UI)
+- `tools/solar-system/main.js` (data + rendering + updates)
+- `tools/solar-system/style.css` (if needed)
+- `tools/solar-system/MILESTONES.md`
+
+**Print the full code for every file you modify.**
+
 ### Milestone 7 — UX Polish
 - Label jitter reduction
 - Orbit toggle
