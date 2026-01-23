@@ -24,6 +24,9 @@ const detailsName = document.getElementById("details-name");
 const detailsState = document.getElementById("details-state");
 const detailsMap = document.getElementById("details-map");
 const resetButton = document.getElementById("reset-view");
+const filterButtons = document.querySelectorAll(".filter-button");
+const copyLinkButton = document.getElementById("copy-link");
+const shareLinkLabel = document.getElementById("share-link");
 
 let activeMarker = null;
 let highlightRing = null;
@@ -32,8 +35,48 @@ let activeButton = null;
 let allEntries = [];
 let filteredEntries = [];
 let debounceId = null;
+let activeFilter = "all";
+let favorites = new Set();
+let recentSelections = [];
+let pendingCode = null;
 
 const MAX_VISIBLE_RESULTS = 200;
+const FAVORITES_KEY = "kennzeichen-favorites";
+const RECENTS_KEY = "kennzeichen-recents";
+
+const loadStoredSet = (key) => {
+  try {
+    const raw = window.localStorage.getItem(key);
+    if (!raw) {
+      return [];
+    }
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    return [];
+  }
+};
+
+const saveStoredList = (key, list) => {
+  window.localStorage.setItem(key, JSON.stringify(list));
+};
+
+const updateShareLink = (entry) => {
+  const url = new URL(window.location.href);
+  url.searchParams.set("code", entry.code);
+  shareLinkLabel.textContent = url.toString();
+  window.history.replaceState({}, "", url);
+};
+
+const toggleFavorite = (entry) => {
+  if (favorites.has(entry.code)) {
+    favorites.delete(entry.code);
+  } else {
+    favorites.add(entry.code);
+  }
+  saveStoredList(FAVORITES_KEY, Array.from(favorites));
+  applyFilter();
+};
 
 const updateDetails = (entry) => {
   detailsEmpty.hidden = true;
@@ -45,6 +88,14 @@ const updateDetails = (entry) => {
     entry.lat != null && entry.lon != null
       ? `${entry.lat.toFixed(4)}, ${entry.lon.toFixed(4)}`
       : "Coordinates not available yet";
+  updateShareLink(entry);
+};
+
+const updateRecentSelections = (entry) => {
+  recentSelections = recentSelections.filter((code) => code !== entry.code);
+  recentSelections.unshift(entry.code);
+  recentSelections = recentSelections.slice(0, 8);
+  saveStoredList(RECENTS_KEY, recentSelections);
 };
 
 const selectEntry = (entry, button) => {
@@ -97,6 +148,10 @@ const selectEntry = (entry, button) => {
     map.flyTo(germanyCenter, germanyZoom, { duration: 0.8 });
   }
   updateDetails(entry);
+  updateRecentSelections(entry);
+  if (activeFilter === "recent") {
+    applyFilter();
+  }
 };
 
 const renderList = (entries) => {
@@ -105,6 +160,7 @@ const renderList = (entries) => {
 
   entries.slice(0, MAX_VISIBLE_RESULTS).forEach((entry) => {
     const item = document.createElement("li");
+    item.className = "results-item";
     const button = document.createElement("button");
     button.type = "button";
     button.className = "results-button";
@@ -112,7 +168,26 @@ const renderList = (entries) => {
     button.dataset.code = entry.code;
     button.innerHTML = `<strong>${entry.code}</strong><span>${entry.name}</span>`;
     button.addEventListener("click", () => selectEntry(entry, button));
+    const favoriteButton = document.createElement("button");
+    favoriteButton.type = "button";
+    favoriteButton.className = "favorite-button";
+    favoriteButton.setAttribute(
+      "aria-label",
+      favorites.has(entry.code)
+        ? `Remove ${entry.code} from favorites`
+        : `Add ${entry.code} to favorites`,
+    );
+    favoriteButton.setAttribute("aria-pressed", favorites.has(entry.code).toString());
+    favoriteButton.textContent = "★";
+    if (favorites.has(entry.code)) {
+      favoriteButton.classList.add("is-active");
+    }
+    favoriteButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      toggleFavorite(entry);
+    });
     item.appendChild(button);
+    item.appendChild(favoriteButton);
     fragment.appendChild(item);
   });
 
@@ -151,11 +226,20 @@ const filterEntries = (query) => {
 const applyFilter = () => {
   const query = searchInput.value;
   filteredEntries = filterEntries(query);
-  if (filteredEntries.length === 0) {
+  let visibleEntries = filteredEntries;
+  if (activeFilter === "favorites") {
+    visibleEntries = filteredEntries.filter((entry) => favorites.has(entry.code));
+  }
+  if (activeFilter === "recent") {
+    visibleEntries = recentSelections
+      .map((code) => filteredEntries.find((entry) => entry.code === code))
+      .filter(Boolean);
+  }
+  if (visibleEntries.length === 0) {
     renderEmptyState("No matches found. Try another code or city.");
     return;
   }
-  renderList(filteredEntries);
+  renderList(visibleEntries);
 };
 
 const extractPlateLetters = (plateValue) => {
@@ -222,7 +306,15 @@ const scheduleFilter = () => {
 const handleSearchKeydown = (event) => {
   if (event.key === "Enter") {
     event.preventDefault();
-    const firstEntry = filteredEntries[0];
+    let firstEntry = filteredEntries[0];
+    if (activeFilter === "favorites") {
+      firstEntry = filteredEntries.find((entry) => favorites.has(entry.code));
+    }
+    if (activeFilter === "recent") {
+      firstEntry = recentSelections
+        .map((code) => filteredEntries.find((entry) => entry.code === code))
+        .find(Boolean);
+    }
     if (firstEntry) {
       const firstButton = resultsList.querySelector("button");
       selectEntry(firstEntry, firstButton);
@@ -247,8 +339,20 @@ const loadPlates = async () => {
       .slice()
       .sort((a, b) => a.code.localeCompare(b.code, "de"));
 
+    favorites = new Set(loadStoredSet(FAVORITES_KEY));
+    recentSelections = loadStoredSet(RECENTS_KEY);
     filteredEntries = allEntries;
     renderList(allEntries);
+    if (pendingCode) {
+      const entry = allEntries.find(
+        (item) => item.code.toLowerCase() === pendingCode.toLowerCase(),
+      );
+      if (entry) {
+        const button = resultsList.querySelector(`button[data-code="${entry.code}"]`);
+        selectEntry(entry, button);
+      }
+      pendingCode = null;
+    }
     searchInput.addEventListener("input", scheduleFilter);
     searchInput.addEventListener("keydown", handleSearchKeydown);
     plateInput.addEventListener("input", () => setPlateMessage(""));
@@ -264,8 +368,43 @@ const loadPlates = async () => {
   }
 };
 
+const urlParams = new URLSearchParams(window.location.search);
+const codeParam = urlParams.get("code");
+if (codeParam) {
+  pendingCode = codeParam;
+}
+
 loadPlates();
+
+filterButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const filter = button.dataset.filter;
+    if (!filter) {
+      return;
+    }
+    activeFilter = filter;
+    filterButtons.forEach((item) => item.classList.remove("is-active"));
+    button.classList.add("is-active");
+    applyFilter();
+  });
+});
 
 resetButton.addEventListener("click", () => {
   map.flyTo(germanyCenter, germanyZoom, { duration: 0.8 });
+});
+
+copyLinkButton.addEventListener("click", async () => {
+  const shareLink = shareLinkLabel.textContent;
+  if (!shareLink || shareLink === "—") {
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(shareLink);
+    copyLinkButton.textContent = "Copied!";
+    window.setTimeout(() => {
+      copyLinkButton.textContent = "Copy link";
+    }, 1200);
+  } catch (error) {
+    window.prompt("Copy this link:", shareLink);
+  }
 });

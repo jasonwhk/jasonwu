@@ -52,7 +52,20 @@
         </section>
 
         <section class="panel panel-results" aria-label="Results">
-          <h2>Results</h2>
+          <div class="panel-header">
+            <h2>Results</h2>
+            <div class="results-controls" role="group" aria-label="Filter results">
+              <button class="filter-button is-active" type="button" data-filter="all">
+                All
+              </button>
+              <button class="filter-button" type="button" data-filter="favorites">
+                Favorites
+              </button>
+              <button class="filter-button" type="button" data-filter="recent">
+                Recent
+              </button>
+            </div>
+          </div>
           <ul id="results-list" class="results-list" role="listbox"></ul>
         </section>
 
@@ -87,6 +100,15 @@
             <div>
               <dt>Map data</dt>
               <dd id="details-map">—</dd>
+            </div>
+            <div>
+              <dt>Share link</dt>
+              <dd class="share-row">
+                <button id="copy-link" class="share-button" type="button">
+                  Copy link
+                </button>
+                <span id="share-link" class="share-link">—</span>
+              </dd>
             </div>
           </dl>
         </section>
