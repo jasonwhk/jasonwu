@@ -7,14 +7,18 @@
   padding: 0;
   display: flex;
   flex: 1;
+  min-height: 0;
 }
 
 .ss-viewport {
   position: relative;
+  flex: 1;
   width: 100%;
-  min-height: calc(100vh - 88px);
+  height: 100%;
+  min-height: 0;
   background: #05060a;
   overflow: hidden;
+  overscroll-behavior: none;
 }
 
 .ss-canvas {
@@ -57,14 +61,18 @@
   color: rgba(0, 0, 0, 0.8);
 }
 
-.ss-placeholder {
-  position: absolute;
-  inset: 0;
+.ss-help {
+  margin-top: 10px;
   display: grid;
-  place-items: center;
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 1rem;
-  letter-spacing: 0.02em;
+  gap: 2px;
+  font-size: 0.85rem;
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.ss-help-key {
+  display: inline-block;
+  min-width: 74px;
+  font-weight: 600;
 }
 
 .ss-noscript {
@@ -84,4 +92,3 @@
     padding: 10px 10px;
   }
 }
-
