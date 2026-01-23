@@ -722,6 +722,17 @@ async function createThreeApp({ viewportEl, canvas }) {
   let viewportWidth = 1;
   let viewportHeight = 1;
 
+  let useVisibilityScale = false;
+  let labelsVisible = true;
+  let moonsVisible = true;
+  let moonOrbitsVisible = false;
+  let moonLabelsVisible = false;
+  let moonSizeBoost = 1;
+  let moonDensity = 'major';
+  let moonsFocusOnly = false;
+  let lastMoonLabelUpdatePerfMs = -1;
+  const moonLabelTmp = new THREE.Vector3();
+
   function resize() {
     renderer.setPixelRatio(clampDevicePixelRatio(window.devicePixelRatio));
     const { width, height } = getViewportSize(viewportEl);
@@ -735,17 +746,6 @@ async function createThreeApp({ viewportEl, canvas }) {
   }
 
   resize();
-
-  let useVisibilityScale = false;
-  let labelsVisible = true;
-  let moonsVisible = true;
-  let moonOrbitsVisible = false;
-  let moonLabelsVisible = false;
-  let moonSizeBoost = 1;
-  let moonDensity = 'major';
-  let moonsFocusOnly = false;
-  let lastMoonLabelUpdatePerfMs = -1;
-  const moonLabelTmp = new THREE.Vector3();
 
   function applyPlanetScale() {
     const visibilityMultiplier = 4.5;
