@@ -8,6 +8,7 @@ const TOGGLE_MOON_LABELS_ID = 'toggleMoonLabels';
 const MOON_SIZE_BOOST_ID = 'moonSizeBoost';
 const MOON_DENSITY_ID = 'moonDensity';
 const TOGGLE_MOONS_FOCUS_ONLY_ID = 'toggleMoonsFocusOnly';
+const TOGGLE_PANEL_ID = 'togglePanel';
 const BTN_NOW_ID = 'btnNow';
 const BTN_PLAY_PAUSE_ID = 'btnPlayPause';
 const SPEED_SELECT_ID = 'speedSelect';
@@ -1117,6 +1118,21 @@ function init() {
   if (!viewportEl) {
     setStatus('Error: missing viewport');
     return;
+  }
+
+  const overlayEl = viewportEl.querySelector('.ss-overlay');
+  const panelToggleBtn = getButton(TOGGLE_PANEL_ID);
+  if (overlayEl && panelToggleBtn) {
+    const setPanelCollapsed = (collapsed) => {
+      overlayEl.classList.toggle('is-collapsed', collapsed);
+      panelToggleBtn.textContent = collapsed ? 'Expand' : 'Collapse';
+      panelToggleBtn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    };
+    setPanelCollapsed(false);
+    panelToggleBtn.addEventListener('click', () => {
+      const collapsed = overlayEl.classList.contains('is-collapsed');
+      setPanelCollapsed(!collapsed);
+    });
   }
 
   const canvas = createCanvas(viewportEl);
