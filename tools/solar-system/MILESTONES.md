@@ -18,3 +18,16 @@ How to test:
 - Open `/tools/solar-system/index.html`.
 - On iPhone: 1-finger rotate, pinch zoom, 2-finger pan; confirm the page doesn’t scroll while interacting with the scene.
 - Confirm there are no console errors.
+
+## Milestone 2 — Sun & Planets (Static) + Visibility Scale
+- Added Sun + 8 planet spheres with basic materials/colors (static placement).
+- Added UI toggles:
+  - “Planet visibility scale” (boosts planet radius for readability)
+  - “Labels” (on/off)
+- Labels are rendered via CSS2DRenderer and don’t block touch gestures.
+
+How to test:
+- Open `/tools/solar-system/index.html`.
+- Toggle “Planet visibility scale” and confirm planet sizes change.
+- Toggle “Labels” and confirm labels show/hide.
+- Confirm touch rotate/zoom/pan still works and there are no console errors.
