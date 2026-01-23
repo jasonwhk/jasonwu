@@ -1,7 +1,9 @@
 const germanyCenter = [51.1657, 10.4515];
+const germanyZoom = 6;
+const selectionZoom = 8;
 const map = L.map("map", {
   center: germanyCenter,
-  zoom: 6,
+  zoom: germanyZoom,
   scrollWheelZoom: true,
 });
 
@@ -18,8 +20,11 @@ const detailsCode = document.getElementById("details-code");
 const detailsName = document.getElementById("details-name");
 const detailsState = document.getElementById("details-state");
 const detailsMap = document.getElementById("details-map");
+const resetButton = document.getElementById("reset-view");
 
 let activeMarker = null;
+let highlightRing = null;
+let highlightTimeoutId = null;
 let activeButton = null;
 let allEntries = [];
 let filteredEntries = [];
@@ -49,21 +54,44 @@ const selectEntry = (entry, button) => {
   }
 
   if (entry.lat != null && entry.lon != null) {
+    const location = [entry.lat, entry.lon];
     if (!activeMarker) {
-      activeMarker = L.marker([entry.lat, entry.lon]).addTo(map);
+      activeMarker = L.marker(location).addTo(map);
     } else {
-      activeMarker.setLatLng([entry.lat, entry.lon]);
+      activeMarker.setLatLng(location);
     }
+
+    if (highlightRing) {
+      map.removeLayer(highlightRing);
+      highlightRing = null;
+    }
+    if (highlightTimeoutId) {
+      window.clearTimeout(highlightTimeoutId);
+      highlightTimeoutId = null;
+    }
+
+    highlightRing = L.circle(location, {
+      radius: 20000,
+      className: "highlight-ring",
+    }).addTo(map);
+
+    highlightTimeoutId = window.setTimeout(() => {
+      if (highlightRing) {
+        map.removeLayer(highlightRing);
+        highlightRing = null;
+      }
+      highlightTimeoutId = null;
+    }, 1800);
 
     const popupHtml = `<strong>${entry.code}</strong><br>${entry.name}`;
     activeMarker.bindPopup(popupHtml).openPopup();
-    map.setView([entry.lat, entry.lon], 8);
+    map.flyTo(location, selectionZoom, { duration: 0.8 });
   } else {
     if (activeMarker) {
       map.removeLayer(activeMarker);
       activeMarker = null;
     }
-    map.setView(germanyCenter, 6);
+    map.flyTo(germanyCenter, germanyZoom, { duration: 0.8 });
   }
   updateDetails(entry);
 };
@@ -161,3 +189,7 @@ const loadPlates = async () => {
 };
 
 loadPlates();
+
+resetButton.addEventListener("click", () => {
+  map.flyTo(germanyCenter, germanyZoom, { duration: 0.8 });
+});

@@ -62,6 +62,36 @@ body {
   font-size: 1.1rem;
 }
 
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.panel-header h2 {
+  margin: 0;
+}
+
+.reset-button {
+  border: 1px solid var(--border);
+  background: #f5f7ff;
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.reset-button:focus-visible,
+.results-button:focus-visible,
+input[type="search"]:focus-visible {
+  outline: 2px solid rgba(37, 99, 235, 0.4);
+  outline-offset: 2px;
+}
+
 .field-label {
   display: block;
   font-weight: 600;
@@ -127,6 +157,28 @@ input[type="search"] {
 .results-button.is-active {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.highlight-ring {
+  stroke: rgba(37, 99, 235, 0.7);
+  stroke-width: 3;
+  fill: rgba(37, 99, 235, 0.12);
+  animation: pulse-ring 1.6s ease-out forwards;
+}
+
+@keyframes pulse-ring {
+  0% {
+    stroke-opacity: 0.9;
+    fill-opacity: 0.18;
+  }
+  70% {
+    stroke-opacity: 0.4;
+    fill-opacity: 0.1;
+  }
+  100% {
+    stroke-opacity: 0;
+    fill-opacity: 0;
+  }
 }
 
 .details-list {
