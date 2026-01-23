@@ -1,0 +1,87 @@
+:root {
+  --ss-panel-bg: rgba(255, 255, 255, 0.92);
+  --ss-panel-border: rgba(0, 0, 0, 0.08);
+}
+
+.ss-main {
+  padding: 0;
+  display: flex;
+  flex: 1;
+}
+
+.ss-viewport {
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - 88px);
+  background: #05060a;
+  overflow: hidden;
+}
+
+.ss-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+}
+
+.ss-overlay {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  z-index: 2;
+  max-width: min(340px, calc(100% - 24px));
+  background: var(--ss-panel-bg);
+  border: 1px solid var(--ss-panel-border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: #111;
+  backdrop-filter: blur(8px);
+}
+
+.ss-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.ss-subtitle {
+  margin-top: 2px;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.85rem;
+}
+
+.ss-status {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.ss-placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.ss-noscript {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .ss-overlay {
+    left: 10px;
+    top: 10px;
+    padding: 10px 10px;
+  }
+}
+

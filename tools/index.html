@@ -34,124 +34,14 @@
             <div class="category-title">Sand Clock</div>
             <p class="category-description">Animated hourglass timer</p>
           </a>
+          <a href="/tools/solar-system/" class="category-card">
+            <div class="category-icon">🪐</div>
+            <div class="category-title">Solar System</div>
+            <p class="category-description">3D orbit map (work in progress)</p>
+          </a>
           
         </div>
       </main>
     </div>
-
-    <script>
-      // Translation Feature
-      const sourceText = document.getElementById('sourceText');
-      const translatedText = document.getElementById('translatedText');
-      const sourceLang = document.getElementById('sourceLang');
-      const targetLang = document.getElementById('targetLang');
-      const translateBtn = document.getElementById('translateBtn');
-      const swapBtn = document.getElementById('swapBtn');
-      const copyBtn = document.getElementById('copyBtn');
-      const sourceCount = document.getElementById('sourceCount');
-      const targetCount = document.getElementById('targetCount');
-      const translationStatus = document.getElementById('translationStatus');
-
-      // Update character count
-      sourceText.addEventListener('input', () => {
-        sourceCount.textContent = sourceText.value.length;
-      });
-
-      translatedText.addEventListener('input', () => {
-        targetCount.textContent = translatedText.value.length;
-      });
-
-      // Translate function using free API
-      async function translate() {
-        const text = sourceText.value.trim();
-
-        if (!text) {
-          showStatus('Please enter text to translate', 'error');
-          return;
-        }
-
-        if (text.length > 5000) {
-          showStatus('Text exceeds 5000 characters', 'error');
-          return;
-        }
-
-        showStatus('Translating...', 'loading');
-
-        try {
-          const source = sourceLang.value === 'auto' ? 'auto' : sourceLang.value;
-          const target = targetLang.value;
-
-          // Using MyMemory Translation API (free, no key required)
-          const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${source}|${target}`;
-
-          const response = await fetch(url);
-          const data = await response.json();
-
-          if (data.responseStatus === 200) {
-            translatedText.value = data.responseData.translatedText;
-            targetCount.textContent = data.responseData.translatedText.length;
-            showStatus('Translation successful!', 'success');
-          } else {
-            showStatus('Translation failed. Please try again.', 'error');
-          }
-        } catch (error) {
-          showStatus('Error: Unable to connect to translation service', 'error');
-          console.error('Translation error:', error);
-        }
-      }
-
-      function showStatus(message, type) {
-        translationStatus.textContent = message;
-        translationStatus.className = `translation-status show ${type}`;
-
-        if (type !== 'loading') {
-          setTimeout(() => {
-            translationStatus.classList.remove('show');
-          }, 3000);
-        }
-      }
-
-      function swapLanguages() {
-        // Swap languages, but ensure target language is never 'auto'
-        const temp = sourceLang.value;
-        sourceLang.value = targetLang.value;
-        // If the previous source was 'auto', set target to a default language (e.g., 'en')
-        targetLang.value = temp === 'auto' ? 'en' : temp;
-
-        // Swap texts
-        const tempText = sourceText.value;
-        sourceText.value = translatedText.value;
-        translatedText.value = tempText;
-
-        // Update counts
-        sourceCount.textContent = sourceText.value.length;
-        targetCount.textContent = translatedText.value.length;
-      }
-
-      function copyToClipboard() {
-        if (!translatedText.value) {
-          showStatus('Nothing to copy', 'error');
-          return;
-        }
-
-        navigator.clipboard.writeText(translatedText.value).then(() => {
-          showStatus('Copied to clipboard!', 'success');
-        }).catch(() => {
-          showStatus('Failed to copy', 'error');
-        });
-      }
-
-      // Event listeners
-      translateBtn.addEventListener('click', translate);
-      swapBtn.addEventListener('click', swapLanguages);
-      copyBtn.addEventListener('click', copyToClipboard);
-
-      // Allow Enter key to translate (Ctrl+Enter)
-      sourceText.addEventListener('keydown', (e) => {
-        if (e.ctrlKey && e.key === 'Enter') {
-          translate();
-        }
-      });
-    </script>
   </body>
 </html>
