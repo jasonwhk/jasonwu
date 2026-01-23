@@ -168,6 +168,24 @@ function solveKeplerEquation(M, e) {
   return E;
 }
 
+function orbitalElementsAtEpoch(planetName, jd) {
+  const elements = ORBITAL_ELEMENTS_APPROX[planetName];
+  if (!elements) return null;
+
+  const T = centuriesSinceJ2000(jd);
+
+  const a = elements.a0 + elements.aRate * T;
+  const e = elements.e0 + elements.eRate * T;
+  const i = degreesToRadians(elements.i0 + elements.iRate * T);
+  const longPeri = normalizeDegrees(elements.longPeri0 + elements.longPeriRate * T);
+  const longNode = normalizeDegrees(elements.longNode0 + elements.longNodeRate * T);
+
+  const omega = degreesToRadians(normalizeDegrees(longPeri - longNode));
+  const Omega = degreesToRadians(longNode);
+
+  return { a, e, i, omega, Omega };
+}
+
 function computeHeliocentricEclipticXYZ_AU(planetName, jd) {
   const elements = ORBITAL_ELEMENTS_APPROX[planetName];
   if (!elements) return { x: 0, y: 0, z: 0, rAU: 0 };
@@ -310,25 +328,52 @@ async function createThreeApp({ viewportEl, canvas }) {
     return (a * (1 - ecc * ecc)) / denom;
   }
 
-  function createOrbitRing({ aAU, e, color }, ringIndex) {
+  function getOrbitRadiusFromElementsAU({ a, e }, nu) {
+    const ecc = Math.max(0, Math.min(0.999999, Number(e)));
+    const semiMajor = Math.max(0.0001, Number(a));
+    const denom = 1 + ecc * Math.cos(nu);
+    if (denom <= 1e-12) return semiMajor;
+    return (semiMajor * (1 - ecc * ecc)) / denom;
+  }
+
+  function createOrbitRing(planet, epochJd) {
     const segments = clampOrbitSegments(ORBIT_SEGMENTS);
     const positions = new Float32Array(segments * 3);
 
+    const frame = orbitalElementsAtEpoch(planet.name, epochJd);
+    const a = frame?.a ?? planet.aAU;
+    const e = frame?.e ?? planet.e;
+    const inclination = frame?.i ?? 0;
+    const omega = frame?.omega ?? 0;
+    const Omega = frame?.Omega ?? 0;
+
+    const cosOmega = Math.cos(Omega);
+    const sinOmega = Math.sin(Omega);
+    const cosI = Math.cos(inclination);
+    const sinI = Math.sin(inclination);
+
     for (let i = 0; i < segments; i += 1) {
-      const theta = (i / segments) * TAU;
-      const r = getOrbitRadiusAU({ aAU, e }, theta);
-      const x = r * Math.cos(theta);
-      const z = r * Math.sin(theta);
+      const nu = (i / segments) * TAU;
+      const r = getOrbitRadiusFromElementsAU({ a, e }, nu);
+
+      const arg = omega + nu;
+      const cosArg = Math.cos(arg);
+      const sinArg = Math.sin(arg);
+
+      const X = r * (cosOmega * cosArg - sinOmega * sinArg * cosI);
+      const Y = r * (sinOmega * cosArg + cosOmega * sinArg * cosI);
+      const Z = r * (sinArg * sinI);
+
       const base = i * 3;
-      positions[base + 0] = x;
-      positions[base + 1] = 0;
-      positions[base + 2] = z;
+      positions[base + 0] = X;
+      positions[base + 1] = Z;
+      positions[base + 2] = Y;
     }
 
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
-    const lineColor = new THREE.Color(color).lerp(new THREE.Color(0xffffff), 0.15);
+    const lineColor = new THREE.Color(planet.color).lerp(new THREE.Color(0xffffff), 0.15);
     const material = new THREE.LineBasicMaterial({
       color: lineColor,
       transparent: true,
@@ -337,7 +382,6 @@ async function createThreeApp({ viewportEl, canvas }) {
     });
 
     const line = new THREE.LineLoop(geometry, material);
-    line.position.y = 0.001 * (ringIndex + 1);
     line.renderOrder = 1;
 
     return { line, geometry, material };
@@ -348,9 +392,10 @@ async function createThreeApp({ viewportEl, canvas }) {
   scene.add(orbitsGroup);
 
   const orbitEntries = [];
+  const orbitEpochJd = dateToJulianDay(new Date());
   for (let i = 0; i < PLANETS.length; i += 1) {
     const planet = PLANETS[i];
-    const orbit = createOrbitRing(planet, i);
+    const orbit = createOrbitRing(planet, orbitEpochJd);
     orbitsGroup.add(orbit.line);
     orbitEntries.push(orbit);
   }
