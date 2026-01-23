@@ -25,10 +25,18 @@
       <main id="main" class="ss-main">
         <div class="ss-viewport" id="viewport" aria-label="Solar System viewport">
           <div class="ss-overlay" aria-label="Status panel">
-            <div class="ss-title">Solar System</div>
-            <div class="ss-subtitle">Milestone 6.6: Moons (v2)</div>
-            <div class="ss-status" id="status">Loading…</div>
-            <div class="ss-controls" aria-label="View options">
+            <div class="ss-panel-header">
+              <div>
+                <div class="ss-title">Solar System</div>
+                <div class="ss-subtitle">Milestone 6.6: Moons (v2)</div>
+              </div>
+              <button class="ss-button ss-collapse-button" type="button" id="togglePanel" aria-expanded="true">
+                Collapse
+              </button>
+            </div>
+            <div class="ss-panel-body">
+              <div class="ss-status" id="status">Loading…</div>
+              <div class="ss-controls" aria-label="View options">
               <label class="ss-control">
                 <input type="checkbox" id="toggleVisibilityScale">
                 Planet visibility scale
@@ -70,84 +78,85 @@
                 <input type="checkbox" id="toggleMoonsFocusOnly">
                 Moons only for focus
               </label>
-            </div>
-            <div class="ss-time" aria-label="Time controls">
-              <div class="ss-time-row">
-                <button class="ss-button" type="button" id="btnNow">Now</button>
-                <button class="ss-button" type="button" id="btnPlayPause" aria-pressed="true">Pause</button>
-                <label class="ss-time-speed">
-                  <span class="ss-time-label">Speed</span>
-                  <select class="ss-select" id="speedSelect" aria-label="Simulation speed">
-                    <option value="1" selected>1×</option>
-                    <option value="60">60×</option>
-                    <option value="600">600×</option>
-                    <option value="6000">6000×</option>
-                    <option value="60000">60000×</option>
-                    <option value="custom">Custom…</option>
+              </div>
+              <div class="ss-time" aria-label="Time controls">
+                <div class="ss-time-row">
+                  <button class="ss-button" type="button" id="btnNow">Now</button>
+                  <button class="ss-button" type="button" id="btnPlayPause" aria-pressed="true">Pause</button>
+                  <label class="ss-time-speed">
+                    <span class="ss-time-label">Speed</span>
+                    <select class="ss-select" id="speedSelect" aria-label="Simulation speed">
+                      <option value="1" selected>1×</option>
+                      <option value="60">60×</option>
+                      <option value="600">600×</option>
+                      <option value="6000">6000×</option>
+                      <option value="60000">60000×</option>
+                      <option value="custom">Custom…</option>
+                    </select>
+                  </label>
+                </div>
+                <label class="ss-time-custom" id="customSpeedWrap" hidden>
+                  <span class="ss-time-label">Custom</span>
+                  <input
+                    class="ss-input"
+                    id="customSpeedInput"
+                    type="number"
+                    inputmode="numeric"
+                    min="0"
+                    step="1"
+                    value="6000"
+                    aria-label="Custom simulation speed multiplier"
+                  >
+                  <span class="ss-time-label">×</span>
+                </label>
+                <label class="ss-time-slider" for="timeOffsetDays">
+                  <span class="ss-time-label">Offset</span>
+                  <span class="ss-time-value" id="timeOffsetLabel">0 d</span>
+                </label>
+                <input
+                  class="ss-range"
+                  id="timeOffsetDays"
+                  type="range"
+                  min="-365"
+                  max="365"
+                  step="1"
+                  value="0"
+                  aria-label="Time offset in days"
+                >
+              </div>
+              <div class="ss-camera" aria-label="Camera controls">
+                <label class="ss-camera-row">
+                  <span class="ss-time-label">View</span>
+                  <select class="ss-select" id="viewPreset" aria-label="Camera view preset">
+                    <option value="free">Free</option>
+                    <option value="tilted" selected>Tilted</option>
+                    <option value="top">Top-down</option>
                   </select>
                 </label>
+                <label class="ss-camera-row">
+                  <span class="ss-time-label">Focus</span>
+                  <select class="ss-select" id="focusSelect" aria-label="Focus target">
+                    <option value="Sun" selected>Sun</option>
+                    <option value="Mercury">Mercury</option>
+                    <option value="Venus">Venus</option>
+                    <option value="Earth">Earth</option>
+                    <option value="Mars">Mars</option>
+                    <option value="Jupiter">Jupiter</option>
+                    <option value="Saturn">Saturn</option>
+                    <option value="Uranus">Uranus</option>
+                    <option value="Neptune">Neptune</option>
+                  </select>
+                </label>
+                <label class="ss-control">
+                  <input type="checkbox" id="trackFocus">
+                  Track focus
+                </label>
               </div>
-              <label class="ss-time-custom" id="customSpeedWrap" hidden>
-                <span class="ss-time-label">Custom</span>
-                <input
-                  class="ss-input"
-                  id="customSpeedInput"
-                  type="number"
-                  inputmode="numeric"
-                  min="0"
-                  step="1"
-                  value="6000"
-                  aria-label="Custom simulation speed multiplier"
-                >
-                <span class="ss-time-label">×</span>
-              </label>
-              <label class="ss-time-slider" for="timeOffsetDays">
-                <span class="ss-time-label">Offset</span>
-                <span class="ss-time-value" id="timeOffsetLabel">0 d</span>
-              </label>
-              <input
-                class="ss-range"
-                id="timeOffsetDays"
-                type="range"
-                min="-365"
-                max="365"
-                step="1"
-                value="0"
-                aria-label="Time offset in days"
-              >
-            </div>
-            <div class="ss-camera" aria-label="Camera controls">
-              <label class="ss-camera-row">
-                <span class="ss-time-label">View</span>
-                <select class="ss-select" id="viewPreset" aria-label="Camera view preset">
-                  <option value="free">Free</option>
-                  <option value="tilted" selected>Tilted</option>
-                  <option value="top">Top-down</option>
-                </select>
-              </label>
-              <label class="ss-camera-row">
-                <span class="ss-time-label">Focus</span>
-                <select class="ss-select" id="focusSelect" aria-label="Focus target">
-                  <option value="Sun" selected>Sun</option>
-                  <option value="Mercury">Mercury</option>
-                  <option value="Venus">Venus</option>
-                  <option value="Earth">Earth</option>
-                  <option value="Mars">Mars</option>
-                  <option value="Jupiter">Jupiter</option>
-                  <option value="Saturn">Saturn</option>
-                  <option value="Uranus">Uranus</option>
-                  <option value="Neptune">Neptune</option>
-                </select>
-              </label>
-              <label class="ss-control">
-                <input type="checkbox" id="trackFocus">
-                Track focus
-              </label>
-            </div>
-            <div class="ss-help" aria-label="Gestures help">
-              <div><span class="ss-help-key">1 finger</span> rotate</div>
-              <div><span class="ss-help-key">Pinch</span> zoom</div>
-              <div><span class="ss-help-key">2 fingers</span> pan</div>
+              <div class="ss-help" aria-label="Gestures help">
+                <div><span class="ss-help-key">1 finger</span> rotate</div>
+                <div><span class="ss-help-key">Pinch</span> zoom</div>
+                <div><span class="ss-help-key">2 fingers</span> pan</div>
+              </div>
             </div>
           </div>
 

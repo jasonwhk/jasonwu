@@ -42,6 +42,30 @@
   backdrop-filter: blur(8px);
 }
 
+.ss-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ss-panel-body {
+  margin-top: 8px;
+  display: grid;
+  gap: 10px;
+}
+
+.ss-collapse-button {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  border-radius: 999px;
+  align-self: flex-start;
+}
+
+.ss-overlay.is-collapsed .ss-panel-body {
+  display: none;
+}
+
 .ss-title {
   font-weight: 700;
   font-size: 0.95rem;
@@ -54,13 +78,11 @@
 }
 
 .ss-status {
-  margin-top: 8px;
   font-size: 0.9rem;
   color: rgba(0, 0, 0, 0.8);
 }
 
 .ss-controls {
-  margin-top: 10px;
   display: grid;
   gap: 6px;
   font-size: 0.85rem;
@@ -75,7 +97,6 @@
 }
 
 .ss-time {
-  margin-top: 10px;
   display: grid;
   gap: 8px;
   font-size: 0.85rem;
@@ -83,7 +104,6 @@
 }
 
 .ss-camera {
-  margin-top: 10px;
   display: grid;
   gap: 8px;
   font-size: 0.85rem;
@@ -191,7 +211,6 @@
 }
 
 .ss-help {
-  margin-top: 10px;
   display: grid;
   gap: 2px;
   font-size: 0.85rem;
@@ -257,6 +276,10 @@
     left: 10px;
     top: 10px;
     padding: 10px 10px;
+  }
+
+  .ss-panel-header {
+    align-items: center;
   }
 
   .ss-time-row {
