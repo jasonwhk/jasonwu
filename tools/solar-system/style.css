@@ -34,12 +34,15 @@
   top: 12px;
   z-index: 2;
   max-width: min(340px, calc(100% - 24px));
+  max-height: calc(100vh - 24px);
+  overflow: auto;
   background: var(--ss-panel-bg);
   border: 1px solid var(--ss-panel-border);
   border-radius: 12px;
   padding: 10px 12px;
   color: #111;
   backdrop-filter: blur(8px);
+  -webkit-overflow-scrolling: touch;
 }
 
 .ss-panel-header {
@@ -271,10 +274,50 @@
   will-change: transform;
 }
 
+.ss-gesture-hint {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.65);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.8rem;
+  line-height: 1.2;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.ss-gesture-hint.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+}
+
+.ss-gesture-dismiss {
+  appearance: none;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: inherit;
+  border-radius: 999px;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
 @media (max-width: 480px) {
   .ss-overlay {
-    left: 10px;
-    top: 10px;
+    left: 8px;
+    top: 8px;
+    max-width: calc(100% - 16px);
+    max-height: calc(100vh - 16px);
     padding: 10px 10px;
   }
 
@@ -294,5 +337,13 @@
 
   .ss-camera-row {
     grid-template-columns: auto 1fr;
+  }
+
+  .ss-gesture-hint {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    justify-content: space-between;
+    font-size: 0.75rem;
   }
 }

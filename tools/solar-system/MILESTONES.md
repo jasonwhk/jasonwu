@@ -120,3 +120,16 @@ How to test:
 - Toggle “Moon orbits” ON/OFF and confirm rings show/hide.
 - Focus Jupiter, enable “Moons only for focus”, and confirm only Jupiter’s moons remain visible.
 - Press “Play” at 600× and confirm moons orbit smoothly with no console errors.
+
+## Milestone 7 — UX Polish
+- Reduced planet label jitter by moving labels to a throttled screen-space updater with pixel snapping.
+- Added toggles for planet orbit rings and optional planet trails.
+- Added a dismissible gesture hint bubble that fades after first interaction/timeout.
+- Hardened mobile layout with scrollable overlay and safer viewport sizing.
+
+How to test:
+- Open `/tools/solar-system/index.html`.
+- Toggle “Orbit rings” and confirm planet orbit lines show/hide.
+- Toggle “Planet trails”, press “Play”, and confirm trailing paths appear over time.
+- Toggle “Labels” and confirm planet labels remain stable with less jitter.
+- On mobile, confirm the overlay scrolls if needed and the gesture hint can be dismissed.
