@@ -133,3 +133,13 @@ How to test:
 - Toggle “Planet trails”, press “Play”, and confirm trailing paths appear over time.
 - Toggle “Labels” and confirm planet labels remain stable with less jitter.
 - On mobile, confirm the overlay scrolls if needed and the gesture hint can be dismissed.
+
+## Milestone 8 — Documentation & Final Checks
+- Added a compact “About” panel with data/interaction notes.
+- Added a lightweight UI sanity check to surface missing controls early.
+- Updated the subtitle to reflect the final milestone.
+
+How to test:
+- Open `/tools/solar-system/index.html`.
+- Confirm the “About” section appears in the overlay and reads clearly on mobile.
+- Confirm the status line updates with simulated time and no console errors appear.

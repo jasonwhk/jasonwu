@@ -1253,12 +1253,46 @@ function getButton(id) {
   return el;
 }
 
+function runSanityChecks() {
+  const requiredIds = [
+    STATUS_ID,
+    TOGGLE_VISIBILITY_SCALE_ID,
+    TOGGLE_LABELS_ID,
+    TOGGLE_ORBITS_ID,
+    TOGGLE_TRAILS_ID,
+    TOGGLE_MOONS_ID,
+    TOGGLE_MOON_ORBITS_ID,
+    TOGGLE_MOON_LABELS_ID,
+    MOON_SIZE_BOOST_ID,
+    MOON_DENSITY_ID,
+    TOGGLE_MOONS_FOCUS_ONLY_ID,
+    BTN_NOW_ID,
+    BTN_PLAY_PAUSE_ID,
+    SPEED_SELECT_ID,
+    CUSTOM_SPEED_WRAP_ID,
+    CUSTOM_SPEED_INPUT_ID,
+    TIME_OFFSET_SLIDER_ID,
+    TIME_OFFSET_LABEL_ID,
+    VIEW_PRESET_ID,
+    FOCUS_SELECT_ID,
+    TRACK_FOCUS_ID,
+  ];
+  const missing = requiredIds.filter((id) => !document.getElementById(id));
+  if (!missing.length) return true;
+  const preview = missing.slice(0, 3).join(', ');
+  const suffix = missing.length > 3 ? '…' : '';
+  setStatus(`Error: missing UI (${preview}${suffix})`);
+  return false;
+}
+
 function init() {
   const viewportEl = document.getElementById(VIEWPORT_ID);
   if (!viewportEl) {
     setStatus('Error: missing viewport');
     return;
   }
+
+  if (!runSanityChecks()) return;
 
   const overlayEl = viewportEl.querySelector('.ss-overlay');
   const panelToggleBtn = getButton(TOGGLE_PANEL_ID);
