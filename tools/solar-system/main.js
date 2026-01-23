@@ -312,7 +312,7 @@ async function createThreeApp({ viewportEl, canvas }) {
 
   const scene = new THREE.Scene();
 
-  const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 2000);
+  const camera = new THREE.PerspectiveCamera(50, 1, 0.001, 2000);
   camera.position.set(0, 12, 45);
 
   const ambient = new THREE.AmbientLight(0xffffff, 0.6);
@@ -443,6 +443,7 @@ async function createThreeApp({ viewportEl, canvas }) {
   for (const planet of PLANETS) {
     const material = new THREE.MeshStandardMaterial({
       color: planet.color,
+      emissive: new THREE.Color(planet.color).multiplyScalar(0.08),
       roughness: 0.85,
       metalness: 0.0,
     });
@@ -609,7 +610,7 @@ async function createThreeApp({ viewportEl, canvas }) {
   controls.dampingFactor = 0.07;
   controls.enablePan = true;
   controls.screenSpacePanning = true;
-  controls.minDistance = 3;
+  controls.minDistance = 0.25;
   controls.maxDistance = 400;
   controls.target.set(0, 0, 0);
   controls.update();

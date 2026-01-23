@@ -45,10 +45,8 @@ The widget shows:
    - Relative paths only.
    - CDN imports must work on GitHub Pages.
 
-5. **Always print full code**
-   - For every file you create or modify, print the entire file.
 
-6. **No scope creep**
+5. **No scope creep**
    - Implement **only the active milestone**.
    - Do not jump ahead.
 
@@ -82,7 +80,6 @@ After completing a milestone:
 1. Ensure no console errors
 2. Ensure page runs by opening HTML directly
 3. Update `tools/solar-system/MILESTONES.md`
-4. Print full code for modified files
 
 ---
 
@@ -291,7 +288,6 @@ If the user has selected a focused planet (Milestone 6):
 - [ ] Performance remains good on iPhone Safari (no obvious stutter during rotate/zoom).
 - [ ] No console errors.
 - [ ] `tools/solar-system/MILESTONES.md` updated with Milestone 6.6 notes.
-- [ ] Full code printed for all changed files.
 
 ---
 
@@ -313,7 +309,6 @@ Update only as needed:
 - `tools/solar-system/style.css` (if needed)
 - `tools/solar-system/MILESTONES.md`
 
-**Print the full code for every file you modify.**
 
 ### Milestone 7 — UX Polish
 - Label jitter reduction
