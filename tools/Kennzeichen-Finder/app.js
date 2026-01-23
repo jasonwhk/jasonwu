@@ -14,6 +14,9 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 
 const resultsList = document.getElementById("results-list");
 const searchInput = document.getElementById("search");
+const plateInput = document.getElementById("plate-input");
+const plateSubmit = document.getElementById("plate-submit");
+const plateMessage = document.getElementById("plate-message");
 const detailsEmpty = document.getElementById("details-empty");
 const detailsContent = document.getElementById("details-content");
 const detailsCode = document.getElementById("details-code");
@@ -122,6 +125,17 @@ const renderEmptyState = (message) => {
 
 const normalize = (value) => value.trim().toLowerCase();
 
+const setPlateMessage = (message, status = "info") => {
+  plateMessage.textContent = message;
+  plateMessage.classList.remove("is-error", "is-success");
+  if (status === "error") {
+    plateMessage.classList.add("is-error");
+  }
+  if (status === "success") {
+    plateMessage.classList.add("is-success");
+  }
+};
+
 const filterEntries = (query) => {
   if (!query) {
     return allEntries;
@@ -142,6 +156,60 @@ const applyFilter = () => {
     return;
   }
   renderList(filteredEntries);
+};
+
+const extractPlateLetters = (plateValue) => {
+  const trimmed = plateValue.trim().toUpperCase();
+  if (!trimmed) {
+    return null;
+  }
+  const match = trimmed.match(/^[A-ZÄÖÜ]+/);
+  return match ? match[0] : null;
+};
+
+const findPlateCandidates = (letters) => {
+  const byPrefix = allEntries
+    .filter((entry) => letters.startsWith(entry.code))
+    .sort((a, b) => b.code.length - a.code.length);
+  if (byPrefix.length > 0) {
+    return byPrefix;
+  }
+  return allEntries.filter((entry) => entry.code.startsWith(letters));
+};
+
+const handlePlateSubmit = () => {
+  if (allEntries.length === 0) {
+    setPlateMessage("Data is still loading. Please try again shortly.", "error");
+    return;
+  }
+  const letters = extractPlateLetters(plateInput.value);
+  if (!letters) {
+    setPlateMessage("Enter a plate like BN-AB 1234 to detect the prefix.", "error");
+    return;
+  }
+  const candidates = findPlateCandidates(letters);
+  if (candidates.length === 0) {
+    setPlateMessage(`No matches for "${letters}". Try another plate.`, "error");
+    return;
+  }
+  const bestLength = candidates[0].code.length;
+  const bestMatches = candidates.filter((entry) => entry.code.length === bestLength);
+  if (bestMatches.length === 1) {
+    const best = bestMatches[0];
+    searchInput.value = best.code;
+    applyFilter();
+    const button = resultsList.querySelector(`button[data-code="${best.code}"]`);
+    selectEntry(best, button);
+    setPlateMessage(`Matched ${best.code} — ${best.name}.`, "success");
+    return;
+  }
+  searchInput.value = letters;
+  applyFilter();
+  const suggestions = bestMatches.map((entry) => entry.code).join(", ");
+  setPlateMessage(
+    `Multiple matches: ${suggestions}. Pick the right one from the results.`,
+    "error",
+  );
 };
 
 const scheduleFilter = () => {
@@ -183,6 +251,14 @@ const loadPlates = async () => {
     renderList(allEntries);
     searchInput.addEventListener("input", scheduleFilter);
     searchInput.addEventListener("keydown", handleSearchKeydown);
+    plateInput.addEventListener("input", () => setPlateMessage(""));
+    plateSubmit.addEventListener("click", handlePlateSubmit);
+    plateInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        handlePlateSubmit();
+      }
+    });
   } catch (error) {
     renderEmptyState("Unable to load data.");
   }

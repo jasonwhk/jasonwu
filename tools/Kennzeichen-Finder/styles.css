@@ -87,6 +87,7 @@ body {
 
 .reset-button:focus-visible,
 .results-button:focus-visible,
+input[type="text"]:focus-visible,
 input[type="search"]:focus-visible {
   outline: 2px solid rgba(37, 99, 235, 0.4);
   outline-offset: 2px;
@@ -98,7 +99,8 @@ input[type="search"]:focus-visible {
   margin-bottom: 8px;
 }
 
-input[type="search"] {
+input[type="search"],
+input[type="text"] {
   width: 100%;
   border-radius: 12px;
   border: 1px solid var(--border);
@@ -110,6 +112,44 @@ input[type="search"] {
   margin: 8px 0 0;
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+.helper.is-error {
+  color: #b42318;
+}
+
+.helper.is-success {
+  color: #1d4ed8;
+}
+
+.plate-helper {
+  margin-top: 16px;
+}
+
+.plate-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.plate-input-row input {
+  flex: 1;
+}
+
+.plate-button {
+  border: 1px solid var(--border);
+  background: #f5f7ff;
+  color: var(--accent);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.plate-button:focus-visible {
+  outline: 2px solid rgba(37, 99, 235, 0.4);
+  outline-offset: 2px;
 }
 
 .placeholder {

@@ -33,6 +33,22 @@
           <p id="search-helper" class="helper">
             Start typing to filter by plate code or city.
           </p>
+          <div class="plate-helper">
+            <label class="field-label" for="plate-input">Paste a full plate</label>
+            <div class="plate-input-row">
+              <input
+                id="plate-input"
+                type="text"
+                placeholder="e.g. BN-AB 1234"
+                autocomplete="off"
+                aria-describedby="plate-message"
+              >
+              <button id="plate-submit" class="plate-button" type="button">
+                Find
+              </button>
+            </div>
+            <p id="plate-message" class="helper" role="status"></p>
+          </div>
         </section>
 
         <section class="panel panel-results" aria-label="Results">
