@@ -257,10 +257,15 @@
   color: rgba(255, 255, 255, 0.92);
   font-size: 12px;
   line-height: 1.2;
-  max-width: 160px;
+  max-width: min(40vw, 160px);
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  text-align: center;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   transform: translate(-50%, -50%);
   will-change: transform;
 }
