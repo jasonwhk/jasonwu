@@ -5,9 +5,208 @@ const TOGGLE_LABELS_ID = 'toggleLabels';
 
 const ORBIT_SEGMENTS = 512;
 
+const ORBITAL_ELEMENTS_APPROX = {
+  Mercury: {
+    a0: 0.38709927,
+    aRate: 0.00000037,
+    e0: 0.20563593,
+    eRate: 0.00001906,
+    i0: 7.00497902,
+    iRate: -0.00594749,
+    L0: 252.2503235,
+    LRate: 149472.67411175,
+    longPeri0: 77.45779628,
+    longPeriRate: 0.16047689,
+    longNode0: 48.33076593,
+    longNodeRate: -0.12534081,
+  },
+  Venus: {
+    a0: 0.72333566,
+    aRate: 0.0000039,
+    e0: 0.00677672,
+    eRate: -0.00004107,
+    i0: 3.39467605,
+    iRate: -0.0007889,
+    L0: 181.9790995,
+    LRate: 58517.81538729,
+    longPeri0: 131.60246718,
+    longPeriRate: 0.00268329,
+    longNode0: 76.67984255,
+    longNodeRate: -0.27769418,
+  },
+  Earth: {
+    a0: 1.00000261,
+    aRate: 0.00000562,
+    e0: 0.01671123,
+    eRate: -0.00004392,
+    i0: -0.00001531,
+    iRate: -0.01294668,
+    L0: 100.46457166,
+    LRate: 35999.37244981,
+    longPeri0: 102.93768193,
+    longPeriRate: 0.32327364,
+    longNode0: 0,
+    longNodeRate: 0,
+  },
+  Mars: {
+    a0: 1.52371034,
+    aRate: 0.00001847,
+    e0: 0.0933941,
+    eRate: 0.00007882,
+    i0: 1.84969142,
+    iRate: -0.00813131,
+    L0: -4.55343205,
+    LRate: 19140.30268499,
+    longPeri0: -23.94362959,
+    longPeriRate: 0.44441088,
+    longNode0: 49.55953891,
+    longNodeRate: -0.29257343,
+  },
+  Jupiter: {
+    a0: 5.202887,
+    aRate: -0.00011607,
+    e0: 0.04838624,
+    eRate: -0.00013253,
+    i0: 1.30439695,
+    iRate: -0.00183714,
+    L0: 34.39644051,
+    LRate: 3034.74612775,
+    longPeri0: 14.72847983,
+    longPeriRate: 0.21252668,
+    longNode0: 100.47390909,
+    longNodeRate: 0.20469106,
+  },
+  Saturn: {
+    a0: 9.53667594,
+    aRate: -0.0012506,
+    e0: 0.05386179,
+    eRate: -0.00050991,
+    i0: 2.48599187,
+    iRate: 0.00193609,
+    L0: 49.95424423,
+    LRate: 1222.49362201,
+    longPeri0: 92.59887831,
+    longPeriRate: -0.41897216,
+    longNode0: 113.66242448,
+    longNodeRate: -0.28867794,
+  },
+  Uranus: {
+    a0: 19.18916464,
+    aRate: -0.00196176,
+    e0: 0.04725744,
+    eRate: -0.00004397,
+    i0: 0.77263783,
+    iRate: -0.00242939,
+    L0: 313.23810451,
+    LRate: 428.48202785,
+    longPeri0: 170.9542763,
+    longPeriRate: 0.40805281,
+    longNode0: 74.01692503,
+    longNodeRate: 0.04240589,
+  },
+  Neptune: {
+    a0: 30.06992276,
+    aRate: 0.00026291,
+    e0: 0.00859048,
+    eRate: 0.00005105,
+    i0: 1.77004347,
+    iRate: 0.00035372,
+    L0: -55.12002969,
+    LRate: 218.45945325,
+    longPeri0: 44.96476227,
+    longPeriRate: -0.32241464,
+    longNode0: 131.78422574,
+    longNodeRate: -0.00508664,
+  },
+};
+
 function clampDevicePixelRatio(dpr) {
   if (!Number.isFinite(dpr) || dpr <= 0) return 1;
   return Math.min(2, Math.max(1, dpr));
+}
+
+function degreesToRadians(deg) {
+  return (Number(deg) * Math.PI) / 180;
+}
+
+function normalizeDegrees(deg) {
+  if (!Number.isFinite(deg)) return 0;
+  const mod = deg % 360;
+  return mod < 0 ? mod + 360 : mod;
+}
+
+function normalizeRadians(rad) {
+  if (!Number.isFinite(rad)) return 0;
+  const tau = Math.PI * 2;
+  const mod = rad % tau;
+  return mod < -Math.PI ? mod + tau : mod > Math.PI ? mod - tau : mod;
+}
+
+function dateToJulianDay(date) {
+  const ms = date instanceof Date ? date.getTime() : Date.now();
+  return ms / 86400000 + 2440587.5;
+}
+
+function centuriesSinceJ2000(jd) {
+  return (jd - 2451545.0) / 36525.0;
+}
+
+function solveKeplerEquation(M, e) {
+  const ecc = Math.max(0, Math.min(0.999999, Number(e)));
+  const meanAnomaly = normalizeRadians(Number(M));
+
+  if (ecc < 1e-8) return meanAnomaly;
+
+  let E = ecc < 0.8 ? meanAnomaly : Math.PI;
+  for (let i = 0; i < 12; i += 1) {
+    const f = E - ecc * Math.sin(E) - meanAnomaly;
+    const fp = 1 - ecc * Math.cos(E);
+    const step = fp !== 0 ? f / fp : 0;
+    E -= step;
+    if (Math.abs(step) < 1e-12) break;
+  }
+  return E;
+}
+
+function computeHeliocentricEclipticXYZ_AU(planetName, jd) {
+  const elements = ORBITAL_ELEMENTS_APPROX[planetName];
+  if (!elements) return { x: 0, y: 0, z: 0, rAU: 0 };
+
+  const T = centuriesSinceJ2000(jd);
+
+  const a = elements.a0 + elements.aRate * T;
+  const e = elements.e0 + elements.eRate * T;
+  const i = degreesToRadians(elements.i0 + elements.iRate * T);
+  const L = normalizeDegrees(elements.L0 + elements.LRate * T);
+  const longPeri = normalizeDegrees(elements.longPeri0 + elements.longPeriRate * T);
+  const longNode = normalizeDegrees(elements.longNode0 + elements.longNodeRate * T);
+
+  const M = degreesToRadians(normalizeDegrees(L - longPeri));
+  const E = solveKeplerEquation(M, e);
+
+  const rAU = a * (1 - e * Math.cos(E));
+  const sqrtOneMinusESq = Math.sqrt(Math.max(0, 1 - e * e));
+  const sinNu = (sqrtOneMinusESq * Math.sin(E)) / Math.max(1e-12, 1 - e * Math.cos(E));
+  const cosNu = (Math.cos(E) - e) / Math.max(1e-12, 1 - e * Math.cos(E));
+  const nu = Math.atan2(sinNu, cosNu);
+
+  const omega = degreesToRadians(normalizeDegrees(longPeri - longNode));
+  const Omega = degreesToRadians(longNode);
+
+  const cosOmega = Math.cos(Omega);
+  const sinOmega = Math.sin(Omega);
+  const cosI = Math.cos(i);
+  const sinI = Math.sin(i);
+
+  const arg = omega + nu;
+  const cosArg = Math.cos(arg);
+  const sinArg = Math.sin(arg);
+
+  const X = rAU * (cosOmega * cosArg - sinOmega * sinArg * cosI);
+  const Y = rAU * (sinOmega * cosArg + cosOmega * sinArg * cosI);
+  const Z = rAU * (sinArg * sinI);
+
+  return { x: X, y: Y, z: Z, rAU };
 }
 
 function setStatus(text) {
@@ -182,7 +381,7 @@ async function createThreeApp({ viewportEl, canvas }) {
     mesh.add(labelObj);
 
     planetsGroup.add(mesh);
-    planetEntries.push({ mesh, material, baseRadius: planet.radius, labelObj });
+    planetEntries.push({ mesh, material, baseRadius: planet.radius, labelObj, name: planet.name });
   }
 
   const grid = new THREE.GridHelper(60, 60, 0x223366, 0x112244);
@@ -231,13 +430,42 @@ async function createThreeApp({ viewportEl, canvas }) {
   applyPlanetScale();
   applyLabelsVisible();
 
+  function updatePlanetPositions(jd) {
+    for (const entry of planetEntries) {
+      const pos = computeHeliocentricEclipticXYZ_AU(entry.name, jd);
+      entry.mesh.position.set(pos.x, pos.z, pos.y);
+    }
+  }
+
+  let lastStatusMinute = -1;
+  function updateNowStatus(date) {
+    const minuteKey = Math.floor(date.getTime() / 60000);
+    if (minuteKey === lastStatusMinute) return;
+    lastStatusMinute = minuteKey;
+    const iso = date.toISOString().replace(/\.\d{3}Z$/, 'Z');
+    setStatus(`Now: ${iso}`);
+  }
+
   let rafId = 0;
+  let lastUpdateSecond = -1;
   function frame() {
     controls.update();
+    const now = new Date();
+    const nowSecond = Math.floor(now.getTime() / 1000);
+    if (nowSecond !== lastUpdateSecond) {
+      lastUpdateSecond = nowSecond;
+      const jd = dateToJulianDay(now);
+      updatePlanetPositions(jd);
+      updateNowStatus(now);
+    }
     renderer.render(scene, camera);
     labelRenderer.render(scene, camera);
     rafId = window.requestAnimationFrame(frame);
   }
+
+  const initialNow = new Date();
+  updatePlanetPositions(dateToJulianDay(initialNow));
+  updateNowStatus(initialNow);
 
   rafId = window.requestAnimationFrame(frame);
 
@@ -297,8 +525,6 @@ function init() {
   setStatus('Loading Three.js…');
   createThreeApp({ viewportEl, canvas })
     .then((app) => {
-      setStatus('Ready');
-
       const visibilityToggle = getToggle(TOGGLE_VISIBILITY_SCALE_ID);
       if (visibilityToggle) {
         app.setVisibilityScale(visibilityToggle.checked);

@@ -42,3 +42,16 @@ How to test:
 - Confirm each planet has a corresponding orbit ring.
 - Rotate/zoom/pan; confirm rings remain visually stable with no flicker/z-fighting.
 - Toggle “Labels” and “Planet visibility scale”; confirm prior Milestone 2 behavior still works.
+
+## Milestone 4 — Keplerian Planet Positions (Now)
+- Added Julian Day conversion (from `Date`) and centuries-since-J2000 time variable.
+- Added an approximate orbital-elements dataset (J2000 base + per-century rates).
+- Implemented a Kepler equation solver (Newton iteration).
+- Compute heliocentric ecliptic positions (XYZ, AU) and place planets at current-date positions.
+- Planets update once per second and the status panel shows the current UTC timestamp.
+
+How to test:
+- Open `/tools/solar-system/index.html`.
+- Confirm planets are no longer aligned at the same orbital angle (they should be spread around the Sun).
+- Wait ~10 seconds; confirm the “Now:” timestamp updates and there are no console errors.
+- Toggle “Labels” and “Planet visibility scale”; confirm prior Milestone 2 behavior still works.
