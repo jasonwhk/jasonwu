@@ -9,6 +9,9 @@ const CUSTOM_SPEED_WRAP_ID = 'customSpeedWrap';
 const CUSTOM_SPEED_INPUT_ID = 'customSpeedInput';
 const TIME_OFFSET_SLIDER_ID = 'timeOffsetDays';
 const TIME_OFFSET_LABEL_ID = 'timeOffsetLabel';
+const VIEW_PRESET_ID = 'viewPreset';
+const FOCUS_SELECT_ID = 'focusSelect';
+const TRACK_FOCUS_ID = 'trackFocus';
 
 const ORBIT_SEGMENTS = 512;
 
@@ -280,6 +283,9 @@ async function createThreeApp({ viewportEl, canvas }) {
 
   const TAU = Math.PI * 2;
 
+  const CAMERA_TRANSITION_MS = 650;
+  const CAMERA_EPSILON = 1e-4;
+
   const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: true,
@@ -451,6 +457,112 @@ async function createThreeApp({ viewportEl, canvas }) {
   controls.target.set(0, 0, 0);
   controls.update();
 
+  const initialOffset = camera.position.clone().sub(controls.target);
+  const initialDistance = Math.max(controls.minDistance, initialOffset.length());
+  const initialOffsetDir = initialOffset.lengthSq() > 0 ? initialOffset.clone().normalize() : new THREE.Vector3(0, 0.25, 1);
+
+  let viewPreset = 'tilted';
+  let focusName = 'Sun';
+  let trackFocus = false;
+
+  const focusTargets = new Map();
+  focusTargets.set('Sun', sunMesh);
+  for (const entry of planetEntries) focusTargets.set(entry.name, entry.mesh);
+
+  let cameraTransition = null;
+
+  function easeInOutCubic(t) {
+    const clamped = Math.max(0, Math.min(1, Number(t)));
+    return clamped < 0.5 ? 4 * clamped * clamped * clamped : 1 - Math.pow(-2 * clamped + 2, 3) / 2;
+  }
+
+  function startCameraTransition({ nextTarget, nextCameraPos, durationMs = CAMERA_TRANSITION_MS }) {
+    const target = nextTarget instanceof THREE.Vector3 ? nextTarget.clone() : controls.target.clone();
+    const cameraPos = nextCameraPos instanceof THREE.Vector3 ? nextCameraPos.clone() : camera.position.clone();
+
+    cameraTransition = {
+      startPerfMs: performance.now(),
+      durationMs: Math.max(0, Number(durationMs) || 0),
+      fromTarget: controls.target.clone(),
+      toTarget: target,
+      fromPos: camera.position.clone(),
+      toPos: cameraPos,
+    };
+  }
+
+  function cancelCameraTransition() {
+    cameraTransition = null;
+  }
+
+  function applyCameraTransition(nowPerfMs) {
+    if (!cameraTransition) return false;
+
+    const tRaw =
+      cameraTransition.durationMs <= 0 ? 1 : (Number(nowPerfMs) - cameraTransition.startPerfMs) / cameraTransition.durationMs;
+    const t = easeInOutCubic(tRaw);
+
+    controls.target.lerpVectors(cameraTransition.fromTarget, cameraTransition.toTarget, t);
+    camera.position.lerpVectors(cameraTransition.fromPos, cameraTransition.toPos, t);
+
+    if (tRaw >= 1) cameraTransition = null;
+    return true;
+  }
+
+  function getFocusObject(name) {
+    if (!name) return null;
+    return focusTargets.get(String(name)) ?? null;
+  }
+
+  function getCurrentDistance() {
+    return Math.max(controls.minDistance, camera.position.distanceTo(controls.target));
+  }
+
+  function computePresetOffset(presetName, distance) {
+    const d = Math.max(controls.minDistance, Math.min(controls.maxDistance, Number(distance) || initialDistance));
+    if (presetName === 'top') {
+      return new THREE.Vector3(CAMERA_EPSILON, d, CAMERA_EPSILON);
+    }
+    if (presetName === 'tilted') {
+      return initialOffsetDir.clone().multiplyScalar(d);
+    }
+    return null;
+  }
+
+  function setViewPresetInternal(nextPreset) {
+    const preset = String(nextPreset || 'free');
+    viewPreset = preset;
+    if (preset === 'free') {
+      cancelCameraTransition();
+      return;
+    }
+    const distance = getCurrentDistance();
+    const offset = computePresetOffset(preset, distance);
+    if (!offset) return;
+    const nextTarget = controls.target.clone();
+    const nextPos = nextTarget.clone().add(offset);
+    startCameraTransition({ nextTarget, nextCameraPos: nextPos });
+  }
+
+  function setFocusInternal(nextFocusName) {
+    const name = String(nextFocusName || 'Sun');
+    const obj = getFocusObject(name);
+    if (!obj) return;
+    focusName = name;
+
+    const prevTarget = controls.target.clone();
+    const nextTarget = obj.position.clone();
+    const delta = nextTarget.clone().sub(prevTarget);
+    const nextPos = camera.position.clone().add(delta);
+
+    startCameraTransition({ nextTarget, nextCameraPos: nextPos });
+  }
+
+  function setTrackFocusInternal(nextTrack) {
+    trackFocus = Boolean(nextTrack);
+  }
+
+  controls.addEventListener('start', cancelCameraTransition);
+
   function resize() {
     renderer.setPixelRatio(clampDevicePixelRatio(window.devicePixelRatio));
     const { width, height } = getViewportSize(viewportEl);
@@ -573,6 +685,7 @@ async function createThreeApp({ viewportEl, canvas }) {
   let rafId = 0;
   let lastUpdateSimSecond = -1;
   function frame() {
+    applyCameraTransition(performance.now());
     controls.update();
     simTimeMs = computeSimTimeMs();
     const simSecond = Math.floor(simTimeMs / 1000);
@@ -580,6 +693,17 @@ async function createThreeApp({ viewportEl, canvas }) {
       lastUpdateSimSecond = simSecond;
       updatePlanetPositions(dateToJulianDay(new Date(simTimeMs)));
     }
+
+    if (!cameraTransition && trackFocus) {
+      const focusObj = getFocusObject(focusName);
+      if (focusObj) {
+        const nextTarget = focusObj.position;
+        const delta = nextTarget.clone().sub(controls.target);
+        controls.target.add(delta);
+        camera.position.add(delta);
+      }
+    }
+
     updateSimStatus();
     renderer.render(scene, camera);
     labelRenderer.render(scene, camera);
@@ -619,6 +743,15 @@ async function createThreeApp({ viewportEl, canvas }) {
     setNow() {
       setNowInternal();
       updateSimStatus(true);
+    },
+    setViewPreset(preset) {
+      setViewPresetInternal(preset);
+    },
+    setFocus(name) {
+      setFocusInternal(name);
+    },
+    setTrackFocus(enabled) {
+      setTrackFocusInternal(enabled);
     },
     dispose() {
       window.cancelAnimationFrame(rafId);
@@ -668,6 +801,14 @@ function getSelect(id) {
   return el;
 }
 
+function getCheckbox(id) {
+  const el = document.getElementById(id);
+  if (!el) return null;
+  if (!(el instanceof HTMLInputElement)) return null;
+  if (el.type !== 'checkbox') return null;
+  return el;
+}
+
 function getButton(id) {
   const el = document.getElementById(id);
   if (!el) return null;
@@ -707,6 +848,9 @@ function init() {
       const customSpeedInput = document.getElementById(CUSTOM_SPEED_INPUT_ID);
       const offsetSlider = getRange(TIME_OFFSET_SLIDER_ID);
       const offsetLabel = document.getElementById(TIME_OFFSET_LABEL_ID);
+      const viewPresetSelect = getSelect(VIEW_PRESET_ID);
+      const focusSelect = getSelect(FOCUS_SELECT_ID);
+      const trackFocusToggle = getCheckbox(TRACK_FOCUS_ID);
 
       function parseCustomSpeed(value) {
         const n = Number(value);
@@ -793,6 +937,21 @@ function init() {
           setOffsetLabel(days);
           app.setOffsetDays(days);
         });
+      }
+
+      if (viewPresetSelect) {
+        app.setViewPreset(viewPresetSelect.value);
+        viewPresetSelect.addEventListener('change', () => app.setViewPreset(viewPresetSelect.value));
+      }
+
+      if (focusSelect) {
+        app.setFocus(focusSelect.value);
+        focusSelect.addEventListener('change', () => app.setFocus(focusSelect.value));
+      }
+
+      if (trackFocusToggle) {
+        app.setTrackFocus(trackFocusToggle.checked);
+        trackFocusToggle.addEventListener('change', () => app.setTrackFocus(trackFocusToggle.checked));
       }
 
       if (typeof ResizeObserver !== 'undefined') {

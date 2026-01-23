@@ -71,3 +71,15 @@ How to test:
 - Tap “Pause”, drag the Offset slider, and confirm planet positions jump accordingly.
 - Tap “Play” and select 60× / 600×; confirm planets move faster.
 - Tap “Now”; confirm offset resets to 0 and simulated time matches current UTC.
+
+## Milestone 6 — Camera Presets & Focus
+- Added camera view presets: Free, Tilted, Top-down.
+- Added a Focus dropdown (Sun + planets) that recenters the camera target.
+- Added smooth camera transitions when switching presets/focus.
+- Added optional focus tracking toggle that keeps the camera centered on a moving focus body.
+
+How to test:
+- Open `/tools/solar-system/index.html`.
+- Switch View between “Tilted” and “Top-down”; confirm a smooth camera move and no console errors.
+- Change Focus to Mars/Jupiter; confirm the camera recenters smoothly on that planet.
+- Enable “Track focus”, press “Play”, and confirm the camera follows the selected planet while it moves.
