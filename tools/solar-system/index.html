@@ -26,7 +26,7 @@
         <div class="ss-viewport" id="viewport" aria-label="Solar System viewport">
           <div class="ss-overlay" aria-label="Status panel">
             <div class="ss-title">Solar System</div>
-            <div class="ss-subtitle">Milestone 4: Keplerian positions (now)</div>
+            <div class="ss-subtitle">Milestone 5: Time simulation controls</div>
             <div class="ss-status" id="status">Loading…</div>
             <div class="ss-controls" aria-label="View options">
               <label class="ss-control">
@@ -37,6 +37,34 @@
                 <input type="checkbox" id="toggleLabels" checked>
                 Labels
               </label>
+            </div>
+            <div class="ss-time" aria-label="Time controls">
+              <div class="ss-time-row">
+                <button class="ss-button" type="button" id="btnNow">Now</button>
+                <button class="ss-button" type="button" id="btnPlayPause" aria-pressed="true">Pause</button>
+                <label class="ss-time-speed">
+                  <span class="ss-time-label">Speed</span>
+                  <select class="ss-select" id="speedSelect" aria-label="Simulation speed">
+                    <option value="1" selected>1×</option>
+                    <option value="60">60×</option>
+                    <option value="600">600×</option>
+                  </select>
+                </label>
+              </div>
+              <label class="ss-time-slider" for="timeOffsetDays">
+                <span class="ss-time-label">Offset</span>
+                <span class="ss-time-value" id="timeOffsetLabel">0 d</span>
+              </label>
+              <input
+                class="ss-range"
+                id="timeOffsetDays"
+                type="range"
+                min="-365"
+                max="365"
+                step="1"
+                value="0"
+                aria-label="Time offset in days"
+              >
             </div>
             <div class="ss-help" aria-label="Gestures help">
               <div><span class="ss-help-key">1 finger</span> rotate</div>

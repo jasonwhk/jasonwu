@@ -67,6 +67,75 @@
   color: rgba(0, 0, 0, 0.75);
 }
 
+.ss-time {
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.ss-time-row {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.ss-time-speed {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px;
+  align-items: center;
+  justify-items: end;
+}
+
+.ss-time-label {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.ss-time-slider {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: baseline;
+  user-select: none;
+}
+
+.ss-time-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.ss-button {
+  appearance: none;
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  background: rgba(255, 255, 255, 0.85);
+  color: rgba(0, 0, 0, 0.85);
+  border-radius: 10px;
+  padding: 6px 10px;
+  font: inherit;
+  line-height: 1.1;
+  cursor: pointer;
+}
+
+.ss-button:active {
+  transform: translateY(0.5px);
+}
+
+.ss-select {
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 10px;
+  padding: 6px 10px;
+  font: inherit;
+  line-height: 1.1;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.ss-range {
+  width: 100%;
+}
+
 .ss-control {
   display: flex;
   align-items: center;
@@ -129,5 +198,15 @@
     left: 10px;
     top: 10px;
     padding: 10px 10px;
+  }
+
+  .ss-time-row {
+    grid-template-columns: auto auto;
+    grid-auto-flow: row;
+  }
+
+  .ss-time-speed {
+    grid-column: 1 / -1;
+    justify-items: start;
   }
 }

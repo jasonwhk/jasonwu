@@ -55,3 +55,19 @@ How to test:
 - Confirm planets are no longer aligned at the same orbital angle (they should be spread around the Sun).
 - Wait ~10 seconds; confirm the “Now:” timestamp updates and there are no console errors.
 - Toggle “Labels” and “Planet visibility scale”; confirm prior Milestone 2 behavior still works.
+
+## Milestone 5 — Time Simulation Controls
+- Added a simulated time variable used for planet positions (instead of always using real time).
+- Added time controls:
+  - “Now” button (snap simulated time to current time and reset offset)
+  - Offset slider: -365 to +365 days
+  - Play / pause
+  - Speed options: 1×, 60×, 600×
+- Status line shows simulated UTC time, playback state, speed, and offset.
+
+How to test:
+- Open `/tools/solar-system/index.html`.
+- Confirm planets move in real-time at 1× by default and there are no console errors.
+- Tap “Pause”, drag the Offset slider, and confirm planet positions jump accordingly.
+- Tap “Play” and select 60× / 600×; confirm planets move faster.
+- Tap “Now”; confirm offset resets to 0 and simulated time matches current UTC.

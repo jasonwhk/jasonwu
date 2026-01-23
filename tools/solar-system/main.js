@@ -2,6 +2,11 @@ const VIEWPORT_ID = 'viewport';
 const STATUS_ID = 'status';
 const TOGGLE_VISIBILITY_SCALE_ID = 'toggleVisibilityScale';
 const TOGGLE_LABELS_ID = 'toggleLabels';
+const BTN_NOW_ID = 'btnNow';
+const BTN_PLAY_PAUSE_ID = 'btnPlayPause';
+const SPEED_SELECT_ID = 'speedSelect';
+const TIME_OFFSET_SLIDER_ID = 'timeOffsetDays';
+const TIME_OFFSET_LABEL_ID = 'timeOffsetLabel';
 
 const ORBIT_SEGMENTS = 512;
 
@@ -482,35 +487,101 @@ async function createThreeApp({ viewportEl, canvas }) {
     }
   }
 
-  let lastStatusMinute = -1;
-  function updateNowStatus(date) {
-    const minuteKey = Math.floor(date.getTime() / 60000);
-    if (minuteKey === lastStatusMinute) return;
-    lastStatusMinute = minuteKey;
-    const iso = date.toISOString().replace(/\.\d{3}Z$/, 'Z');
-    setStatus(`Now: ${iso}`);
+  const DAY_MS = 86400000;
+
+  let timeOffsetDays = 0;
+  let speedMultiplier = 1;
+  let isPlaying = true;
+
+  let simTimeMs = Date.now();
+  let playOriginPerfMs = performance.now();
+  let playOriginSimMs = simTimeMs;
+
+  function computeSimTimeMs(nowPerfMs) {
+    if (!isPlaying) return simTimeMs;
+    const perfNow = Number.isFinite(nowPerfMs) ? nowPerfMs : performance.now();
+    return playOriginSimMs + (perfNow - playOriginPerfMs) * speedMultiplier;
+  }
+
+  function setPlayingInternal(nextPlaying) {
+    const playing = Boolean(nextPlaying);
+    if (playing === isPlaying) return;
+    const perfNow = performance.now();
+    simTimeMs = computeSimTimeMs(perfNow);
+    isPlaying = playing;
+    if (isPlaying) {
+      playOriginPerfMs = perfNow;
+      playOriginSimMs = simTimeMs;
+    }
+  }
+
+  function setSpeedMultiplierInternal(nextSpeed) {
+    const speed = Number(nextSpeed);
+    const allowed = speed === 1 || speed === 60 || speed === 600;
+    const normalized = allowed ? speed : 1;
+    if (normalized === speedMultiplier) return;
+    const perfNow = performance.now();
+    simTimeMs = computeSimTimeMs(perfNow);
+    speedMultiplier = normalized;
+    if (isPlaying) {
+      playOriginPerfMs = perfNow;
+      playOriginSimMs = simTimeMs;
+    }
+  }
+
+  function setOffsetDaysInternal(nextDays) {
+    const clamped = Math.max(-365, Math.min(365, Math.round(Number(nextDays) || 0)));
+    if (clamped === timeOffsetDays) return;
+    const perfNow = performance.now();
+    simTimeMs = computeSimTimeMs(perfNow);
+    const deltaDays = clamped - timeOffsetDays;
+    simTimeMs += deltaDays * DAY_MS;
+    timeOffsetDays = clamped;
+    if (isPlaying) {
+      playOriginPerfMs = perfNow;
+      playOriginSimMs = simTimeMs;
+    }
+  }
+
+  function setNowInternal() {
+    const perfNow = performance.now();
+    simTimeMs = Date.now();
+    timeOffsetDays = 0;
+    if (isPlaying) {
+      playOriginPerfMs = perfNow;
+      playOriginSimMs = simTimeMs;
+    }
+  }
+
+  let lastStatusText = '';
+  function updateSimStatus(force = false) {
+    const iso = new Date(simTimeMs).toISOString().replace(/\.\d{3}Z$/, 'Z');
+    const mode = isPlaying ? `Playing ${speedMultiplier}×` : 'Paused';
+    const offset = timeOffsetDays === 0 ? 'Offset 0 d' : `Offset ${timeOffsetDays > 0 ? '+' : ''}${timeOffsetDays} d`;
+    const text = `Sim: ${iso} • ${mode} • ${offset}`;
+    if (!force && text === lastStatusText) return;
+    lastStatusText = text;
+    setStatus(text);
   }
 
   let rafId = 0;
-  let lastUpdateSecond = -1;
+  let lastUpdateSimSecond = -1;
   function frame() {
     controls.update();
-    const now = new Date();
-    const nowSecond = Math.floor(now.getTime() / 1000);
-    if (nowSecond !== lastUpdateSecond) {
-      lastUpdateSecond = nowSecond;
-      const jd = dateToJulianDay(now);
-      updatePlanetPositions(jd);
-      updateNowStatus(now);
+    simTimeMs = computeSimTimeMs();
+    const simSecond = Math.floor(simTimeMs / 1000);
+    if (simSecond !== lastUpdateSimSecond) {
+      lastUpdateSimSecond = simSecond;
+      updatePlanetPositions(dateToJulianDay(new Date(simTimeMs)));
     }
+    updateSimStatus();
     renderer.render(scene, camera);
     labelRenderer.render(scene, camera);
     rafId = window.requestAnimationFrame(frame);
   }
 
-  const initialNow = new Date();
-  updatePlanetPositions(dateToJulianDay(initialNow));
-  updateNowStatus(initialNow);
+  updatePlanetPositions(dateToJulianDay(new Date(simTimeMs)));
+  updateSimStatus(true);
 
   rafId = window.requestAnimationFrame(frame);
 
@@ -523,6 +594,25 @@ async function createThreeApp({ viewportEl, canvas }) {
     setLabelsVisible(visible) {
       labelsVisible = Boolean(visible);
       applyLabelsVisible();
+    },
+    getTimeState() {
+      return { playing: isPlaying, speedMultiplier, offsetDays: timeOffsetDays };
+    },
+    setPlaying(playing) {
+      setPlayingInternal(playing);
+      updateSimStatus(true);
+    },
+    setSpeedMultiplier(speed) {
+      setSpeedMultiplierInternal(speed);
+      updateSimStatus(true);
+    },
+    setOffsetDays(days) {
+      setOffsetDaysInternal(days);
+      updateSimStatus(true);
+    },
+    setNow() {
+      setNowInternal();
+      updateSimStatus(true);
     },
     dispose() {
       window.cancelAnimationFrame(rafId);
@@ -557,6 +647,28 @@ function getToggle(id) {
   return el;
 }
 
+function getRange(id) {
+  const el = document.getElementById(id);
+  if (!el) return null;
+  if (!(el instanceof HTMLInputElement)) return null;
+  if (el.type !== 'range') return null;
+  return el;
+}
+
+function getSelect(id) {
+  const el = document.getElementById(id);
+  if (!el) return null;
+  if (!(el instanceof HTMLSelectElement)) return null;
+  return el;
+}
+
+function getButton(id) {
+  const el = document.getElementById(id);
+  if (!el) return null;
+  if (!(el instanceof HTMLButtonElement)) return null;
+  return el;
+}
+
 function init() {
   const viewportEl = document.getElementById(VIEWPORT_ID);
   if (!viewportEl) {
@@ -580,6 +692,60 @@ function init() {
       if (labelsToggle) {
         app.setLabelsVisible(labelsToggle.checked);
         labelsToggle.addEventListener('change', () => app.setLabelsVisible(labelsToggle.checked));
+      }
+
+      const nowBtn = getButton(BTN_NOW_ID);
+      const playPauseBtn = getButton(BTN_PLAY_PAUSE_ID);
+      const speedSelect = getSelect(SPEED_SELECT_ID);
+      const offsetSlider = getRange(TIME_OFFSET_SLIDER_ID);
+      const offsetLabel = document.getElementById(TIME_OFFSET_LABEL_ID);
+
+      function setPlayPauseUi(playing) {
+        if (!playPauseBtn) return;
+        playPauseBtn.textContent = playing ? 'Pause' : 'Play';
+        playPauseBtn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+      }
+
+      function setOffsetLabel(days) {
+        if (!offsetLabel) return;
+        const n = Number(days) || 0;
+        if (n === 0) offsetLabel.textContent = '0 d';
+        else offsetLabel.textContent = `${n > 0 ? '+' : ''}${n} d`;
+      }
+
+      if (nowBtn) {
+        nowBtn.addEventListener('click', () => {
+          if (offsetSlider) offsetSlider.value = '0';
+          setOffsetLabel(0);
+          app.setNow();
+        });
+      }
+
+      if (playPauseBtn) {
+        setPlayPauseUi(app.getTimeState().playing);
+        playPauseBtn.addEventListener('click', () => {
+          const nextPlaying = !app.getTimeState().playing;
+          app.setPlaying(nextPlaying);
+          setPlayPauseUi(nextPlaying);
+        });
+      }
+
+      if (speedSelect) {
+        speedSelect.value = String(app.getTimeState().speedMultiplier);
+        speedSelect.addEventListener('change', () => {
+          const speed = Number(speedSelect.value);
+          app.setSpeedMultiplier(speed);
+        });
+      }
+
+      if (offsetSlider) {
+        setOffsetLabel(Number(offsetSlider.value));
+        offsetSlider.addEventListener('input', () => {
+          const days = Math.max(-365, Math.min(365, Math.round(Number(offsetSlider.value) || 0)));
+          offsetSlider.value = String(days);
+          setOffsetLabel(days);
+          app.setOffsetDays(days);
+        });
       }
 
       if (typeof ResizeObserver !== 'undefined') {
