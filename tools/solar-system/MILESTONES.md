@@ -62,7 +62,7 @@ How to test:
   - “Now” button (snap simulated time to current time and reset offset)
   - Offset slider: -365 to +365 days
   - Play / pause
-  - Speed options: 1×, 60×, 600×
+  - Speed options: 1×, 60×, 600×, 6000×, 60000× + custom input
 - Status line shows simulated UTC time, playback state, speed, and offset.
 
 How to test:

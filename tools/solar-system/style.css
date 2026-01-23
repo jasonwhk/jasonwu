@@ -102,8 +102,26 @@
   user-select: none;
 }
 
+.ss-time-custom {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
 .ss-time-value {
   font-variant-numeric: tabular-nums;
+}
+
+.ss-input {
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 10px;
+  padding: 6px 10px;
+  font: inherit;
+  line-height: 1.1;
+  color: rgba(0, 0, 0, 0.85);
+  width: 100%;
 }
 
 .ss-button {

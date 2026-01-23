@@ -48,9 +48,26 @@
                     <option value="1" selected>1×</option>
                     <option value="60">60×</option>
                     <option value="600">600×</option>
+                    <option value="6000">6000×</option>
+                    <option value="60000">60000×</option>
+                    <option value="custom">Custom…</option>
                   </select>
                 </label>
               </div>
+              <label class="ss-time-custom" id="customSpeedWrap" hidden>
+                <span class="ss-time-label">Custom</span>
+                <input
+                  class="ss-input"
+                  id="customSpeedInput"
+                  type="number"
+                  inputmode="numeric"
+                  min="0"
+                  step="1"
+                  value="6000"
+                  aria-label="Custom simulation speed multiplier"
+                >
+                <span class="ss-time-label">×</span>
+              </label>
               <label class="ss-time-slider" for="timeOffsetDays">
                 <span class="ss-time-label">Offset</span>
                 <span class="ss-time-value" id="timeOffsetLabel">0 d</span>

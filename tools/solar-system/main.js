@@ -5,6 +5,8 @@ const TOGGLE_LABELS_ID = 'toggleLabels';
 const BTN_NOW_ID = 'btnNow';
 const BTN_PLAY_PAUSE_ID = 'btnPlayPause';
 const SPEED_SELECT_ID = 'speedSelect';
+const CUSTOM_SPEED_WRAP_ID = 'customSpeedWrap';
+const CUSTOM_SPEED_INPUT_ID = 'customSpeedInput';
 const TIME_OFFSET_SLIDER_ID = 'timeOffsetDays';
 const TIME_OFFSET_LABEL_ID = 'timeOffsetLabel';
 
@@ -517,8 +519,8 @@ async function createThreeApp({ viewportEl, canvas }) {
 
   function setSpeedMultiplierInternal(nextSpeed) {
     const speed = Number(nextSpeed);
-    const allowed = speed === 1 || speed === 60 || speed === 600;
-    const normalized = allowed ? speed : 1;
+    if (!Number.isFinite(speed) || speed <= 0) return;
+    const normalized = Math.min(1_000_000, speed);
     if (normalized === speedMultiplier) return;
     const perfNow = performance.now();
     simTimeMs = computeSimTimeMs(perfNow);
@@ -556,7 +558,11 @@ async function createThreeApp({ viewportEl, canvas }) {
   let lastStatusText = '';
   function updateSimStatus(force = false) {
     const iso = new Date(simTimeMs).toISOString().replace(/\.\d{3}Z$/, 'Z');
-    const mode = isPlaying ? `Playing ${speedMultiplier}×` : 'Paused';
+    const prettySpeed =
+      Number.isFinite(speedMultiplier) && Math.abs(speedMultiplier - Math.round(speedMultiplier)) < 1e-9
+        ? String(Math.round(speedMultiplier))
+        : String(speedMultiplier);
+    const mode = isPlaying ? `Playing ${prettySpeed}×` : 'Paused';
     const offset = timeOffsetDays === 0 ? 'Offset 0 d' : `Offset ${timeOffsetDays > 0 ? '+' : ''}${timeOffsetDays} d`;
     const text = `Sim: ${iso} • ${mode} • ${offset}`;
     if (!force && text === lastStatusText) return;
@@ -697,8 +703,24 @@ function init() {
       const nowBtn = getButton(BTN_NOW_ID);
       const playPauseBtn = getButton(BTN_PLAY_PAUSE_ID);
       const speedSelect = getSelect(SPEED_SELECT_ID);
+      const customSpeedWrap = document.getElementById(CUSTOM_SPEED_WRAP_ID);
+      const customSpeedInput = document.getElementById(CUSTOM_SPEED_INPUT_ID);
       const offsetSlider = getRange(TIME_OFFSET_SLIDER_ID);
       const offsetLabel = document.getElementById(TIME_OFFSET_LABEL_ID);
+
+      function parseCustomSpeed(value) {
+        const n = Number(value);
+        if (!Number.isFinite(n)) return null;
+        const rounded = Math.round(n);
+        if (rounded <= 0) return null;
+        return Math.min(1_000_000, rounded);
+      }
+
+      function showCustomSpeedUi(show) {
+        if (!customSpeedWrap) return;
+        if (show) customSpeedWrap.removeAttribute('hidden');
+        else customSpeedWrap.setAttribute('hidden', '');
+      }
 
       function setPlayPauseUi(playing) {
         if (!playPauseBtn) return;
@@ -731,10 +753,35 @@ function init() {
       }
 
       if (speedSelect) {
-        speedSelect.value = String(app.getTimeState().speedMultiplier);
+        const currentSpeed = app.getTimeState().speedMultiplier;
+        const preset = ['1', '60', '600', '6000', '60000'];
+        if (preset.includes(String(currentSpeed))) {
+          speedSelect.value = String(currentSpeed);
+          showCustomSpeedUi(false);
+        } else {
+          speedSelect.value = 'custom';
+          showCustomSpeedUi(true);
+          if (customSpeedInput instanceof HTMLInputElement) customSpeedInput.value = String(Math.round(currentSpeed));
+        }
         speedSelect.addEventListener('change', () => {
+          if (speedSelect.value === 'custom') {
+            showCustomSpeedUi(true);
+            const parsed = customSpeedInput instanceof HTMLInputElement ? parseCustomSpeed(customSpeedInput.value) : null;
+            if (parsed !== null) app.setSpeedMultiplier(parsed);
+            if (customSpeedInput instanceof HTMLInputElement) customSpeedInput.focus();
+            return;
+          }
+          showCustomSpeedUi(false);
           const speed = Number(speedSelect.value);
           app.setSpeedMultiplier(speed);
+        });
+      }
+
+      if (customSpeedInput instanceof HTMLInputElement) {
+        customSpeedInput.addEventListener('input', () => {
+          if (!speedSelect || speedSelect.value !== 'custom') return;
+          const parsed = parseCustomSpeed(customSpeedInput.value);
+          if (parsed !== null) app.setSpeedMultiplier(parsed);
         });
       }
 
