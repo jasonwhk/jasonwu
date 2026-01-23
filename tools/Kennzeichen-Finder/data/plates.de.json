@@ -3,15 +3,15 @@
     "code": "0",
     "name": "Diplomaten",
     "state": "Bundesweit",
-    "lat": null,
-    "lon": null
+    "lat": 51.1657,
+    "lon": 10.4515
   },
   {
     "code": "1",
     "name": "Bundestagspräsident",
     "state": "Bundesweit",
-    "lat": null,
-    "lon": null
+    "lat": 51.1657,
+    "lon": 10.4515
   },
   {
     "code": "A",
@@ -38,15 +38,15 @@
     "code": "ABG",
     "name": "Altenburg",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "ABI",
     "name": "Anhalt-Bitterfeld",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "AC",
@@ -59,183 +59,183 @@
     "code": "AE",
     "name": "Vogtlandkreis",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "AH",
     "name": "Ahaus (Kreis Borken)",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "AIB",
     "name": "Bad Aibling",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "AIC",
     "name": "Aichach-Friedberg",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "AK",
     "name": "Altenkirchen (Westerwald)",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "ALF",
     "name": "Alfeld (Kreis Hildesheim)",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "ALZ",
     "name": "Alzenau in Unterfranken",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "AM",
     "name": "Amberg",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "AN",
     "name": "Ansbach",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "ANA",
     "name": "Annaberg-Buchholz",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "ANG",
     "name": "Angermünde",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "ANK",
     "name": "Anklam (Vorpommern-Greifswald)",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "AP",
     "name": "Apolda (Weimarer-Land)",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "APD",
     "name": "Apolda (Weimarer Land)",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "ARN",
     "name": "Arnstadt (Ilm-Kreis)",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "ART",
     "name": "Artern (Kyffhäuserkreis)",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "AS",
     "name": "Amberg-Sulzbach",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "ASL",
     "name": "Aschersleben (Salzlandkreis)",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "ASZ",
     "name": "Aue-Schwarzenberg",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "AT",
     "name": "Altentreptow (Mecklenburgische Seenplatte)",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "AU",
     "name": "Aue (Erzgebirgskreis)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "AUR",
     "name": "Aurich",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "AW",
     "name": "Ahrweiler",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "AZ",
     "name": "Alzey-Worms",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "AZE",
     "name": "Anhalt-Zerbst",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "AÖ",
     "name": "Altötting",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "B",
@@ -255,15 +255,15 @@
     "code": "BAD",
     "name": "Baden-Baden",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "BAR",
     "name": "Barnim",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "BB",
@@ -276,85 +276,85 @@
     "code": "BBG",
     "name": "Bernburg",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "BBL",
     "name": "Landesregierung Brandenburg",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "BC",
     "name": "Biberach/Riss",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "BCH",
     "name": "Buchen (Odenwald)",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "BD",
     "name": "Bundesrepublik Deutschland",
     "state": "Bundesweit",
-    "lat": null,
-    "lon": null
+    "lat": 51.1657,
+    "lon": 10.4515
   },
   {
     "code": "BE",
     "name": "Beckum",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "BED",
     "name": "Brand-Erbisdorf (Mittelsachsen)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "BER",
     "name": "Bernau (Berlin)",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "BF",
     "name": "Steinfurt",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "BGD",
     "name": "Berchtesgadener Land",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "BGL",
     "name": "Berchtesgadener Land",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "BH",
     "name": "Bühl",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "BI",
@@ -367,78 +367,78 @@
     "code": "BID",
     "name": "Biedenkopf (Marburg-Biedenkopf)",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "BIN",
     "name": "Bingen (Mainz-Bingen)",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "BIR",
     "name": "Birkenfeld/Nahe und Idar-Oberstein",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "BIT",
     "name": "Bitburg-Prüm",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "BIW",
     "name": "Bischofswerda (Bautzen)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "BK",
     "name": "Backnang",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "BKS",
     "name": "Bernkastel-Kues (Bernkastel-Wittlich)",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "BL",
     "name": "Balingen (Zollernalbkreis)",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "BLB",
     "name": "Bad Berleburg (Siegen-Wittgenstein)",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "BLK",
     "name": "Burgenlandkreis",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "BM",
     "name": "Bergheim (Erftkreis)",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "BN",
@@ -451,8 +451,8 @@
     "code": "BNA",
     "name": "Borna (Leipzig)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "BO",
@@ -465,71 +465,71 @@
     "code": "BOH",
     "name": "Bocholt (Kreis Borken)",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "BOR",
     "name": "Borken (Ahaus)",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "BOT",
     "name": "Bottrop",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "BP",
     "name": "Bundespolizei",
     "state": "Bundesweit",
-    "lat": null,
-    "lon": null
+    "lat": 51.1657,
+    "lon": 10.4515
   },
   {
     "code": "BRA",
     "name": "Brake (Wesermarsch)",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "BRB",
     "name": "Brandenburg",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "BRG",
     "name": "Burg (Magdeburg)",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "BRK",
     "name": "Bad Brückenau",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "BRL",
     "name": "Braunlage (Goslar)",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "BRV",
     "name": "Bremervörde (Rotenburg / Wümme)",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "BS",
@@ -542,190 +542,190 @@
     "code": "BT",
     "name": "Bayreuth",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "BTF",
     "name": "Bitterfeld",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "BUL",
     "name": "Burglengenfeld",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "BW",
     "name": "Wasser- und Schifffahrtsverwaltung des Bundes",
     "state": "Bundesweit",
-    "lat": null,
-    "lon": null
+    "lat": 51.1657,
+    "lon": 10.4515
   },
   {
     "code": "BWL",
     "name": "Landesregierung Baden-Württemberg",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "BY",
     "name": "Landesregierung Bayern",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "BYL",
     "name": "Bayern, Landesregierung und Landtag",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "BZ",
     "name": "Bautzen",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "BÖ",
     "name": "Börde",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "BÜD",
     "name": "Büdingen (Wetteraukreis)",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "BÜR",
     "name": "Büren",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "BÜS",
     "name": "Büsingen am Hochrhein",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "BÜZ",
     "name": "Bützow (Rostock)",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "C",
     "name": "Chemnitz",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "CA",
     "name": "Calau (Oberspreewald-Lausitz)",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "CAS",
     "name": "Castrop-Rauxel (Recklinghausen)",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "CB",
     "name": "Cottbus",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "CE",
     "name": "Celle",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "CHA",
     "name": "Cham (Oberpfalz)",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "CLP",
     "name": "Cloppenburg",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "CLZ",
     "name": "Clausthal-Zellerfeld (Goslar)",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "CO",
     "name": "Coburg",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "COC",
     "name": "Cochem-Zell/Mosel",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "COE",
     "name": "Coesfeld (Westfalen)",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "CR",
     "name": "Crailsheim",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "CUX",
     "name": "Cuxhaven",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "CW",
     "name": "Calw",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "D",
@@ -745,29 +745,29 @@
     "code": "DAH",
     "name": "Dachau",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "DAN",
     "name": "Lüchow-Dannenberg",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "DAU",
     "name": "Daun",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "DBR",
     "name": "Bad Doberan",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "DD",
@@ -780,99 +780,99 @@
     "code": "DE",
     "name": "Dessau",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "DEG",
     "name": "Deggendorf",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "DEL",
     "name": "Delmenhorst",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "DGF",
     "name": "Dingolfing-Landau",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "DH",
     "name": "Diepholz",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "DI",
     "name": "Dieburg (Darmstadt-Dieburg)",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "DIL",
     "name": "Dillkreis",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "DIN",
     "name": "Dinslaken",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "DIZ",
     "name": "Diez (Rhein-Lahn-Kreis)",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "DKB",
     "name": "Dinkelsbühl",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "DL",
     "name": "Döbeln",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "DLG",
     "name": "Dillingen/Donau",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "DM",
     "name": "Demmin",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "DN",
     "name": "Düren",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "DO",
@@ -885,8 +885,8 @@
     "code": "DON",
     "name": "Donauwörth (Donau-Ries)",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "DU",
@@ -899,29 +899,29 @@
     "code": "DUD",
     "name": "Duderstadt (Göttingen)",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "DW",
     "name": "Dippoldiswalde",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "DZ",
     "name": "Delitzsch",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "DÜW",
     "name": "Bad Dürkheim",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "E",
@@ -934,148 +934,148 @@
     "code": "EA",
     "name": "Eisenach",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "EB",
     "name": "Eilenburg (Nordsachsen)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "EBE",
     "name": "Ebersberg",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "EBN",
     "name": "Ebern",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "EBS",
     "name": "Ebermannstadt",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "ECK",
     "name": "Eckernförde (Rendsburg)",
     "state": "Schleswig-Holstein",
-    "lat": null,
-    "lon": null
+    "lat": 54.3275,
+    "lon": 10.0854
   },
   {
     "code": "ED",
     "name": "Erding",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "EE",
     "name": "Elbe-Elster",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "EF",
     "name": "Erfurt",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "EG",
     "name": "Eggenfelden",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "EH",
     "name": "Eisenhüttenstadt",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "EI",
     "name": "Eichstätt",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "EIC",
     "name": "Eichsfeld",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "EIL",
     "name": "Eisleben (Mansfeld-Südharz)",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "EIN",
     "name": "Einbeck (Northeim)",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "EIS",
     "name": "Eisenberg (Saale-Holzland-Kreis)",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "EL",
     "name": "Emsland (Meppen)",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "EM",
     "name": "Emmendingen",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "EMD",
     "name": "Emden",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "EMS",
     "name": "Bad Ems (Rhein-Lahn-Kreis)",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "EN",
     "name": "Ennepe-Ruhr-Kreis (Schwelm)",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "ER",
@@ -1088,64 +1088,64 @@
     "code": "ERB",
     "name": "Erbach (Odenwaldkreis)",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "ERH",
     "name": "Erlangen-Höchstadt",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "ERK",
     "name": "Erkelenz",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "ERZ",
     "name": "Erzgebirgskreis",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "ES",
     "name": "Esslingen/Neckar",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "ESB",
     "name": "Eschenbach in der Oberpfalz",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "ESW",
     "name": "Eschwege (Werra-Meissner-Kreis)",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "EU",
     "name": "Euskirchen",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "EW",
     "name": "Eberswalde (Barnim)",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "F",
@@ -1158,71 +1158,71 @@
     "code": "FB",
     "name": "Friedberg (Wetteraukreis)",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "FD",
     "name": "Fulda",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "FDB",
     "name": "Friedberg",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "FDS",
     "name": "Freudenstadt",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "FEU",
     "name": "Feuchtwangen",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "FF",
     "name": "Frankfurt/Oder",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "FFB",
     "name": "Fürstenfeldbruck",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "FG",
     "name": "Freiberg (Sachsen)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "FI",
     "name": "Finsterwalde (Elbe-Elster)",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "FKB",
     "name": "Waldeck-Frankenberg",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "FL",
@@ -1235,29 +1235,29 @@
     "code": "FLÖ",
     "name": "Flöha (Mittelsachsen)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "FN",
     "name": "Friedrichshafen (Bodenseekreis)",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "FO",
     "name": "Forchheim",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "FOR",
     "name": "Forst (Lausitz)",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "FR",
@@ -1270,50 +1270,50 @@
     "code": "FRG",
     "name": "Freyung-Grafenau",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "FRI",
     "name": "Friesland (Jever)",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "FRW",
     "name": "Bad Freienwalde (Oder)",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "FS",
     "name": "Freising",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "FT",
     "name": "Frankenthal/Pfalz",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "FTL",
     "name": "Freital (Sächsische Schweiz)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "FZ",
     "name": "Fritzlar-Homberg",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "FÜ",
@@ -1326,8 +1326,8 @@
     "code": "FÜS",
     "name": "Füssen",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "G",
@@ -1340,99 +1340,99 @@
     "code": "GA",
     "name": "Gardelegen (Altmarkkreis Salzwedel)",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "GAN",
     "name": "Bad Gandersheim (Northeim)",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "GAP",
     "name": "Garmisch-Partenkirchen",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "GC",
     "name": "Glauchau",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "GD",
     "name": "Schwäbisch Gmünd",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "GDB",
     "name": "Gadebusch",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "GE",
     "name": "Gelsenkirchen",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "GEL",
     "name": "Geldern",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "GEO",
     "name": "Gerolzhofen",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "GER",
     "name": "Germersheim",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "GF",
     "name": "Gifhorn",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "GG",
     "name": "Gross-Gerau",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "GHA",
     "name": "Geithain (Leipzig)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "GHC",
     "name": "Gräfenhainichen",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "GI",
@@ -1445,176 +1445,176 @@
     "code": "GK",
     "name": "Selfkantkreis Geilenkirchen-Heinsberg",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "GL",
     "name": "Bergisch Gladbach",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "GLA",
     "name": "Gladbeck",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "GM",
     "name": "Gummersbach (Oberbergischer Kreis)",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "GMN",
     "name": "Grimmen",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "GN",
     "name": "Gelnhausen",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "GNT",
     "name": "Genthin",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "GOA",
     "name": "St. Goar (Rhein-Hunsrück-Kreis)",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "GOH",
     "name": "St. Goarshausen (Rhein-Lahn-Kreis)",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "GP",
     "name": "Göppingen",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "GR",
     "name": "Görlitz",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "GRA",
     "name": "Grafenau",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "GRH",
     "name": "Großenhain (Meißen)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "GRI",
     "name": "Griesbach im Rottal",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "GRM",
     "name": "Grimma (Leipzig)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "GRZ",
     "name": "Greiz",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "GS",
     "name": "Goslar",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "GT",
     "name": "Gütersloh (Rheda-Wiedenbrück)",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "GTH",
     "name": "Gotha",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "GUB",
     "name": "Guben",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "GUN",
     "name": "Weißenburg-Gunzenhausen",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "GV",
     "name": "Grevenbroich",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "GVM",
     "name": "Grevesmühlen",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "GW",
     "name": "Greifswald",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "GZ",
     "name": "Günzburg",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "GÖ",
@@ -1627,8 +1627,8 @@
     "code": "GÜ",
     "name": "Güstrow",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "H",
@@ -1641,36 +1641,36 @@
     "code": "HA",
     "name": "Hagen (Westfalen)",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "HAB",
     "name": "Hammelburg",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "HAL",
     "name": "Halle/Saale",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "HAM",
     "name": "Hamm/Westfalen",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "HAS",
     "name": "Hassberge in Hassfurt",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "HB",
@@ -1683,29 +1683,29 @@
     "code": "HBN",
     "name": "Hildburghausen",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "HBS",
     "name": "Halberstadt",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "HC",
     "name": "Hainichen (Mittelsachsen)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "HCH",
     "name": "Hechingen",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "HD",
@@ -1718,92 +1718,92 @@
     "code": "HDH",
     "name": "Heidenheim/Brenz",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "HDL",
     "name": "Haldensleben",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "HE",
     "name": "Helmstedt",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "HEB",
     "name": "Hersbruck",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "HEF",
     "name": "Bad Hersfeld-Rotenburg",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "HEI",
     "name": "Heide in Dithmarschen/Holstein",
     "state": "Schleswig-Holstein",
-    "lat": null,
-    "lon": null
+    "lat": 54.3275,
+    "lon": 10.0854
   },
   {
     "code": "HEL",
     "name": "Landesregierung Hessen",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "HER",
     "name": "Herne",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "HET",
     "name": "Hettstedt",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "HF",
     "name": "Herford in Kirchlengern",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "HG",
     "name": "Bad Homburg (Hochtaunuskreis)",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "HGN",
     "name": "Hagenow (Ludwigslust-Parchim)",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "HGW",
     "name": "Hansestadt Greifswald",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "HH",
@@ -1816,36 +1816,36 @@
     "code": "HHM",
     "name": "Hohenmölsen",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "HI",
     "name": "Hildesheim",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "HIG",
     "name": "Heiligenstadt",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "HIP",
     "name": "Hilpoltstein",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "HK",
     "name": "Heidekreis",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "HL",
@@ -1858,239 +1858,239 @@
     "code": "HM",
     "name": "Hameln-Pyrmont",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "HMÜ",
     "name": "Hann. Münden (Göttingen)",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "HN",
     "name": "Heilbronn/Neckar",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "HO",
     "name": "Hof",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "HOG",
     "name": "Hofgeismar",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "HOH",
     "name": "Hofheim in Unterfranken",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "HOL",
     "name": "Holzminden",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "HOM",
     "name": "Homburg/Saar (Saar-Pfalz-Kreis)",
     "state": "Saarland",
-    "lat": null,
-    "lon": null
+    "lat": 49.3964,
+    "lon": 7.022
   },
   {
     "code": "HOR",
     "name": "Horb",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "HOT",
     "name": "Hohenstein-Ernstthal (Zwickau)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "HP",
     "name": "Bergstrasse in Heppenheim",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "HR",
     "name": "Homberg (Schwalm-Eder-Kreis)",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "HRO",
     "name": "Hansestadt Rostock",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "HS",
     "name": "Heinsberg",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "HSK",
     "name": "Hochsauerlandkreis",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "HST",
     "name": "Hansestadt Stralsund",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "HU",
     "name": "Hanau",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "HV",
     "name": "Havelberg",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "HVL",
     "name": "Havelland",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "HWI",
     "name": "Hansestadt Wismar",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "HX",
     "name": "Höxter",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "HY",
     "name": "Hoyerswerda",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "HZ",
     "name": "Landkreis Harz",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "HÖS",
     "name": "Höchstadt an der Aisch",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "IGB",
     "name": "St. Ingbert",
     "state": "Saarland",
-    "lat": null,
-    "lon": null
+    "lat": 49.3964,
+    "lon": 7.022
   },
   {
     "code": "IK",
     "name": "Ilm-Kreis",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "IL",
     "name": "Ilmenau",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "ILL",
     "name": "Illertissen",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "IN",
     "name": "Ingolstadt/Donau",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "IZ",
     "name": "Itzehoe",
     "state": "Schleswig-Holstein",
-    "lat": null,
-    "lon": null
+    "lat": 54.3275,
+    "lon": 10.0854
   },
   {
     "code": "J",
     "name": "Jena",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "JE",
     "name": "Jessen (Elster)",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "JL",
     "name": "Jerichower Land",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "JÜL",
     "name": "Jülich",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "K",
@@ -2110,64 +2110,64 @@
     "code": "KB",
     "name": "Korbach (Waldeck-Frankenberg)",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "KC",
     "name": "Kronach",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "KE",
     "name": "Kempten/Allgäu",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "KEH",
     "name": "Kelheim",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "KEL",
     "name": "Kehl",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "KEM",
     "name": "Kemnath",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "KF",
     "name": "Kaufbeuren",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "KG",
     "name": "Bad Kissingen",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "KH",
     "name": "Bad Kreuznach",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "KI",
@@ -2180,15 +2180,15 @@
     "code": "KIB",
     "name": "Kirchheimbolanden",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "KK",
     "name": "Kempen-Krefeld",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "KL",
@@ -2201,50 +2201,50 @@
     "code": "KLE",
     "name": "Kleve",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "KLZ",
     "name": "Klötze",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "KM",
     "name": "Kamenz",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "KN",
     "name": "Konstanz",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "KO",
     "name": "Koblenz",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "KR",
     "name": "Krefeld",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "KRU",
     "name": "Krumbach (Schwaben)",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "KS",
@@ -2257,71 +2257,71 @@
     "code": "KT",
     "name": "Kitzingen",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "KU",
     "name": "Kulmbach",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "KUS",
     "name": "Kusel",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "KW",
     "name": "Königs Wusterhausen (Dahme-Spreewald)",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "KY",
     "name": "Kyritz",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "KYF",
     "name": "Kyffhäuserkreis",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "KÖN",
     "name": "Königshofen im Grabfeld",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "KÖT",
     "name": "Köthen",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "KÖZ",
     "name": "Kötzting",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "KÜN",
     "name": "Künzelsau (Hohenlohe-Kreis)",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "L",
@@ -2334,260 +2334,260 @@
     "code": "LA",
     "name": "Landshut",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "LAN",
     "name": "Landau",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "LAU",
     "name": "Lauf/Pegnitz",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "LB",
     "name": "Ludwigsburg",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "LBS",
     "name": "Lobenstein",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "LBZ",
     "name": "Lübz (Ludwigslust-Parchim)",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "LC",
     "name": "Luckau (Dahme-Spreewald)",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "LD",
     "name": "Landau i. d. Pfalz",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "LDK",
     "name": "Lahn-Dill-Kreis",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "LDS",
     "name": "Dahme-Spreewald",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "LEO",
     "name": "Leonberg",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "LER",
     "name": "Leer/Ostfriesland",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "LEV",
     "name": "Leverkusen",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "LF",
     "name": "Laufen",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "LG",
     "name": "Lüneburg",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "LH",
     "name": "Lüdinghausen",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "LI",
     "name": "Lindau/Bodensee",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "LIB",
     "name": "Bad Liebenwerda",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "LIF",
     "name": "Lichtenfels",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "LIP",
     "name": "Lippe in Detmold",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "LL",
     "name": "Landsberg/Lech",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "LM",
     "name": "Limburg-Weilburg/Lahn",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "LN",
     "name": "Lübben",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "LOS",
     "name": "Landkreis Oder-Spree",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "LP",
     "name": "Lippstadt (Soest)",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "LR",
     "name": "Lahr",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "LRO",
     "name": "Landkreis Rostock (Güstrow)",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "LSA",
     "name": "Landesregierung Sachsen-Anhalt",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "LSN",
     "name": "Landesregierung Sachsen",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "LSZ",
     "name": "Bad Langensalza",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "LU",
     "name": "Ludwigshafen/Rhein",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "LUP",
     "name": "Ludwigslust-Parchim",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "LWL",
     "name": "Ludwigslust",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "LÖ",
     "name": "Lörrach",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "LÖB",
     "name": "Löbau (Görlitz)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "LÜN",
     "name": "Lünen (Unna)",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "M",
     "name": "München",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "MA",
@@ -2600,232 +2600,232 @@
     "code": "MAB",
     "name": "Marienberg (Erzgebirgskreis)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "MAI",
     "name": "Mainburg",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "MAK",
     "name": "Marktredwitz",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "MAL",
     "name": "Mallersdorf",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "MB",
     "name": "Miesbach",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "MC",
     "name": "Malchin",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "MD",
     "name": "Magdeburg",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "ME",
     "name": "Mettmann",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "MED",
     "name": "Süderdithmarschen",
     "state": "Schleswig-Holstein",
-    "lat": null,
-    "lon": null
+    "lat": 54.3275,
+    "lon": 10.0854
   },
   {
     "code": "MEG",
     "name": "Melsungen",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "MEI",
     "name": "Meissen",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "MEK",
     "name": "Mittlerer Erzgebirgskreis",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "MER",
     "name": "Merseburg",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "MET",
     "name": "Mellrichstadt",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "MG",
     "name": "Mönchengladbach",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "MGH",
     "name": "Mergentheim",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "MGN",
     "name": "Meiningen",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "MH",
     "name": "Mülheim/Ruhr",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "MHL",
     "name": "Mühlhausen/Thüringen",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "MI",
     "name": "Minden-Lübbecke/Westfalen",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "MIL",
     "name": "Miltenberg",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "MK",
     "name": "Märkischer Kreis (Lüdenscheid)",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "MKK",
     "name": "Main-Kinzig-Kreis",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "ML",
     "name": "Mansfelder Land",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "MM",
     "name": "Memmingen",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "MN",
     "name": "Unterallgäu in Mindelheim",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "MO",
     "name": "Moers",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "MOD",
     "name": "Marktoberdorf",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "MOL",
     "name": "Märkisch-Oderland",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "MON",
     "name": "Monschau",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "MOS",
     "name": "Mosbach (Neckar-Odenwald-Kreis)",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "MQ",
     "name": "Merseburg-Querfurt",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "MR",
     "name": "Marburg-Biedenkopf/Lahn",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "MS",
@@ -2838,71 +2838,71 @@
     "code": "MSE",
     "name": "Mecklenburgische Seenplatte",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "MSH",
     "name": "Mansfeld-Südharz-Kreis",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "MSP",
     "name": "Main-Spessart-Kreis (Karlstadt)",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "MST",
     "name": "Mecklenburg-Strelitz",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "MTK",
     "name": "Main-Taunus-Kreis (Hofheim)",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "MTL",
     "name": "Muldentalkreis",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "MVL",
     "name": "Landesreg. Mecklenburg-Vorpommern",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "MW",
     "name": "Mittweida",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "MY",
     "name": "Mayen",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "MYK",
     "name": "Mayen-Koblenz",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "MZ",
@@ -2915,29 +2915,29 @@
     "code": "MZG",
     "name": "Merzig-Wadern",
     "state": "Saarland",
-    "lat": null,
-    "lon": null
+    "lat": 49.3964,
+    "lon": 7.022
   },
   {
     "code": "MÜ",
     "name": "Mühldorf am Inn",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "MÜB",
     "name": "Münchberg",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "MÜR",
     "name": "Müritz",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "N",
@@ -2950,309 +2950,309 @@
     "code": "NAB",
     "name": "Nabburg",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "NAI",
     "name": "Naila",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "NAU",
     "name": "Nauen",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "NB",
     "name": "Neubrandenburg",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "ND",
     "name": "Neuburg-Schrobenhausen/Donau",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "NDH",
     "name": "Nordhausen",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "NE",
     "name": "Neuss",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "NEA",
     "name": "Neustadt-Bad Windsheim/Aisch",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "NEB",
     "name": "Nebra",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "NEC",
     "name": "Neustadt bei Coburg",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "NEN",
     "name": "Neunburg vorm Wald",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "NES",
     "name": "Bad Neustadt/Saale (Rhön-Grabfeld)",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "NEW",
     "name": "Neustadt/Waldnaab",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "NF",
     "name": "Nordfriesland (Husum)",
     "state": "Schleswig-Holstein",
-    "lat": null,
-    "lon": null
+    "lat": 54.3275,
+    "lon": 10.0854
   },
   {
     "code": "NH",
     "name": "Neuhaus am Rennweg",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "NI",
     "name": "Nienburg/Weser",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "NK",
     "name": "Neunkirchen/Saar",
     "state": "Saarland",
-    "lat": null,
-    "lon": null
+    "lat": 49.3964,
+    "lon": 7.022
   },
   {
     "code": "NL",
     "name": "Landesregierung Niedersachsen",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "NM",
     "name": "Neumarkt/Oberpfalz",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "NMB",
     "name": "Naumburg",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "NMS",
     "name": "Neumünster",
     "state": "Schleswig-Holstein",
-    "lat": null,
-    "lon": null
+    "lat": 54.3275,
+    "lon": 10.0854
   },
   {
     "code": "NOH",
     "name": "Nordhorn (Grafschaft Bentheim)",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "NOL",
     "name": "Niederschlesische Oberlausitz",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "NOM",
     "name": "Northeim",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "NOR",
     "name": "Norden (Aurich)",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "NP",
     "name": "Neuruppin",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "NR",
     "name": "Neuwied/Rhein",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "NRW",
     "name": "Landesregierung NRW",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "NT",
     "name": "Nürtingen",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "NU",
     "name": "Neu-Ulm",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "NVP",
     "name": "Nordvorpommern",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "NW",
     "name": "Neustadt/Weinstrasse",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "NWM",
     "name": "Nordwestmecklenburg",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "NY",
     "name": "Niesky (Görlitz)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "NZ",
     "name": "Neustrelitz",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "NÖ",
     "name": "Nördlingen",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "OA",
     "name": "Oberallgäu (Sonthofen)",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "OAL",
     "name": "Ostallgäu (Marktoberdorf)",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "OB",
     "name": "Oberhausen/Rheinland",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "OBG",
     "name": "Osterburg",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "OC",
     "name": "Oschersleben",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "OCH",
     "name": "Ochsenfurt",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "OD",
     "name": "Bad Oldesloe (Stormarn)",
     "state": "Schleswig-Holstein",
-    "lat": null,
-    "lon": null
+    "lat": 54.3275,
+    "lon": 10.0854
   },
   {
     "code": "OE",
     "name": "Olpe",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "OF",
@@ -3265,113 +3265,113 @@
     "code": "OG",
     "name": "Offenburg (Ortenaukreis)",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "OH",
     "name": "Ostholstein (Eutin)",
     "state": "Schleswig-Holstein",
-    "lat": null,
-    "lon": null
+    "lat": 54.3275,
+    "lon": 10.0854
   },
   {
     "code": "OHA",
     "name": "Osterode/Harz",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "OHV",
     "name": "Oberhavel",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "OHZ",
     "name": "Osterholz-Scharmbeck",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "OK",
     "name": "Ohrekreis",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "OL",
     "name": "Oldenburg",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "OP",
     "name": "Opladen (Rhein-Wupper-Kreis)",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "OPR",
     "name": "Ostprignitz-Ruppin",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "OS",
     "name": "Osnabrück",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "OSL",
     "name": "Oberspreewald-Lausitz",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "OTW",
     "name": "Neunkirchen/Saar",
     "state": "Saarland",
-    "lat": null,
-    "lon": null
+    "lat": 49.3964,
+    "lon": 7.022
   },
   {
     "code": "OVI",
     "name": "Oberviechtach",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "OVL",
     "name": "Obervogtland (Vogtlandkreis)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "OVP",
     "name": "Ostvorpommern",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "OZ",
     "name": "Oschatz (Nordsachsen)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "P",
@@ -3384,155 +3384,155 @@
     "code": "PA",
     "name": "Passau",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "PAF",
     "name": "Pfaffenhofen/Ilm",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "PAN",
     "name": "Pfarrkirchen (Rottal-Inn)",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "PAR",
     "name": "Parsberg",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "PB",
     "name": "Paderborn",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "PCH",
     "name": "Parchim",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "PE",
     "name": "Peine",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "PEG",
     "name": "Pegnitz",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "PF",
     "name": "Pforzheim (Enzkreis)",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "PI",
     "name": "Pinneberg",
     "state": "Schleswig-Holstein",
-    "lat": null,
-    "lon": null
+    "lat": 54.3275,
+    "lon": 10.0854
   },
   {
     "code": "PIR",
     "name": "Pirna",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "PL",
     "name": "Plauen",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "PLÖ",
     "name": "Plön/Holstein",
     "state": "Schleswig-Holstein",
-    "lat": null,
-    "lon": null
+    "lat": 54.3275,
+    "lon": 10.0854
   },
   {
     "code": "PM",
     "name": "Potsdam-Mittelmark",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "PN",
     "name": "Pößneck",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "PR",
     "name": "Prignitz",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "PRÜ",
     "name": "Prüm (Bitburg)",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "PS",
     "name": "Pirmasens/Südwestpfals",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "PW",
     "name": "Pasewalk",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "PZ",
     "name": "Prenzlau",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "QFT",
     "name": "Querfurt",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "QLB",
     "name": "Quedlinburg",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "R",
@@ -3545,113 +3545,113 @@
     "code": "RA",
     "name": "Rastatt",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "RC",
     "name": "Reichenbach (Vogtlandkreis)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "RD",
     "name": "Rendsburg-Eckernfoerde",
     "state": "Schleswig-Holstein",
-    "lat": null,
-    "lon": null
+    "lat": 54.3275,
+    "lon": 10.0854
   },
   {
     "code": "RDG",
     "name": "Ribnitz-Damgarten",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "RE",
     "name": "Recklinghausen",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "REG",
     "name": "Regen (Bayr. Wald)",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "REH",
     "name": "Rehau",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "REI",
     "name": "Bad Reichenhall",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "RG",
     "name": "Riesa-Großenhain",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "RH",
     "name": "Roth/Rednitz",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "RI",
     "name": "Rinteln (Schaumburg)",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "RID",
     "name": "Riedenburg",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "RIE",
     "name": "Riesa (Meißen)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "RL",
     "name": "Rochlitz (Mittelsachsen)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "RM",
     "name": "Röbel/Müritz",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "RN",
     "name": "Rathenow",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "RO",
@@ -3664,134 +3664,134 @@
     "code": "ROD",
     "name": "Roding",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "ROF",
     "name": "Rotenburg",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "ROK",
     "name": "Rockenhausen",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "ROL",
     "name": "Rottenburg an der Laaber",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "ROS",
     "name": "Rostock",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "ROT",
     "name": "Rothenburg ob der Tauber",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "ROW",
     "name": "Rotenburg/Wümme",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "RP",
     "name": "Rhein-Pfalz-Kreis",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "RPL",
     "name": "Landesregierung Rheinland-Pfalz",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "RS",
     "name": "Remscheid",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "RSL",
     "name": "Roßlau (Elbe)",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "RT",
     "name": "Reutlingen",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "RU",
     "name": "Rudolstadt",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "RV",
     "name": "Ravensburg",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "RW",
     "name": "Rottweil",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "RY",
     "name": "Rheydt",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "RZ",
     "name": "Ratzeburg (Herzogtum Lauenburg)",
     "state": "Schleswig-Holstein",
-    "lat": null,
-    "lon": null
+    "lat": 54.3275,
+    "lon": 10.0854
   },
   {
     "code": "RÜD",
     "name": "Rüdesheim (Rheingau-Taunus-Kreis)",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "RÜG",
     "name": "Rügen",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "S",
@@ -3804,351 +3804,351 @@
     "code": "SAB",
     "name": "Saarburg (Trier-Saarburg)",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "SAD",
     "name": "Schwandorf",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "SAL",
     "name": "Landesregierung Saarland",
     "state": "Saarland",
-    "lat": null,
-    "lon": null
+    "lat": 49.3964,
+    "lon": 7.022
   },
   {
     "code": "SAN",
     "name": "Stadtsteinach",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "SAW",
     "name": "Salzwedel",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "SB",
     "name": "Saarbrücken",
     "state": "Saarland",
-    "lat": null,
-    "lon": null
+    "lat": 49.3964,
+    "lon": 7.022
   },
   {
     "code": "SBG",
     "name": "Strasburg",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "SBK",
     "name": "Schönebeck/Elbe",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "SC",
     "name": "Schwabach",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "SCZ",
     "name": "Schleiz",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "SDH",
     "name": "Sondershausen",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "SDL",
     "name": "Stendal",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "SDT",
     "name": "Schwedt",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "SE",
     "name": "Bad Segeberg",
     "state": "Schleswig-Holstein",
-    "lat": null,
-    "lon": null
+    "lat": 54.3275,
+    "lon": 10.0854
   },
   {
     "code": "SEB",
     "name": "Sebnitz (Sächsische Schweiz)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "SEE",
     "name": "Seelow",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "SEF",
     "name": "Scheinfeld",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "SEL",
     "name": "Selb",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "SFA",
     "name": "Soltau-Fallingbostel",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "SFB",
     "name": "Senftenberg",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "SFT",
     "name": "Staßfurt",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "SG",
     "name": "Solingen",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "SGH",
     "name": "Sangerhausen",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "SH",
     "name": "Landesregierung Schleswig-Holstein",
     "state": "Schleswig-Holstein",
-    "lat": null,
-    "lon": null
+    "lat": 54.3275,
+    "lon": 10.0854
   },
   {
     "code": "SHA",
     "name": "Schwäbisch Hall",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "SHG",
     "name": "Stadthagen (Schaumburg)",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "SHK",
     "name": "Saale-Holzlandkreis",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "SHL",
     "name": "Suhl",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "SI",
     "name": "Siegen",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "SIG",
     "name": "Sigmaringen",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "SIM",
     "name": "Simmern (Rhein-Hunsrück-Kreis)",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "SK",
     "name": "Saalkreis in Halle",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "SL",
     "name": "Schleswig-Flensburg",
     "state": "Schleswig-Holstein",
-    "lat": null,
-    "lon": null
+    "lat": 54.3275,
+    "lon": 10.0854
   },
   {
     "code": "SLE",
     "name": "Schleiden",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "SLF",
     "name": "Saalfeld",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "SLK",
     "name": "Salzlandkreis",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "SLN",
     "name": "Schmölln",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "SLS",
     "name": "Saarlouis",
     "state": "Saarland",
-    "lat": null,
-    "lon": null
+    "lat": 49.3964,
+    "lon": 7.022
   },
   {
     "code": "SLZ",
     "name": "Bad Salzungen",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "SLÜ",
     "name": "Schlüchtern",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "SM",
     "name": "Schmalkalden",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "SN",
     "name": "Schwerin",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "SO",
     "name": "Soest",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "SOB",
     "name": "Schrobenhausen",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "SOG",
     "name": "Schongau",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "SOK",
     "name": "Saale-Orla-Kreis",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "SON",
     "name": "Sonneberg",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "SP",
     "name": "Speyer",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "SPB",
     "name": "Spremberg",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "SPN",
     "name": "Spree-Neisse",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "SR",
@@ -4161,190 +4161,190 @@
     "code": "SRB",
     "name": "Strausberg",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "SRO",
     "name": "Stadtroda",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "ST",
     "name": "Steinfurt",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "STA",
     "name": "Starnberg",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "STB",
     "name": "Sternberg",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "STD",
     "name": "Stade",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "STE",
     "name": "Staffelstein",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "STL",
     "name": "Stollberg",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "SU",
     "name": "Siegburg (Rhein-Sieg-Kreis)",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "SUL",
     "name": "Sulzbach-Rosenberg",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "SW",
     "name": "Schweinfurt",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "SWA",
     "name": "Untertaunuskreis",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "SZ",
     "name": "Salzgitter",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "SZB",
     "name": "Schwarzenberg (Erzgebirgskreis)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "SÖM",
     "name": "Sömmerda",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "SÜW",
     "name": "Südl. Weinstrasse (Landau)",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "TBB",
     "name": "Tauberbischofsheim",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "TDO",
     "name": "Torgau Delitzsch - Oschatz",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "TE",
     "name": "Tecklenburg",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "TET",
     "name": "Teterow",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "TF",
     "name": "Teltow-Fläming",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "TG",
     "name": "Torgau (Nordsachsen)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "THL",
     "name": "Landesregierung Thüringen",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "THW",
     "name": "Technisches Hilfswerk",
     "state": "Bundesweit",
-    "lat": null,
-    "lon": null
+    "lat": 51.1657,
+    "lon": 10.4515
   },
   {
     "code": "TIR",
     "name": "Tirschenreuth",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "TO",
     "name": "Torgau-Oschatz",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "TP",
     "name": "Templin",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "TR",
@@ -4357,22 +4357,22 @@
     "code": "TS",
     "name": "Traunstein",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "TUT",
     "name": "Tuttlingen",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "TÖL",
     "name": "Bad Tölz-Wolfratshausen",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "TÜ",
@@ -4385,36 +4385,36 @@
     "code": "UE",
     "name": "Uelzen",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "UEM",
     "name": "Ueckermünde",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "UER",
     "name": "Uecker-Randow",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "UFF",
     "name": "Uffenheim",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "UH",
     "name": "Unstrut-Hainich-Kreis",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "UL",
@@ -4427,106 +4427,106 @@
     "code": "UM",
     "name": "Uckermark",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "UN",
     "name": "Unna (Westfalen)",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "USI",
     "name": "Usingen",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "V",
     "name": "Vogtlandkreis",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "VAI",
     "name": "Vaihingen",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "VB",
     "name": "Vogelsbergkreis (Lauterbach)",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "VEC",
     "name": "Vechta",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "VER",
     "name": "Verden/Aller",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "VG",
     "name": "Vorpommern-Greifswald",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "VIB",
     "name": "Vilsbiburg",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "VIE",
     "name": "Viersen",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "VK",
     "name": "Völklingen",
     "state": "Saarland",
-    "lat": null,
-    "lon": null
+    "lat": 49.3964,
+    "lon": 7.022
   },
   {
     "code": "VOH",
     "name": "Vohenstrauß",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "VR",
     "name": "Vorpommern-Rügen",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "VS",
     "name": "Villingen-Schwenningen",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "W",
@@ -4539,106 +4539,106 @@
     "code": "WA",
     "name": "Waldeck",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "WAF",
     "name": "Warendorf",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "WAK",
     "name": "Wartburgkreis",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "WAN",
     "name": "Wanne-Eickel (Herne)",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "WAT",
     "name": "Wattenscheid (Bochum)",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "WB",
     "name": "Wittenberg",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "WBS",
     "name": "Worbis",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "WDA",
     "name": "Werdau (Zwickau)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "WE",
     "name": "Weimar",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "WEL",
     "name": "Weilburg",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "WEN",
     "name": "Weiden/Oberpfalz",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "WER",
     "name": "Wertingen",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "WES",
     "name": "Wesel",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "WF",
     "name": "Wolfenbüttel",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "WHV",
     "name": "Wilhelmshaven",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "WI",
@@ -4651,218 +4651,218 @@
     "code": "WIL",
     "name": "Bernkastel-Wittlich/Mosel",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "WIS",
     "name": "Wismar",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "WIT",
     "name": "Witten (Ennepe-Ruhr-Kreis)",
     "state": "Nordrhein-Westfalen",
-    "lat": null,
-    "lon": null
+    "lat": 51.3464,
+    "lon": 7.1527
   },
   {
     "code": "WIZ",
     "name": "Witzenhausen",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "WK",
     "name": "Wittstock/Dosse",
     "state": "Brandenburg",
-    "lat": null,
-    "lon": null
+    "lat": 52.3906,
+    "lon": 13.0645
   },
   {
     "code": "WL",
     "name": "Winsen/Luhe (Harburg)",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "WLG",
     "name": "Wolgast",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "WM",
     "name": "Weilheim (Schongau)",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "WMS",
     "name": "Wolmirstedt",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "WN",
     "name": "Waiblingen (Rems-Murr-Kreis)",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "WND",
     "name": "St. Wendel",
     "state": "Saarland",
-    "lat": null,
-    "lon": null
+    "lat": 49.3964,
+    "lon": 7.022
   },
   {
     "code": "WO",
     "name": "Worms",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "WOB",
     "name": "Wolfsburg",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "WOH",
     "name": "Wolfhagen",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "WOL",
     "name": "Wolfach",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "WOR",
     "name": "Wolfratshausen",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "WOS",
     "name": "Wolfstein",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "WR",
     "name": "Wernigerode",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "WRN",
     "name": "Waren (Müritz)",
     "state": "Mecklenburg-Vorpommern",
-    "lat": null,
-    "lon": null
+    "lat": 53.6127,
+    "lon": 12.4296
   },
   {
     "code": "WS",
     "name": "Wasserburg",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "WSF",
     "name": "Weissenfels",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "WST",
     "name": "Westerstede (Ammerland)",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "WSW",
     "name": "Weißwasser (Görlitz)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "WT",
     "name": "Waldshut-Tiengen",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   },
   {
     "code": "WTM",
     "name": "Wittmund",
     "state": "Niedersachsen",
-    "lat": null,
-    "lon": null
+    "lat": 52.062,
+    "lon": 10.0582
   },
   {
     "code": "WUG",
     "name": "Weissenburg-Gunzenhausen",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "WUN",
     "name": "Wunsiedel",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "WUR",
     "name": "Wurzen (Leipzig)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "WW",
     "name": "Westerwald",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "WZ",
     "name": "Wetzlar",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "WZL",
     "name": "Wanzleben",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "WÜ",
@@ -4875,91 +4875,91 @@
     "code": "WÜM",
     "name": "Waldmünchen",
     "state": "Bayern",
-    "lat": null,
-    "lon": null
+    "lat": 49.266,
+    "lon": 10.5194
   },
   {
     "code": "X",
     "name": "Internationale Hauptquartiere (NATO)",
     "state": "Bundesweit",
-    "lat": null,
-    "lon": null
+    "lat": 51.1657,
+    "lon": 10.4515
   },
   {
     "code": "Y",
     "name": "Bundeswehr",
     "state": "Bundesweit",
-    "lat": null,
-    "lon": null
+    "lat": 51.1657,
+    "lon": 10.4515
   },
   {
     "code": "Z",
     "name": "Zwickau",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "ZE",
     "name": "Zerbst/Anhalt",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "ZEL",
     "name": "Zell (Cochem-Zell)",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "ZI",
     "name": "Zittau",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "ZIG",
     "name": "Ziegenhain",
     "state": "Hessen",
-    "lat": null,
-    "lon": null
+    "lat": 50.3436,
+    "lon": 8.7509
   },
   {
     "code": "ZP",
     "name": "Zschopau (Erzgebirgskreis)",
     "state": "Sachsen",
-    "lat": null,
-    "lon": null
+    "lat": 51.1951,
+    "lon": 13.0552
   },
   {
     "code": "ZR",
     "name": "Zeulenroda",
     "state": "Thüringen",
-    "lat": null,
-    "lon": null
+    "lat": 50.877,
+    "lon": 12.081
   },
   {
     "code": "ZW",
     "name": "Zweibrücken",
     "state": "Rheinland-Pfalz",
-    "lat": null,
-    "lon": null
+    "lat": 49.7289,
+    "lon": 7.5508
   },
   {
     "code": "ZZ",
     "name": "Zeitz",
     "state": "Sachsen-Anhalt",
-    "lat": null,
-    "lon": null
+    "lat": 52.0087,
+    "lon": 11.718
   },
   {
     "code": "ÖHR",
     "name": "Öhringen",
     "state": "Baden-Württemberg",
-    "lat": null,
-    "lon": null
+    "lat": 48.79,
+    "lon": 8.9686
   }
 ]
