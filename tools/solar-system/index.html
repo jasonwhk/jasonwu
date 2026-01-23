@@ -28,7 +28,7 @@
             <div class="ss-panel-header">
               <div>
                 <div class="ss-title">Solar System</div>
-                <div class="ss-subtitle">Milestone 6.6: Moons (v2)</div>
+                <div class="ss-subtitle">Milestone 7: UX Polish</div>
               </div>
               <button class="ss-button ss-collapse-button" type="button" id="togglePanel" aria-expanded="true">
                 Collapse
@@ -44,6 +44,14 @@
               <label class="ss-control">
                 <input type="checkbox" id="toggleLabels" checked>
                 Labels
+              </label>
+              <label class="ss-control">
+                <input type="checkbox" id="toggleOrbits" checked>
+                Orbit rings
+              </label>
+              <label class="ss-control">
+                <input type="checkbox" id="toggleTrails">
+                Planet trails
               </label>
               <label class="ss-control">
                 <input type="checkbox" id="toggleMoons" checked>
@@ -165,6 +173,10 @@
               This tool requires JavaScript.
             </div>
           </noscript>
+          <div class="ss-gesture-hint" id="gestureHint" role="status" aria-live="polite">
+            <span>Tip: drag to rotate · pinch to zoom · two fingers to pan</span>
+            <button class="ss-gesture-dismiss" type="button" id="dismissGestureHint" aria-label="Dismiss gesture hint">✕</button>
+          </div>
         </div>
       </main>
     </div>

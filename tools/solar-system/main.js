@@ -2,6 +2,8 @@ const VIEWPORT_ID = 'viewport';
 const STATUS_ID = 'status';
 const TOGGLE_VISIBILITY_SCALE_ID = 'toggleVisibilityScale';
 const TOGGLE_LABELS_ID = 'toggleLabels';
+const TOGGLE_ORBITS_ID = 'toggleOrbits';
+const TOGGLE_TRAILS_ID = 'toggleTrails';
 const TOGGLE_MOONS_ID = 'toggleMoons';
 const TOGGLE_MOON_ORBITS_ID = 'toggleMoonOrbits';
 const TOGGLE_MOON_LABELS_ID = 'toggleMoonLabels';
@@ -9,6 +11,8 @@ const MOON_SIZE_BOOST_ID = 'moonSizeBoost';
 const MOON_DENSITY_ID = 'moonDensity';
 const TOGGLE_MOONS_FOCUS_ONLY_ID = 'toggleMoonsFocusOnly';
 const TOGGLE_PANEL_ID = 'togglePanel';
+const GESTURE_HINT_ID = 'gestureHint';
+const DISMISS_GESTURE_HINT_ID = 'dismissGestureHint';
 const BTN_NOW_ID = 'btnNow';
 const BTN_PLAY_PAUSE_ID = 'btnPlayPause';
 const SPEED_SELECT_ID = 'speedSelect';
@@ -290,9 +294,6 @@ function getViewportSize(viewportEl) {
 async function createThreeApp({ viewportEl, canvas }) {
   const THREE = await import('https://esm.sh/three@0.160.0');
   const { OrbitControls } = await import('https://esm.sh/three@0.160.0/examples/jsm/controls/OrbitControls.js');
-  const { CSS2DRenderer, CSS2DObject } = await import(
-    'https://esm.sh/three@0.160.0/examples/jsm/renderers/CSS2DRenderer.js',
-  );
 
   const TAU = Math.PI * 2;
   const AU_KM = 149597870.7;
@@ -338,9 +339,9 @@ async function createThreeApp({ viewportEl, canvas }) {
   sunMesh.scale.setScalar(sunBaseRadius);
   scene.add(sunMesh);
 
-  const labelRenderer = new CSS2DRenderer();
-  labelRenderer.domElement.className = 'ss-label-layer';
-  viewportEl.appendChild(labelRenderer.domElement);
+  const planetLabelLayer = document.createElement('div');
+  planetLabelLayer.className = 'ss-label-layer';
+  viewportEl.appendChild(planetLabelLayer);
 
   const PLANETS = [
     { name: 'Mercury', color: 0xb8b8b8, aAU: 0.387098, e: 0.205630, visualRadius: 0.03, radiusKm: 2439.7 },
@@ -437,6 +438,10 @@ async function createThreeApp({ viewportEl, canvas }) {
   planetsGroup.name = 'Planets';
   scene.add(planetsGroup);
 
+  const trailsGroup = new THREE.Group();
+  trailsGroup.name = 'Trails';
+  scene.add(trailsGroup);
+
   const planetGeometry = new THREE.SphereGeometry(1, 32, 16);
   const planetEntries = [];
   const planetEntryByName = new Map();
@@ -453,12 +458,14 @@ async function createThreeApp({ viewportEl, canvas }) {
     mesh.scale.setScalar(((Number(planet.radiusKm) || 0) / AU_KM) * bodyPhysicalScale);
     mesh.name = planet.name;
 
+    const labelAnchor = new THREE.Object3D();
+    labelAnchor.position.set(0, 1.4, 0);
+    mesh.add(labelAnchor);
+
     const labelEl = document.createElement('div');
     labelEl.className = 'ss-label';
     labelEl.textContent = planet.name;
-    const labelObj = new CSS2DObject(labelEl);
-    labelObj.position.set(0, 1.4, 0);
-    mesh.add(labelObj);
+    planetLabelLayer.appendChild(labelEl);
 
     const group = new THREE.Group();
     group.name = `${planet.name}-Group`;
@@ -472,7 +479,8 @@ async function createThreeApp({ viewportEl, canvas }) {
       material,
       baseRadius: Math.max(0.000001, ((Number(planet.radiusKm) || 0) / AU_KM) * bodyPhysicalScale),
       radiusKm: Math.max(0, Number(planet.radiusKm) || 0),
-      labelObj,
+      labelEl,
+      labelAnchor,
       name: planet.name,
     };
     planetEntries.push(entry);
@@ -728,6 +736,8 @@ async function createThreeApp({ viewportEl, canvas }) {
 
   let useVisibilityScale = false;
   let labelsVisible = true;
+  let orbitsVisible = true;
+  let trailsVisible = false;
   let moonsVisible = true;
   let moonOrbitsVisible = false;
   let moonLabelsVisible = false;
@@ -735,7 +745,37 @@ async function createThreeApp({ viewportEl, canvas }) {
   let moonDensity = 'major';
   let moonsFocusOnly = false;
   let lastMoonLabelUpdatePerfMs = -1;
+  let lastPlanetLabelUpdatePerfMs = -1;
   const moonLabelTmp = new THREE.Vector3();
+  const planetLabelTmp = new THREE.Vector3();
+
+  const PLANET_LABEL_UPDATE_MS = 50;
+  const TRAIL_POINTS = 240;
+
+  const trailEntries = [];
+  for (const entry of planetEntries) {
+    const positions = new Float32Array(TRAIL_POINTS * 3);
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setDrawRange(0, 0);
+    const color = new THREE.Color(entry.material.color).lerp(new THREE.Color(0xffffff), 0.35);
+    const material = new THREE.LineBasicMaterial({
+      color,
+      transparent: true,
+      opacity: 0.35,
+      depthWrite: false,
+    });
+    const line = new THREE.Line(geometry, material);
+    line.visible = false;
+    trailsGroup.add(line);
+    trailEntries.push({
+      name: entry.name,
+      positions,
+      geometry,
+      line,
+      count: 0,
+    });
+  }
 
   function resize() {
     renderer.setPixelRatio(clampDevicePixelRatio(window.devicePixelRatio));
@@ -743,10 +783,10 @@ async function createThreeApp({ viewportEl, canvas }) {
     viewportWidth = width;
     viewportHeight = height;
     renderer.setSize(width, height, false);
-    labelRenderer.setSize(width, height);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     updateMoonLabelPositions(true);
+    updatePlanetLabelPositions(true);
   }
 
   resize();
@@ -756,14 +796,15 @@ async function createThreeApp({ viewportEl, canvas }) {
     sunMesh.scale.setScalar(sunBaseRadius * mult);
     for (const entry of planetEntries) {
       entry.mesh.scale.setScalar(entry.baseRadius * mult);
-      entry.labelObj.position.set(0, entry.mesh.scale.y + 0.4, 0);
+      entry.labelAnchor.position.set(0, entry.mesh.scale.y + 0.4, 0);
     }
     applyMoonScale();
+    updatePlanetLabelPositions(true);
   }
 
   function applyLabelsVisible() {
     for (const entry of planetEntries) {
-      entry.labelObj.visible = labelsVisible;
+      entry.labelEl.style.display = labelsVisible ? '' : 'none';
     }
   }
 
@@ -798,6 +839,43 @@ async function createThreeApp({ viewportEl, canvas }) {
     }
   }
 
+  function applyOrbitsVisible() {
+    orbitsGroup.visible = Boolean(orbitsVisible);
+  }
+
+  function applyTrailsVisible() {
+    for (const trail of trailEntries) {
+      trail.line.visible = Boolean(trailsVisible);
+    }
+  }
+
+  function resetTrails() {
+    for (const trail of trailEntries) {
+      trail.count = 0;
+      trail.positions.fill(0);
+      trail.geometry.setDrawRange(0, 0);
+      trail.geometry.attributes.position.needsUpdate = true;
+    }
+  }
+
+  function appendTrailPoint(trail, position) {
+    if (trail.count < TRAIL_POINTS) {
+      const base = trail.count * 3;
+      trail.positions[base] = position.x;
+      trail.positions[base + 1] = position.y;
+      trail.positions[base + 2] = position.z;
+      trail.count += 1;
+    } else {
+      trail.positions.copyWithin(0, 3);
+      const base = (TRAIL_POINTS - 1) * 3;
+      trail.positions[base] = position.x;
+      trail.positions[base + 1] = position.y;
+      trail.positions[base + 2] = position.z;
+    }
+    trail.geometry.setDrawRange(0, trail.count);
+    trail.geometry.attributes.position.needsUpdate = true;
+  }
+
   function updateMoonLabelPositions(force = false) {
     if (!moonsVisible || !moonLabelsVisible) return;
 
@@ -829,13 +907,51 @@ async function createThreeApp({ viewportEl, canvas }) {
     }
   }
 
+  function updatePlanetLabelPositions(force = false) {
+    if (!labelsVisible) return;
+
+    const now = performance.now();
+    if (!force && lastPlanetLabelUpdatePerfMs >= 0 && now - lastPlanetLabelUpdatePerfMs < PLANET_LABEL_UPDATE_MS) return;
+    lastPlanetLabelUpdatePerfMs = now;
+
+    for (const entry of planetEntries) {
+      planetLabelTmp.set(0, 0, 0);
+      entry.labelAnchor.getWorldPosition(planetLabelTmp);
+      planetLabelTmp.project(camera);
+
+      if (planetLabelTmp.z < -1 || planetLabelTmp.z > 1) {
+        entry.labelEl.style.display = 'none';
+        continue;
+      }
+
+      const xRaw = (planetLabelTmp.x * 0.5 + 0.5) * viewportWidth;
+      const yRaw = (-planetLabelTmp.y * 0.5 + 0.5) * viewportHeight;
+      if (!Number.isFinite(xRaw) || !Number.isFinite(yRaw)) {
+        entry.labelEl.style.display = 'none';
+        continue;
+      }
+
+      const x = Math.round(xRaw * 2) / 2;
+      const y = Math.round(yRaw * 2) / 2;
+      entry.labelEl.style.display = '';
+      entry.labelEl.style.transform = `translate(-50%, -50%) translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+    }
+  }
+
   applyMoonScale();
   applyMoonVisibility();
+  applyOrbitsVisible();
+  applyTrailsVisible();
 
   function updatePlanetPositions(jd) {
-    for (const entry of planetEntries) {
+    for (let i = 0; i < planetEntries.length; i += 1) {
+      const entry = planetEntries[i];
       const pos = computeHeliocentricEclipticXYZ_AU(entry.name, jd);
       entry.group.position.set(pos.x, pos.z, pos.y);
+      if (trailsVisible) {
+        const trail = trailEntries[i];
+        if (trail) appendTrailPoint(trail, entry.group.position);
+      }
     }
   }
 
@@ -956,15 +1072,16 @@ async function createThreeApp({ viewportEl, canvas }) {
       }
     }
 
+    updatePlanetLabelPositions();
     updateMoonLabelPositions();
     updateSimStatus();
     renderer.render(scene, camera);
-    labelRenderer.render(scene, camera);
     rafId = window.requestAnimationFrame(frame);
   }
 
   updatePlanetPositions(dateToJulianDay(new Date(simTimeMs)));
   updateMoonPositions(timeMsToJulianDay(simTimeMs));
+  updatePlanetLabelPositions(true);
   updateMoonLabelPositions(true);
   updateSimStatus(true);
 
@@ -979,6 +1096,23 @@ async function createThreeApp({ viewportEl, canvas }) {
     setLabelsVisible(visible) {
       labelsVisible = Boolean(visible);
       applyLabelsVisible();
+      updatePlanetLabelPositions(true);
+    },
+    setOrbitsVisible(visible) {
+      orbitsVisible = Boolean(visible);
+      applyOrbitsVisible();
+    },
+    setTrailsVisible(visible) {
+      const nextVisible = Boolean(visible);
+      if (nextVisible && !trailsVisible) {
+        resetTrails();
+        for (let i = 0; i < planetEntries.length; i += 1) {
+          const trail = trailEntries[i];
+          if (trail) appendTrailPoint(trail, planetEntries[i].group.position);
+        }
+      }
+      trailsVisible = nextVisible;
+      applyTrailsVisible();
     },
     setMoonsVisible(visible) {
       moonsVisible = Boolean(visible);
@@ -1049,7 +1183,8 @@ async function createThreeApp({ viewportEl, canvas }) {
       planetGeometry.dispose();
       for (const entry of planetEntries) {
         entry.material.dispose();
-        if (entry.labelObj?.element?.remove) entry.labelObj.element.remove();
+        if (entry.labelEl?.remove) entry.labelEl.remove();
+        if (entry.labelAnchor?.removeFromParent) entry.labelAnchor.removeFromParent();
         entry.group.removeFromParent();
       }
       moonGeometry.dispose();
@@ -1062,7 +1197,12 @@ async function createThreeApp({ viewportEl, canvas }) {
       }
       moonLabelLayer.remove();
       planetsGroup.removeFromParent();
-      labelRenderer.domElement.remove();
+      for (const trail of trailEntries) {
+        trail.geometry.dispose();
+        trail.line.material.dispose();
+      }
+      trailsGroup.removeFromParent();
+      planetLabelLayer.remove();
       grid.geometry.dispose();
       const gridMaterials = Array.isArray(grid.material) ? grid.material : [grid.material];
       for (const material of gridMaterials) material.dispose();
@@ -1138,6 +1278,23 @@ function init() {
   const canvas = createCanvas(viewportEl);
   preventScrollOnCanvas(canvas);
 
+  const gestureHintEl = document.getElementById(GESTURE_HINT_ID);
+  if (gestureHintEl) {
+    const dismissBtn = getButton(DISMISS_GESTURE_HINT_ID);
+    const hideHint = () => {
+      gestureHintEl.classList.add('is-hidden');
+    };
+    const timeoutId = window.setTimeout(hideHint, 8000);
+    const hideOnInteract = () => {
+      window.clearTimeout(timeoutId);
+      hideHint();
+    };
+    if (dismissBtn) dismissBtn.addEventListener('click', hideHint);
+    canvas.addEventListener('pointerdown', hideOnInteract, { once: true });
+    canvas.addEventListener('touchstart', hideOnInteract, { once: true });
+    canvas.addEventListener('wheel', hideOnInteract, { passive: true, once: true });
+  }
+
   setStatus('Loading Three.js…');
   createThreeApp({ viewportEl, canvas })
     .then((app) => {
@@ -1151,6 +1308,18 @@ function init() {
       if (labelsToggle) {
         app.setLabelsVisible(labelsToggle.checked);
         labelsToggle.addEventListener('change', () => app.setLabelsVisible(labelsToggle.checked));
+      }
+
+      const orbitsToggle = getToggle(TOGGLE_ORBITS_ID);
+      if (orbitsToggle) {
+        app.setOrbitsVisible(orbitsToggle.checked);
+        orbitsToggle.addEventListener('change', () => app.setOrbitsVisible(orbitsToggle.checked));
+      }
+
+      const trailsToggle = getToggle(TOGGLE_TRAILS_ID);
+      if (trailsToggle) {
+        app.setTrailsVisible(trailsToggle.checked);
+        trailsToggle.addEventListener('change', () => app.setTrailsVisible(trailsToggle.checked));
       }
 
       const moonsToggle = getToggle(TOGGLE_MOONS_ID);
