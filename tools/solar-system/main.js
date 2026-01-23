@@ -39,10 +39,8 @@ function getViewportSize(viewportEl) {
 }
 
 async function createThreeApp({ viewportEl, canvas }) {
-  const THREE = await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js');
-  const { OrbitControls } = await import(
-    'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js'
-  );
+  const THREE = await import('https://esm.sh/three@0.160.0');
+  const { OrbitControls } = await import('https://esm.sh/three@0.160.0/examples/jsm/controls/OrbitControls.js');
 
   const renderer = new THREE.WebGLRenderer({
     canvas,
