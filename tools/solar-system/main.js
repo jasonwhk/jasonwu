@@ -3,6 +3,8 @@ const STATUS_ID = 'status';
 const TOGGLE_VISIBILITY_SCALE_ID = 'toggleVisibilityScale';
 const TOGGLE_LABELS_ID = 'toggleLabels';
 
+const ORBIT_SEGMENTS = 512;
+
 function clampDevicePixelRatio(dpr) {
   if (!Number.isFinite(dpr) || dpr <= 0) return 1;
   return Math.min(2, Math.max(1, dpr));
@@ -11,6 +13,11 @@ function clampDevicePixelRatio(dpr) {
 function setStatus(text) {
   const statusEl = document.getElementById(STATUS_ID);
   if (statusEl) statusEl.textContent = text;
+}
+
+function clampOrbitSegments(segments) {
+  if (!Number.isFinite(segments)) return 256;
+  return Math.max(64, Math.min(2048, Math.floor(segments)));
 }
 
 function createCanvas(viewportEl) {
@@ -47,6 +54,8 @@ async function createThreeApp({ viewportEl, canvas }) {
     'https://esm.sh/three@0.160.0/examples/jsm/renderers/CSS2DRenderer.js',
   );
 
+  const TAU = Math.PI * 2;
+
   const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: true,
@@ -60,7 +69,7 @@ async function createThreeApp({ viewportEl, canvas }) {
   const scene = new THREE.Scene();
 
   const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 2000);
-  camera.position.set(0, 8, 26);
+  camera.position.set(0, 12, 45);
 
   const ambient = new THREE.AmbientLight(0xffffff, 0.6);
   scene.add(ambient);
@@ -69,7 +78,7 @@ async function createThreeApp({ viewportEl, canvas }) {
   keyLight.position.set(10, 12, 8);
   scene.add(keyLight);
 
-  const sunGeo = new THREE.SphereGeometry(1.2, 48, 24);
+  const sunGeo = new THREE.SphereGeometry(0.24, 48, 24);
   const sunMat = new THREE.MeshStandardMaterial({
     color: 0xffcc44,
     emissive: 0x331a00,
@@ -84,15 +93,68 @@ async function createThreeApp({ viewportEl, canvas }) {
   viewportEl.appendChild(labelRenderer.domElement);
 
   const PLANETS = [
-    { name: 'Mercury', color: 0xb8b8b8, distance: 2.2, radius: 0.08 },
-    { name: 'Venus', color: 0xd6c08d, distance: 3.3, radius: 0.14 },
-    { name: 'Earth', color: 0x3f74ff, distance: 4.5, radius: 0.15 },
-    { name: 'Mars', color: 0xc56c3a, distance: 5.7, radius: 0.11 },
-    { name: 'Jupiter', color: 0xd7b48a, distance: 8.7, radius: 0.55 },
-    { name: 'Saturn', color: 0xe3cf9b, distance: 11.6, radius: 0.47 },
-    { name: 'Uranus', color: 0x7bd3dd, distance: 15.2, radius: 0.33 },
-    { name: 'Neptune', color: 0x3d64ff, distance: 18.4, radius: 0.32 },
+    { name: 'Mercury', color: 0xb8b8b8, aAU: 0.387098, e: 0.205630, radius: 0.03 },
+    { name: 'Venus', color: 0xd6c08d, aAU: 0.723332, e: 0.006772, radius: 0.06 },
+    { name: 'Earth', color: 0x3f74ff, aAU: 1.0, e: 0.0167086, radius: 0.06 },
+    { name: 'Mars', color: 0xc56c3a, aAU: 1.523679, e: 0.0934, radius: 0.04 },
+    { name: 'Jupiter', color: 0xd7b48a, aAU: 5.2044, e: 0.0489, radius: 0.22 },
+    { name: 'Saturn', color: 0xe3cf9b, aAU: 9.5826, e: 0.0565, radius: 0.19 },
+    { name: 'Uranus', color: 0x7bd3dd, aAU: 19.2184, e: 0.0463, radius: 0.14 },
+    { name: 'Neptune', color: 0x3d64ff, aAU: 30.1104, e: 0.009, radius: 0.14 },
   ];
+
+  function getOrbitRadiusAU({ aAU, e }, theta) {
+    const ecc = Math.max(0, Math.min(0.99, Number(e)));
+    const a = Math.max(0.0001, Number(aAU));
+    const denom = 1 + ecc * Math.cos(theta);
+    if (denom <= 1e-8) return a;
+    return (a * (1 - ecc * ecc)) / denom;
+  }
+
+  function createOrbitRing({ aAU, e, color }, ringIndex) {
+    const segments = clampOrbitSegments(ORBIT_SEGMENTS);
+    const positions = new Float32Array(segments * 3);
+
+    for (let i = 0; i < segments; i += 1) {
+      const theta = (i / segments) * TAU;
+      const r = getOrbitRadiusAU({ aAU, e }, theta);
+      const x = r * Math.cos(theta);
+      const z = r * Math.sin(theta);
+      const base = i * 3;
+      positions[base + 0] = x;
+      positions[base + 1] = 0;
+      positions[base + 2] = z;
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+    const lineColor = new THREE.Color(color).lerp(new THREE.Color(0xffffff), 0.15);
+    const material = new THREE.LineBasicMaterial({
+      color: lineColor,
+      transparent: true,
+      opacity: 0.55,
+      depthWrite: false,
+    });
+
+    const line = new THREE.LineLoop(geometry, material);
+    line.position.y = 0.001 * (ringIndex + 1);
+    line.renderOrder = 1;
+
+    return { line, geometry, material };
+  }
+
+  const orbitsGroup = new THREE.Group();
+  orbitsGroup.name = 'Orbits';
+  scene.add(orbitsGroup);
+
+  const orbitEntries = [];
+  for (let i = 0; i < PLANETS.length; i += 1) {
+    const planet = PLANETS[i];
+    const orbit = createOrbitRing(planet, i);
+    orbitsGroup.add(orbit.line);
+    orbitEntries.push(orbit);
+  }
 
   const planetsGroup = new THREE.Group();
   planetsGroup.name = 'Planets';
@@ -108,7 +170,7 @@ async function createThreeApp({ viewportEl, canvas }) {
       metalness: 0.0,
     });
     const mesh = new THREE.Mesh(planetGeometry, material);
-    mesh.position.set(planet.distance, 0, 0);
+    mesh.position.set(getOrbitRadiusAU(planet, 0), 0, 0);
     mesh.scale.setScalar(planet.radius);
     mesh.name = planet.name;
 
@@ -205,6 +267,11 @@ async function createThreeApp({ viewportEl, canvas }) {
       grid.geometry.dispose();
       const gridMaterials = Array.isArray(grid.material) ? grid.material : [grid.material];
       for (const material of gridMaterials) material.dispose();
+      for (const orbit of orbitEntries) {
+        orbit.geometry.dispose();
+        orbit.material.dispose();
+      }
+      orbitsGroup.removeFromParent();
     },
   };
 }

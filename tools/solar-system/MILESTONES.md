@@ -31,3 +31,14 @@ How to test:
 - Toggle “Planet visibility scale” and confirm planet sizes change.
 - Toggle “Labels” and confirm labels show/hide.
 - Confirm touch rotate/zoom/pan still works and there are no console errors.
+
+## Milestone 3 — Orbit Rings
+- Added elliptical orbit rings (LineLoop) for each planet.
+- Switched planet orbit placement to AU-based semimajor axis + eccentricity (Sun at focus).
+- Orbit rings are slightly offset in `y` and use `depthWrite=false` to avoid z-fighting artifacts.
+
+How to test:
+- Open `/tools/solar-system/index.html`.
+- Confirm each planet has a corresponding orbit ring.
+- Rotate/zoom/pan; confirm rings remain visually stable with no flicker/z-fighting.
+- Toggle “Labels” and “Planet visibility scale”; confirm prior Milestone 2 behavior still works.
