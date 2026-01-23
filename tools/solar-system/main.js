@@ -295,6 +295,7 @@ async function createThreeApp({ viewportEl, canvas }) {
 
   const TAU = Math.PI * 2;
   const AU_KM = 149597870.7;
+  const SUN_RADIUS_KM = 695700;
 
   const CAMERA_TRANSITION_MS = 650;
   const CAMERA_EPSILON = 1e-4;
@@ -321,8 +322,10 @@ async function createThreeApp({ viewportEl, canvas }) {
   keyLight.position.set(10, 12, 8);
   scene.add(keyLight);
 
-  const sunRadiusAU = 695700 / AU_KM;
-  const sunVisualRadius = 0.24;
+  const sunRadiusAU = SUN_RADIUS_KM / AU_KM;
+  const bodyPhysicalScale = 0.24 / Math.max(1e-12, sunRadiusAU);
+  const bodyVisibilityMultiplier = 4.5;
+  const sunBaseRadius = sunRadiusAU * bodyPhysicalScale;
   const sunGeo = new THREE.SphereGeometry(1, 48, 24);
   const sunMat = new THREE.MeshStandardMaterial({
     color: 0xffcc44,
@@ -331,7 +334,7 @@ async function createThreeApp({ viewportEl, canvas }) {
     metalness: 0.0,
   });
   const sunMesh = new THREE.Mesh(sunGeo, sunMat);
-  sunMesh.scale.setScalar(sunRadiusAU);
+  sunMesh.scale.setScalar(sunBaseRadius);
   scene.add(sunMesh);
 
   const labelRenderer = new CSS2DRenderer();
@@ -445,7 +448,7 @@ async function createThreeApp({ viewportEl, canvas }) {
     });
     const mesh = new THREE.Mesh(planetGeometry, material);
     mesh.position.set(0, 0, 0);
-    mesh.scale.setScalar((Number(planet.radiusKm) || 0) / AU_KM);
+    mesh.scale.setScalar(((Number(planet.radiusKm) || 0) / AU_KM) * bodyPhysicalScale);
     mesh.name = planet.name;
 
     const labelEl = document.createElement('div');
@@ -465,8 +468,7 @@ async function createThreeApp({ viewportEl, canvas }) {
       group,
       mesh,
       material,
-      baseRadiusPhysicalAU: Math.max(0, (Number(planet.radiusKm) || 0) / AU_KM),
-      baseRadiusVisual: Math.max(0.000001, Number(planet.visualRadius) || 0.01),
+      baseRadius: Math.max(0.000001, ((Number(planet.radiusKm) || 0) / AU_KM) * bodyPhysicalScale),
       radiusKm: Math.max(0, Number(planet.radiusKm) || 0),
       labelObj,
       name: planet.name,
@@ -587,11 +589,11 @@ async function createThreeApp({ viewportEl, canvas }) {
       labelEl,
       radiusKm: Math.max(0, Number(moon.radiusKm) || 0),
       semiMajorAxisKm: Math.max(0, Number(moon.semiMajorAxisKm) || 0),
-      orbitRadiusAU: Math.max(0, Number(moon.semiMajorAxisKm) || 0) / AU_KM,
+      orbitRadiusAU: (Math.max(0, Number(moon.semiMajorAxisKm) || 0) / AU_KM) * bodyPhysicalScale,
       periodDays: Math.max(0.0001, Number(moon.orbitalPeriodDays) || 1),
       phaseRad: Number.isFinite(moon.phaseAtJ2000) ? Number(moon.phaseAtJ2000) : 0,
       inclinationRad: degreesToRadians(Number(moon.inclinationDeg) || 0),
-      baseRadius: Math.max(0, Number(moon.radiusKm) || 0) / AU_KM,
+      baseRadius: (Math.max(0, Number(moon.radiusKm) || 0) / AU_KM) * bodyPhysicalScale,
       displayOrbitRadius: 0,
       active: true,
     });
@@ -748,10 +750,10 @@ async function createThreeApp({ viewportEl, canvas }) {
   resize();
 
   function applyPlanetScale() {
-    const visibilityMultiplier = 4.5;
-    sunMesh.scale.setScalar(useVisibilityScale ? sunVisualRadius : sunRadiusAU);
+    const mult = useVisibilityScale ? bodyVisibilityMultiplier : 1;
+    sunMesh.scale.setScalar(sunBaseRadius * mult);
     for (const entry of planetEntries) {
-      entry.mesh.scale.setScalar(useVisibilityScale ? entry.baseRadiusVisual * visibilityMultiplier : entry.baseRadiusPhysicalAU);
+      entry.mesh.scale.setScalar(entry.baseRadius * mult);
       entry.labelObj.position.set(0, entry.mesh.scale.y + 0.4, 0);
     }
     applyMoonScale();
