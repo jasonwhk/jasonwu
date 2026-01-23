@@ -11,6 +11,7 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 }).addTo(map);
 
 const resultsList = document.getElementById("results-list");
+const searchInput = document.getElementById("search");
 const detailsEmpty = document.getElementById("details-empty");
 const detailsContent = document.getElementById("details-content");
 const detailsCode = document.getElementById("details-code");
@@ -20,6 +21,11 @@ const detailsMap = document.getElementById("details-map");
 
 let activeMarker = null;
 let activeButton = null;
+let allEntries = [];
+let filteredEntries = [];
+let debounceId = null;
+
+const MAX_VISIBLE_RESULTS = 200;
 
 const updateDetails = (entry) => {
   detailsEmpty.hidden = true;
@@ -66,7 +72,7 @@ const renderList = (entries) => {
   resultsList.innerHTML = "";
   const fragment = document.createDocumentFragment();
 
-  entries.forEach((entry) => {
+  entries.slice(0, MAX_VISIBLE_RESULTS).forEach((entry) => {
     const item = document.createElement("li");
     const button = document.createElement("button");
     button.type = "button";
@@ -82,6 +88,58 @@ const renderList = (entries) => {
   resultsList.appendChild(fragment);
 };
 
+const renderEmptyState = (message) => {
+  resultsList.innerHTML = `<li><div class="placeholder">${message}</div></li>`;
+};
+
+const normalize = (value) => value.trim().toLowerCase();
+
+const filterEntries = (query) => {
+  if (!query) {
+    return allEntries;
+  }
+  const normalized = normalize(query);
+  return allEntries.filter((entry) => {
+    const codeMatch = entry.code.toLowerCase().startsWith(normalized);
+    const nameMatch = entry.name.toLowerCase().includes(normalized);
+    return codeMatch || nameMatch;
+  });
+};
+
+const applyFilter = () => {
+  const query = searchInput.value;
+  filteredEntries = filterEntries(query);
+  if (filteredEntries.length === 0) {
+    renderEmptyState("No matches found. Try another code or city.");
+    return;
+  }
+  renderList(filteredEntries);
+};
+
+const scheduleFilter = () => {
+  if (debounceId) {
+    window.clearTimeout(debounceId);
+  }
+  debounceId = window.setTimeout(applyFilter, 120);
+};
+
+const handleSearchKeydown = (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    const firstEntry = filteredEntries[0];
+    if (firstEntry) {
+      const firstButton = resultsList.querySelector("button");
+      selectEntry(firstEntry, firstButton);
+    }
+  }
+  if (event.key === "Escape") {
+    event.preventDefault();
+    searchInput.value = "";
+    applyFilter();
+    searchInput.blur();
+  }
+};
+
 const loadPlates = async () => {
   try {
     const response = await fetch("data/plates.de.json");
@@ -89,14 +147,16 @@ const loadPlates = async () => {
       throw new Error("Failed to load dataset");
     }
     const data = await response.json();
-    const entries = data
+    allEntries = data
       .slice()
       .sort((a, b) => a.code.localeCompare(b.code, "de"));
 
-    renderList(entries);
+    filteredEntries = allEntries;
+    renderList(allEntries);
+    searchInput.addEventListener("input", scheduleFilter);
+    searchInput.addEventListener("keydown", handleSearchKeydown);
   } catch (error) {
-    resultsList.innerHTML =
-      "<li><div class=\"placeholder\">Unable to load data.</div></li>";
+    renderEmptyState("Unable to load data.");
   }
 };
 
