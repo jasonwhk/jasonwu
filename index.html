@@ -670,15 +670,40 @@
           if (typeof Astronomy !== 'undefined') {
             const observer = new Astronomy.Observer(latitude, longitude, 58);
             const now = new Date();
+            const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+            const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+            const toDate = (time) => {
+              if (!time) {
+                return null;
+              }
+              
+              const date = time instanceof Date ? time : time.date || (time.toDate ? time.toDate() : null);
+              return date && !Number.isNaN(date.getTime()) ? date : null;
+            };
+
+            const isWithinDay = (date) => date >= startOfDay && date <= endOfDay;
+
+            const formatRiseSetTime = (time) => {
+              const date = toDate(time);
+              if (!date || !isWithinDay(date)) {
+                return '--:--';
+              }
+
+              return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            };
+
+            const findRiseSetTime = (body, direction) => {
+              const eventTime = Astronomy.SearchRiseSet(body, observer, direction, startOfDay, 1);
+              const date = toDate(eventTime);
+              return date && isWithinDay(date) ? date : null;
+            };
             
             // Get sun rise/set for today
-            const sunTimes = Astronomy.SunTimes(now, observer);
-            if (sunTimes.rise) {
-              document.getElementById('sunRise').textContent = sunTimes.rise.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            }
-            if (sunTimes.set) {
-              document.getElementById('sunSet').textContent = sunTimes.set.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            }
+            const sunRise = findRiseSetTime('Sun', +1);
+            const sunSet = findRiseSetTime('Sun', -1);
+            document.getElementById('sunRise').textContent = formatRiseSetTime(sunRise);
+            document.getElementById('sunSet').textContent = formatRiseSetTime(sunSet);
             
             // Sun position
             const sunNow = Astronomy.Equator('Sun', now, observer, false, true);
@@ -688,13 +713,10 @@
             document.getElementById('sunElevation').textContent = Math.round(sunHorizontal.altitude) + '°';
             
             // Get moon rise/set for today
-            const moonTimes = Astronomy.MoonTimes(now, observer);
-            if (moonTimes.rise) {
-              document.getElementById('moonRise').textContent = moonTimes.rise.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            }
-            if (moonTimes.set) {
-              document.getElementById('moonSet').textContent = moonTimes.set.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            }
+            const moonRise = findRiseSetTime('Moon', +1);
+            const moonSet = findRiseSetTime('Moon', -1);
+            document.getElementById('moonRise').textContent = formatRiseSetTime(moonRise);
+            document.getElementById('moonSet').textContent = formatRiseSetTime(moonSet);
             
             // Moon position
             const moonNow = Astronomy.Equator('Moon', now, observer, false, true);
