@@ -35,9 +35,7 @@
 
         <section class="panel panel-results" aria-label="Results">
           <h2>Results</h2>
-          <div class="placeholder">
-            Results list comes in milestone 2.
-          </div>
+          <ul id="results-list" class="results-list" role="listbox"></ul>
         </section>
 
         <section class="panel panel-map" aria-label="Map">
@@ -47,7 +45,23 @@
 
         <section class="panel panel-details" aria-label="Details">
           <h2>Details</h2>
-          <div class="placeholder">Select a plate to see details.</div>
+          <div id="details-empty" class="placeholder">
+            Select a plate to see details.
+          </div>
+          <dl id="details-content" class="details-list" hidden>
+            <div>
+              <dt>Plate prefix</dt>
+              <dd id="details-code">—</dd>
+            </div>
+            <div>
+              <dt>Region</dt>
+              <dd id="details-name">—</dd>
+            </div>
+            <div>
+              <dt>State</dt>
+              <dd id="details-state">—</dd>
+            </div>
+          </dl>
         </section>
       </main>
     </div>

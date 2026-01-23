@@ -1,0 +1,366 @@
+[
+  {
+    "code": "A",
+    "name": "Augsburg",
+    "state": "Bayern",
+    "lat": 48.3705,
+    "lon": 10.8978
+  },
+  {
+    "code": "AA",
+    "name": "Aalen",
+    "state": "Baden-Württemberg",
+    "lat": 48.837,
+    "lon": 10.093
+  },
+  {
+    "code": "AB",
+    "name": "Aschaffenburg",
+    "state": "Bayern",
+    "lat": 49.977,
+    "lon": 9.152
+  },
+  {
+    "code": "AC",
+    "name": "Aachen",
+    "state": "Nordrhein-Westfalen",
+    "lat": 50.775,
+    "lon": 6.083
+  },
+  {
+    "code": "B",
+    "name": "Berlin",
+    "state": "Berlin",
+    "lat": 52.52,
+    "lon": 13.405
+  },
+  {
+    "code": "BA",
+    "name": "Bamberg",
+    "state": "Bayern",
+    "lat": 49.892,
+    "lon": 10.887
+  },
+  {
+    "code": "BB",
+    "name": "Böblingen",
+    "state": "Baden-Württemberg",
+    "lat": 48.682,
+    "lon": 9.012
+  },
+  {
+    "code": "BI",
+    "name": "Bielefeld",
+    "state": "Nordrhein-Westfalen",
+    "lat": 52.03,
+    "lon": 8.532
+  },
+  {
+    "code": "BN",
+    "name": "Bonn",
+    "state": "Nordrhein-Westfalen",
+    "lat": 50.7374,
+    "lon": 7.0982
+  },
+  {
+    "code": "BO",
+    "name": "Bochum",
+    "state": "Nordrhein-Westfalen",
+    "lat": 51.4818,
+    "lon": 7.2162
+  },
+  {
+    "code": "BS",
+    "name": "Braunschweig",
+    "state": "Niedersachsen",
+    "lat": 52.2689,
+    "lon": 10.5268
+  },
+  {
+    "code": "D",
+    "name": "Düsseldorf",
+    "state": "Nordrhein-Westfalen",
+    "lat": 51.2277,
+    "lon": 6.7735
+  },
+  {
+    "code": "DA",
+    "name": "Darmstadt",
+    "state": "Hessen",
+    "lat": 49.8728,
+    "lon": 8.6512
+  },
+  {
+    "code": "DD",
+    "name": "Dresden",
+    "state": "Sachsen",
+    "lat": 51.0504,
+    "lon": 13.7373
+  },
+  {
+    "code": "DO",
+    "name": "Dortmund",
+    "state": "Nordrhein-Westfalen",
+    "lat": 51.5136,
+    "lon": 7.4653
+  },
+  {
+    "code": "DU",
+    "name": "Duisburg",
+    "state": "Nordrhein-Westfalen",
+    "lat": 51.4344,
+    "lon": 6.7623
+  },
+  {
+    "code": "E",
+    "name": "Essen",
+    "state": "Nordrhein-Westfalen",
+    "lat": 51.4556,
+    "lon": 7.0116
+  },
+  {
+    "code": "ER",
+    "name": "Erlangen",
+    "state": "Bayern",
+    "lat": 49.5897,
+    "lon": 11.0119
+  },
+  {
+    "code": "F",
+    "name": "Frankfurt am Main",
+    "state": "Hessen",
+    "lat": 50.1109,
+    "lon": 8.6821
+  },
+  {
+    "code": "FL",
+    "name": "Flensburg",
+    "state": "Schleswig-Holstein",
+    "lat": 54.7937,
+    "lon": 9.4469
+  },
+  {
+    "code": "FR",
+    "name": "Freiburg im Breisgau",
+    "state": "Baden-Württemberg",
+    "lat": 47.999,
+    "lon": 7.8421
+  },
+  {
+    "code": "FÜ",
+    "name": "Fürth",
+    "state": "Bayern",
+    "lat": 49.478,
+    "lon": 10.9887
+  },
+  {
+    "code": "G",
+    "name": "Gera",
+    "state": "Thüringen",
+    "lat": 50.877,
+    "lon": 12.081
+  },
+  {
+    "code": "GI",
+    "name": "Gießen",
+    "state": "Hessen",
+    "lat": 50.587,
+    "lon": 8.675
+  },
+  {
+    "code": "GÖ",
+    "name": "Göttingen",
+    "state": "Niedersachsen",
+    "lat": 51.5413,
+    "lon": 9.9158
+  },
+  {
+    "code": "H",
+    "name": "Hannover",
+    "state": "Niedersachsen",
+    "lat": 52.3759,
+    "lon": 9.732
+  },
+  {
+    "code": "HB",
+    "name": "Bremen",
+    "state": "Bremen",
+    "lat": 53.0793,
+    "lon": 8.8017
+  },
+  {
+    "code": "HD",
+    "name": "Heidelberg",
+    "state": "Baden-Württemberg",
+    "lat": 49.3988,
+    "lon": 8.6724
+  },
+  {
+    "code": "HH",
+    "name": "Hamburg",
+    "state": "Hamburg",
+    "lat": 53.5511,
+    "lon": 9.9937
+  },
+  {
+    "code": "HL",
+    "name": "Lübeck",
+    "state": "Schleswig-Holstein",
+    "lat": 53.8655,
+    "lon": 10.6866
+  },
+  {
+    "code": "KA",
+    "name": "Karlsruhe",
+    "state": "Baden-Württemberg",
+    "lat": 49.0069,
+    "lon": 8.4037
+  },
+  {
+    "code": "K",
+    "name": "Köln",
+    "state": "Nordrhein-Westfalen",
+    "lat": 50.9375,
+    "lon": 6.9603
+  },
+  {
+    "code": "KI",
+    "name": "Kiel",
+    "state": "Schleswig-Holstein",
+    "lat": 54.3233,
+    "lon": 10.1228
+  },
+  {
+    "code": "KL",
+    "name": "Kaiserslautern",
+    "state": "Rheinland-Pfalz",
+    "lat": 49.444,
+    "lon": 7.768
+  },
+  {
+    "code": "KS",
+    "name": "Kassel",
+    "state": "Hessen",
+    "lat": 51.3127,
+    "lon": 9.4797
+  },
+  {
+    "code": "L",
+    "name": "Leipzig",
+    "state": "Sachsen",
+    "lat": 51.3397,
+    "lon": 12.3731
+  },
+  {
+    "code": "MA",
+    "name": "Mannheim",
+    "state": "Baden-Württemberg",
+    "lat": 49.4875,
+    "lon": 8.466
+  },
+  {
+    "code": "MS",
+    "name": "Münster",
+    "state": "Nordrhein-Westfalen",
+    "lat": 51.9607,
+    "lon": 7.6261
+  },
+  {
+    "code": "MZ",
+    "name": "Mainz",
+    "state": "Rheinland-Pfalz",
+    "lat": 49.9929,
+    "lon": 8.2473
+  },
+  {
+    "code": "N",
+    "name": "Nürnberg",
+    "state": "Bayern",
+    "lat": 49.4521,
+    "lon": 11.0767
+  },
+  {
+    "code": "OF",
+    "name": "Offenbach am Main",
+    "state": "Hessen",
+    "lat": 50.0956,
+    "lon": 8.7761
+  },
+  {
+    "code": "P",
+    "name": "Potsdam",
+    "state": "Brandenburg",
+    "lat": 52.3906,
+    "lon": 13.0645
+  },
+  {
+    "code": "R",
+    "name": "Regensburg",
+    "state": "Bayern",
+    "lat": 49.0134,
+    "lon": 12.1016
+  },
+  {
+    "code": "RO",
+    "name": "Rosenheim",
+    "state": "Bayern",
+    "lat": 47.856,
+    "lon": 12.128
+  },
+  {
+    "code": "S",
+    "name": "Stuttgart",
+    "state": "Baden-Württemberg",
+    "lat": 48.7758,
+    "lon": 9.1829
+  },
+  {
+    "code": "SR",
+    "name": "Saarbrücken",
+    "state": "Saarland",
+    "lat": 49.2402,
+    "lon": 6.9969
+  },
+  {
+    "code": "TR",
+    "name": "Trier",
+    "state": "Rheinland-Pfalz",
+    "lat": 49.7499,
+    "lon": 6.6371
+  },
+  {
+    "code": "TÜ",
+    "name": "Tübingen",
+    "state": "Baden-Württemberg",
+    "lat": 48.5216,
+    "lon": 9.0576
+  },
+  {
+    "code": "UL",
+    "name": "Ulm",
+    "state": "Baden-Württemberg",
+    "lat": 48.4011,
+    "lon": 9.9876
+  },
+  {
+    "code": "W",
+    "name": "Wuppertal",
+    "state": "Nordrhein-Westfalen",
+    "lat": 51.2562,
+    "lon": 7.1508
+  },
+  {
+    "code": "WÜ",
+    "name": "Würzburg",
+    "state": "Bayern",
+    "lat": 49.7913,
+    "lon": 9.9534
+  },
+  {
+    "code": "WI",
+    "name": "Wiesbaden",
+    "state": "Hessen",
+    "lat": 50.0826,
+    "lon": 8.2415
+  }
+]
