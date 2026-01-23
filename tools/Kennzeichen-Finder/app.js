@@ -16,6 +16,7 @@ const detailsContent = document.getElementById("details-content");
 const detailsCode = document.getElementById("details-code");
 const detailsName = document.getElementById("details-name");
 const detailsState = document.getElementById("details-state");
+const detailsMap = document.getElementById("details-map");
 
 let activeMarker = null;
 let activeButton = null;
@@ -26,6 +27,10 @@ const updateDetails = (entry) => {
   detailsCode.textContent = entry.code;
   detailsName.textContent = entry.name;
   detailsState.textContent = entry.state || "—";
+  detailsMap.textContent =
+    entry.lat != null && entry.lon != null
+      ? `${entry.lat.toFixed(4)}, ${entry.lon.toFixed(4)}`
+      : "Coordinates not available yet";
 };
 
 const selectEntry = (entry, button) => {
@@ -37,15 +42,23 @@ const selectEntry = (entry, button) => {
     activeButton = button;
   }
 
-  if (!activeMarker) {
-    activeMarker = L.marker([entry.lat, entry.lon]).addTo(map);
-  } else {
-    activeMarker.setLatLng([entry.lat, entry.lon]);
-  }
+  if (entry.lat != null && entry.lon != null) {
+    if (!activeMarker) {
+      activeMarker = L.marker([entry.lat, entry.lon]).addTo(map);
+    } else {
+      activeMarker.setLatLng([entry.lat, entry.lon]);
+    }
 
-  const popupHtml = `<strong>${entry.code}</strong><br>${entry.name}`;
-  activeMarker.bindPopup(popupHtml).openPopup();
-  map.setView([entry.lat, entry.lon], 8);
+    const popupHtml = `<strong>${entry.code}</strong><br>${entry.name}`;
+    activeMarker.bindPopup(popupHtml).openPopup();
+    map.setView([entry.lat, entry.lon], 8);
+  } else {
+    if (activeMarker) {
+      map.removeLayer(activeMarker);
+      activeMarker = null;
+    }
+    map.setView(germanyCenter, 6);
+  }
   updateDetails(entry);
 };
 
