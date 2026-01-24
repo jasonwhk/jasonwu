@@ -29,6 +29,7 @@ const state = {
   mode: "Particles",
   quality: "High",
   autoLowPower: false,
+  showField: false,
   pointer: {
     active: false,
     x: 0,
@@ -85,6 +86,9 @@ const controls = initControls({
     fpsState.inLowPower = false;
     fpsState.lowSamples = 0;
     applyQuality(quality, { auto: false });
+  },
+  onFieldToggle: (enabled) => {
+    state.showField = enabled;
   },
 });
 
@@ -214,6 +218,41 @@ function drawSmoke() {
   ctx.restore();
 }
 
+function drawFieldDebug() {
+  if (!state.showField) {
+    return;
+  }
+  const { width, height, u, v } = field;
+  if (width < 2 || height < 2) {
+    return;
+  }
+  const stepX = Math.max(1, Math.round(width / 28));
+  const stepY = Math.max(1, Math.round(height / 18));
+  const scale = 0.02;
+
+  ctx.save();
+  ctx.strokeStyle = "rgba(138, 180, 255, 0.6)";
+  ctx.lineWidth = 1;
+  ctx.globalCompositeOperation = "lighter";
+  ctx.beginPath();
+  for (let iy = 0; iy < height; iy += stepY) {
+    const y = (iy / (height - 1)) * state.height;
+    for (let ix = 0; ix < width; ix += stepX) {
+      const index = iy * width + ix;
+      const vx = u[index];
+      const vy = v[index];
+      if (Math.abs(vx) + Math.abs(vy) < 5) {
+        continue;
+      }
+      const x = (ix / (width - 1)) * state.width;
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + vx * scale, y + vy * scale);
+    }
+  }
+  ctx.stroke();
+  ctx.restore();
+}
+
 function stepSimulation() {
   if (state.idleTime > IDLE_ATTRACT_MS) {
     applyIdleWind(state.lastFrame);
@@ -244,6 +283,7 @@ function render(now) {
   } else {
     drawSmoke();
   }
+  drawFieldDebug();
   drawBrushRing();
 
   requestAnimationFrame(render);
@@ -416,3 +456,4 @@ resetScene();
 requestAnimationFrame(render);
 
 controls.setStatus("Mode: Particles", "Quality: High");
+controls.setField(false);

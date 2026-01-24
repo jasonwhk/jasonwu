@@ -1,11 +1,13 @@
-export function initControls({ onReset, onModeToggle, onQualityToggle }) {
+export function initControls({ onReset, onModeToggle, onQualityToggle, onFieldToggle }) {
   const resetButton = document.querySelector("#reset-btn");
   const modeButton = document.querySelector("#mode-btn");
   const qualityButton = document.querySelector("#quality-btn");
+  const fieldButton = document.querySelector("#field-btn");
 
   const state = {
     mode: "Particles",
     quality: "High",
+    field: false,
   };
 
   const updateModeLabel = (mode, label) => {
@@ -18,6 +20,15 @@ export function initControls({ onReset, onModeToggle, onQualityToggle }) {
     const nextLabel = label ?? `Quality: ${quality}`;
     qualityButton.textContent = nextLabel;
     qualityButton.setAttribute("aria-pressed", quality === "Low");
+  };
+
+  const updateFieldLabel = (fieldEnabled, label) => {
+    if (!fieldButton) {
+      return;
+    }
+    const nextLabel = label ?? `Field: ${fieldEnabled ? "On" : "Off"}`;
+    fieldButton.textContent = nextLabel;
+    fieldButton.setAttribute("aria-pressed", fieldEnabled ? "true" : "false");
   };
 
   resetButton?.addEventListener("click", () => {
@@ -36,6 +47,12 @@ export function initControls({ onReset, onModeToggle, onQualityToggle }) {
     onQualityToggle?.(state.quality);
   });
 
+  fieldButton?.addEventListener("click", () => {
+    state.field = !state.field;
+    updateFieldLabel(state.field);
+    onFieldToggle?.(state.field);
+  });
+
   return {
     setMode: (mode, label) => {
       state.mode = mode;
@@ -44,6 +61,10 @@ export function initControls({ onReset, onModeToggle, onQualityToggle }) {
     setQuality: (quality, label) => {
       state.quality = quality;
       updateQualityLabel(quality, label);
+    },
+    setField: (fieldEnabled, label) => {
+      state.field = fieldEnabled;
+      updateFieldLabel(fieldEnabled, label);
     },
     setStatus: (modeLabel, qualityLabel) => {
       if (modeLabel) {
