@@ -15,10 +15,17 @@
         <button id="quality-btn" type="button" aria-pressed="false">Quality: High</button>
         <button id="field-btn" type="button" aria-pressed="false">Field: Off</button>
         <button id="wind-memory-btn" type="button" aria-pressed="false">Wind Memory: Off</button>
+        <button id="physics-btn" type="button" aria-pressed="false">Physics: Wind</button>
+        <button id="temp-overlay-btn" type="button" aria-pressed="false">Temp Overlay: Off</button>
+        <label class="slider" for="buoyancy-slider">
+          <span>Buoyancy</span>
+          <input id="buoyancy-slider" type="range" min="0" max="1" step="0.05" value="0.5" />
+          <span id="buoyancy-value" aria-live="polite">50%</span>
+        </label>
         <button id="share-btn" type="button" aria-live="polite">Share</button>
       </div>
       <div id="fps-meter" class="fps-meter" aria-hidden="true">FPS 60</div>
-      <div class="hint" aria-hidden="true">Drag to paint wind · Pinch or wheel to resize</div>
+      <div class="hint" aria-hidden="true">Drag to paint wind · Long-press for heat · Two-finger tap for cold</div>
     </main>
     <script type="module" src="src/main.js"></script>
   </body>
