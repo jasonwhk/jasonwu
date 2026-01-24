@@ -16,6 +16,7 @@ export function initControls({
   onSoundToggle,
   onSoundVolumeChange,
   onShare,
+  onForceFieldsToggle,
 }) {
   const resetButton = document.querySelector("#reset-btn");
   const modeButton = document.querySelector("#mode-btn");
@@ -36,6 +37,7 @@ export function initControls({
   const soundSlider = document.querySelector("#sound-slider");
   const soundValue = document.querySelector("#sound-value");
   const shareButton = document.querySelector("#share-btn");
+  const forceFieldsButton = document.querySelector("#force-fields-btn");
 
   const state = {
     mode: "Particles",
@@ -52,6 +54,7 @@ export function initControls({
     obstacleOverlay: false,
     soundEnabled: false,
     soundVolume: 0.25,
+    forceFieldsEnabled: false,
   };
 
   const updateModeLabel = (mode, label) => {
@@ -161,6 +164,15 @@ export function initControls({
     const percent = Math.round(volume * 100);
     soundValue.textContent = label ?? `${percent}%`;
     soundSlider.value = String(volume);
+  };
+
+  const updateForceFieldsLabel = (enabled, label) => {
+    if (!forceFieldsButton) {
+      return;
+    }
+    const nextLabel = label ?? `Force Fields: ${enabled ? "On" : "Off"}`;
+    forceFieldsButton.textContent = nextLabel;
+    forceFieldsButton.setAttribute("aria-pressed", enabled ? "true" : "false");
   };
 
   const updateThemeLabel = (theme) => {
@@ -273,6 +285,12 @@ export function initControls({
     onSoundVolumeChange?.(value);
   });
 
+  forceFieldsButton?.addEventListener("click", () => {
+    state.forceFieldsEnabled = !state.forceFieldsEnabled;
+    updateForceFieldsLabel(state.forceFieldsEnabled);
+    onForceFieldsToggle?.(state.forceFieldsEnabled);
+  });
+
   clearObstaclesButton?.addEventListener("click", () => {
     onClearObstacles?.();
   });
@@ -333,6 +351,10 @@ export function initControls({
     setSoundVolume: (volume, label) => {
       state.soundVolume = volume;
       updateSoundVolumeLabel(volume, label);
+    },
+    setForceFields: (enabled, label) => {
+      state.forceFieldsEnabled = enabled;
+      updateForceFieldsLabel(enabled, label);
     },
     setShareLabel: (label) => {
       updateShareLabel(label);
