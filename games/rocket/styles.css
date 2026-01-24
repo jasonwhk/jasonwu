@@ -1,0 +1,212 @@
+:root {
+  color-scheme: dark;
+  font-family: "Segoe UI", "Trebuchet MS", system-ui, sans-serif;
+  background: #05090f;
+  color: #fef6d8;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #0b1430, #030407 70%);
+  overflow: hidden;
+}
+
+.app {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: env(safe-area-inset-top) 1.25rem env(safe-area-inset-bottom);
+  touch-action: none;
+}
+
+#starfield {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.status-bar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem 0;
+}
+
+.status-pill {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+}
+
+.stage {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  flex: 1;
+  text-align: center;
+}
+
+.ring-wrapper {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: grid;
+  place-items: center;
+}
+
+.ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ring-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 10;
+}
+
+.ring-progress {
+  fill: none;
+  stroke: #6cf0ff;
+  stroke-linecap: round;
+  stroke-width: 10;
+  stroke-dasharray: 326;
+  stroke-dashoffset: 0;
+  transition: stroke 0.2s ease;
+}
+
+.number {
+  font-size: clamp(3.5rem, 6vw, 5rem);
+  font-weight: 700;
+  text-shadow: 0 0 12px rgba(108, 240, 255, 0.6);
+}
+
+.fuel {
+  border: none;
+  padding: 1rem 2.5rem;
+  border-radius: 999px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ffad33, #ff5b5b);
+  color: #1a0f05;
+  box-shadow: 0 16px 30px rgba(255, 126, 48, 0.3);
+}
+
+.fuel:active {
+  transform: scale(0.98);
+}
+
+.message {
+  font-size: 1.1rem;
+  min-height: 1.4rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(5, 8, 15, 0.82);
+  z-index: 3;
+  padding: 2rem;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+.card {
+  max-width: 320px;
+  background: rgba(16, 24, 38, 0.9);
+  padding: 2rem;
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 24px 40px rgba(0, 0, 0, 0.5);
+}
+
+.card h1,
+.card h2 {
+  margin-top: 0;
+}
+
+.primary {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  border: none;
+  background: #6cf0ff;
+  color: #081017;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.parent-trigger {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 64px;
+  height: 64px;
+  z-index: 4;
+}
+
+.parent-bar {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  background: rgba(12, 20, 32, 0.9);
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.parent-bar.hidden {
+  display: none;
+}
+
+.parent-button {
+  border: none;
+  background: #ffcf5b;
+  color: #1c1404;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+}
+
+.success {
+  color: #8cff9f;
+}
+
+.miss {
+  color: #ff9aa8;
+}
+
+@media (min-width: 720px) {
+  .ring-wrapper {
+    width: 240px;
+    height: 240px;
+  }
+}

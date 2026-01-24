@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>Save the Rocket!</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app" id="app">
+      <canvas id="starfield" aria-hidden="true"></canvas>
+
+      <header class="status-bar" aria-live="polite">
+        <div class="status-pill">Mission <span id="missionTimer">90</span>s</div>
+        <div class="status-pill">Streak <span id="streakCount">0</span></div>
+      </header>
+
+      <main class="stage" role="main">
+        <div class="ring-wrapper" aria-live="polite">
+          <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+            <circle class="ring-progress" cx="60" cy="60" r="52"></circle>
+          </svg>
+          <div class="number" id="numberDisplay">7</div>
+        </div>
+
+        <button class="fuel" id="fuelButton" type="button">FUEL!</button>
+        <div class="message" id="message" aria-live="polite"></div>
+      </main>
+
+      <section class="overlay" id="menu" aria-hidden="false">
+        <div class="card">
+          <h1>Save the Rocket!</h1>
+          <p>Tap the number or hit <strong>FUEL!</strong> before the timer drains.</p>
+          <button class="primary" id="startButton" type="button">Start Mission</button>
+        </div>
+      </section>
+
+      <section class="overlay hidden" id="summary" aria-hidden="true">
+        <div class="card">
+          <h2>Mission Complete</h2>
+          <p>Rockets fueled: <span id="totalSuccess">0</span></p>
+          <p>Best streak: <span id="bestStreak">0</span></p>
+          <button class="primary" id="playAgainButton" type="button">Play again</button>
+        </div>
+      </section>
+
+      <div class="parent-trigger" id="parentTrigger" aria-hidden="true"></div>
+      <div class="parent-bar hidden" id="parentBar" aria-hidden="true">
+        <button class="parent-button" id="landButton" type="button">Land & Exit</button>
+      </div>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
