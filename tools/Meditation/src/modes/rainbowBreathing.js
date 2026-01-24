@@ -21,7 +21,8 @@ export function renderRainbowBreathing(ctx, state, metrics, _dt) {
   ctx.fillStyle = background;
   ctx.fillRect(0, 0, width, height);
 
-  const eased = easeInOutSine(state.phase === 'exhale' ? 1 - progress : progress);
+  const holdProgress = state.phase === 'hold' ? 1 : progress;
+  const eased = easeInOutSine(state.phase === 'exhale' ? 1 - progress : holdProgress);
   const size = (Math.min(width, height) * 0.15) + eased * (Math.min(width, height) * 0.12);
 
   ctx.save();
