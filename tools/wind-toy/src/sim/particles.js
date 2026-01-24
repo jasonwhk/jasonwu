@@ -56,11 +56,15 @@ export function stepParticles(particles, field, dt, time, options = {}) {
     const nx = cx + nextVx * dt;
     const ny = cy + nextVy * dt;
 
-    px[i] = cx;
-    py[i] = cy;
+    const wrappedX = wrap(nx, width);
+    const wrappedY = wrap(ny, height);
+    const wrapped = wrappedX !== nx || wrappedY !== ny;
 
-    x[i] = wrap(nx, width);
-    y[i] = wrap(ny, height);
+    px[i] = wrapped ? wrappedX : cx;
+    py[i] = wrapped ? wrappedY : cy;
+
+    x[i] = wrappedX;
+    y[i] = wrappedY;
   }
 }
 
