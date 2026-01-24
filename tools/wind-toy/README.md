@@ -22,6 +22,7 @@ Then open `http://localhost:8000/tools/wind-toy/`.
 Drag to paint wind, tap for a gust, pinch to resize the brush.
 
 When idle for a few seconds, the canvas drifts into a gentle attract mode.
+Use the Share button to copy (or share) the current URL.
 
 ## Known limitations
 
