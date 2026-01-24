@@ -16,8 +16,10 @@ const elements = {
   playAgainButton: document.getElementById("playAgainButton"),
   totalSuccess: document.getElementById("totalSuccess"),
   bestStreak: document.getElementById("bestStreak"),
+  pauseOverlay: document.getElementById("pauseOverlay"),
   parentTrigger: document.getElementById("parentTrigger"),
   parentBar: document.getElementById("parentBar"),
+  pauseButton: document.getElementById("pauseButton"),
   landButton: document.getElementById("landButton"),
   starfield: document.getElementById("starfield"),
 };
@@ -33,6 +35,7 @@ const state = {
   cooldownUntil: 0,
   landingUntil: 0,
   parentHoldId: null,
+  previousMode: null,
 };
 
 const ringCircumference = 2 * Math.PI * 52;
@@ -87,7 +90,10 @@ function startMission() {
   state.lastTick = performance.now();
   setOverlay(elements.menu, false);
   setOverlay(elements.summary, false);
+  setOverlay(elements.pauseOverlay, false);
   setOverlay(elements.parentBar, false);
+  state.previousMode = null;
+  setPauseLabel();
 }
 
 function finishMission() {
@@ -95,6 +101,8 @@ function finishMission() {
   elements.totalSuccess.textContent = state.successes;
   elements.bestStreak.textContent = state.bestStreak;
   setOverlay(elements.summary, true);
+  setOverlay(elements.pauseOverlay, false);
+  setPauseLabel();
 }
 
 function succeed() {
@@ -131,11 +139,44 @@ function triggerLanding() {
   state.landingUntil = performance.now() + LANDING_DURATION_MS;
   showMessage("Landing sequence...", "");
   setOverlay(elements.parentBar, false);
+  setOverlay(elements.pauseOverlay, false);
+  setPauseLabel();
+}
+
+function setPauseLabel() {
+  if (!elements.pauseButton) {
+    return;
+  }
+  elements.pauseButton.textContent = state.mode === "PAUSED" ? "Resume" : "Pause";
+}
+
+function togglePause() {
+  if (state.mode === "PAUSED") {
+    state.mode = state.previousMode || "COUNTDOWN";
+    state.previousMode = null;
+    setOverlay(elements.pauseOverlay, false);
+    state.lastTick = performance.now();
+    setPauseLabel();
+    return;
+  }
+
+  if (["COUNTDOWN", "SUCCESS", "MISS"].includes(state.mode)) {
+    state.previousMode = state.mode;
+    state.mode = "PAUSED";
+    setOverlay(elements.pauseOverlay, true);
+    showMessage("Paused", "");
+    setPauseLabel();
+  }
 }
 
 function tick(now) {
   const delta = now - state.lastTick;
   state.lastTick = now;
+
+  if (state.mode === "PAUSED") {
+    requestAnimationFrame(tick);
+    return;
+  }
 
   if (state.mode === "COUNTDOWN") {
     state.roundRemaining -= delta;
@@ -230,6 +271,7 @@ function attachEvents() {
   elements.parentTrigger.addEventListener("pointerleave", clearParentHold);
   elements.parentTrigger.addEventListener("pointercancel", clearParentHold);
 
+  elements.pauseButton.addEventListener("click", togglePause);
   elements.landButton.addEventListener("click", triggerLanding);
 
   window.addEventListener("resize", resizeCanvas);
