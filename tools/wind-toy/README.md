@@ -20,6 +20,7 @@ Then open `http://localhost:8000/tools/wind-toy/`.
 ## Mobile gestures
 
 Drag to paint wind, tap for a gust, pinch to resize the brush.
+Use the More panel to switch to the Obstacles tool and draw walls (hold `E` on desktop to erase).
 
 When idle for a few seconds, the canvas drifts into a gentle attract mode.
 Use the Share button to copy (or share) the current URL.
@@ -34,4 +35,5 @@ Use the Share button to copy (or share) the current URL.
 - Drag, tap, pinch/wheel, and verify wind responds in Particles and Smoke modes.
 - Toggle the Field button to confirm the vector field overlay appears and hides.
 - Toggle Quality and confirm particle density and flow resolution change.
+- Switch to the Obstacles tool, draw a wall, and confirm flow bends around it.
 - Append `?fps=1` (or press `F`) to verify the FPS meter toggles and low-power mode auto-switches when performance dips.
