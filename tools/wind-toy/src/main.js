@@ -1,7 +1,7 @@
 import { initControls } from "./ui/controls.js";
 import { initGestures } from "./ui/gestures.js";
 import { addScalar, advectScalar, clearScalarField, createScalarField, resizeScalarField } from "./sim/advect.js";
-import { addVelocity, applyDamping, clearField, createField, resizeField } from "./sim/field.js";
+import { addVelocity, applyDamping, clearField, createField, diffuseField, resizeField } from "./sim/field.js";
 import { createParticles, resizeParticles, seedParticles, stepParticles } from "./sim/particles.js";
 
 const canvas = document.querySelector("#wind-canvas");
@@ -9,6 +9,8 @@ const ctx = canvas.getContext("2d", { alpha: false });
 
 const SIM_STEP = 1 / 60;
 const FIELD_DAMPING = 0.96;
+const MEMORY_DAMPING = 0.985;
+const MEMORY_DIFFUSION = 0.35;
 const MAX_WIND_SPEED = 1600;
 const GUST_SPEED = 1200;
 const SMOKE_DISSIPATION = 0.985;
@@ -30,6 +32,7 @@ const state = {
   quality: "High",
   autoLowPower: false,
   showField: false,
+  windMemory: false,
   pointer: {
     active: false,
     x: 0,
@@ -89,6 +92,9 @@ const controls = initControls({
   },
   onFieldToggle: (enabled) => {
     state.showField = enabled;
+  },
+  onWindMemoryToggle: (enabled) => {
+    state.windMemory = enabled;
   },
   onShare: () => {
     handleShare();
@@ -260,7 +266,11 @@ function stepSimulation() {
   if (state.idleTime > IDLE_ATTRACT_MS) {
     applyIdleWind(state.lastFrame);
   }
-  applyDamping(field, FIELD_DAMPING);
+  const damping = state.windMemory ? MEMORY_DAMPING : FIELD_DAMPING;
+  applyDamping(field, damping);
+  if (state.windMemory) {
+    diffuseField(field, MEMORY_DIFFUSION);
+  }
   if (state.mode === "Particles") {
     stepParticles(particles, field, SIM_STEP, state.lastFrame / 1000);
   } else {
@@ -525,3 +535,4 @@ requestAnimationFrame(render);
 
 controls.setStatus("Mode: Particles", "Quality: High");
 controls.setField(false);
+controls.setWindMemory(false);
