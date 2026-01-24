@@ -516,12 +516,17 @@ select:focus {
 /* Responsive Design */
 @media (max-width: 768px) {
   nav ul {
-    gap: 1rem;
-    flex-direction: column;
+    gap: 0.75rem;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
 
   nav a {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    padding: 0.35rem 0;
   }
 
   h1 {
