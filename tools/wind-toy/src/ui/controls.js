@@ -9,6 +9,7 @@ export function initControls({
   onTempOverlayToggle,
   onBuoyancyChange,
   onThemeChange,
+  onScienceOverlayChange,
   onToolToggle,
   onObstacleOverlayToggle,
   onClearObstacles,
@@ -28,6 +29,7 @@ export function initControls({
   const buoyancyValue = document.querySelector("#buoyancy-value");
   const themeSelect = document.querySelector("#theme-select");
   const toolButton = document.querySelector("#tool-btn");
+  const scienceSelect = document.querySelector("#science-select");
   const obstacleOverlayButton = document.querySelector("#obstacle-overlay-btn");
   const clearObstaclesButton = document.querySelector("#clear-obstacles-btn");
   const soundButton = document.querySelector("#sound-btn");
@@ -45,6 +47,7 @@ export function initControls({
     tempOverlay: false,
     buoyancyStrength: 0.5,
     theme: "Classic",
+    scienceOverlay: "Off",
     toolMode: "Wind",
     obstacleOverlay: false,
     soundEnabled: false,
@@ -167,6 +170,13 @@ export function initControls({
     themeSelect.value = theme;
   };
 
+  const updateScienceLabel = (value) => {
+    if (!scienceSelect) {
+      return;
+    }
+    scienceSelect.value = value;
+  };
+
   resetButton?.addEventListener("click", () => {
     onReset?.();
   });
@@ -225,6 +235,13 @@ export function initControls({
     state.theme = value;
     updateThemeLabel(value);
     onThemeChange?.(value);
+  });
+
+  scienceSelect?.addEventListener("change", (event) => {
+    const value = event.target.value;
+    state.scienceOverlay = value;
+    updateScienceLabel(value);
+    onScienceOverlayChange?.(value);
   });
 
   shareButton?.addEventListener("click", () => {
@@ -296,6 +313,10 @@ export function initControls({
     setTheme: (theme) => {
       state.theme = theme;
       updateThemeLabel(theme);
+    },
+    setScienceOverlay: (value) => {
+      state.scienceOverlay = value;
+      updateScienceLabel(value);
     },
     setTool: (mode, label) => {
       state.toolMode = mode;
