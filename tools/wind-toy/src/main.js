@@ -71,6 +71,7 @@ const state = {
   dpr: 1,
   brushRadius: 42,
   mode: "Particles",
+  brushMode: "Push",
   quality: "High",
   autoLowPower: false,
   showField: false,
@@ -177,6 +178,9 @@ const controls = initControls({
   },
   onShare: () => {
     handleShare();
+  },
+  onBrushToggle: (mode) => {
+    state.brushMode = mode;
   },
 });
 
@@ -547,9 +551,17 @@ function applyIdleWind(now) {
 }
 
 function injectWind(point, strength = 1) {
-  const vx = clamp(point.vx * 1000, -MAX_WIND_SPEED, MAX_WIND_SPEED);
-  const vy = clamp(point.vy * 1000, -MAX_WIND_SPEED, MAX_WIND_SPEED);
-  addVelocity(field, point.x, point.y, vx, vy, state.brushRadius, strength);
+  let vx = point.vx;
+  let vy = point.vy;
+  if (state.brushMode === "Vortex") {
+    const rotatedX = -vy;
+    const rotatedY = vx;
+    vx = rotatedX;
+    vy = rotatedY;
+  }
+  const scaledVx = clamp(vx * 1000, -MAX_WIND_SPEED, MAX_WIND_SPEED);
+  const scaledVy = clamp(vy * 1000, -MAX_WIND_SPEED, MAX_WIND_SPEED);
+  addVelocity(field, point.x, point.y, scaledVx, scaledVy, state.brushRadius, strength);
 }
 
 function injectSmoke(point, amount = 1) {
@@ -821,6 +833,7 @@ resetScene();
 requestAnimationFrame(render);
 
 controls.setStatus("Mode: Particles", "Quality: High");
+controls.setBrush(state.brushMode);
 controls.setField(false);
 controls.setWindMemory(false);
 controls.setPhysics("Wind");
