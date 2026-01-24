@@ -22,6 +22,8 @@ const elements = {
   pauseButton: document.getElementById("pauseButton"),
   landButton: document.getElementById("landButton"),
   starfield: document.getElementById("starfield"),
+  rewardLayer: document.getElementById("rewardLayer"),
+  trailLayer: document.getElementById("trailLayer"),
 };
 
 const state = {
@@ -39,6 +41,86 @@ const state = {
 };
 
 const ringCircumference = 2 * Math.PI * 52;
+const rewardTrails = ["comet", "rainbow"];
+const rewardMessages = ["Nice boost!", "Great job!", "Woohoo!", "Blast off!"];
+const stickerPhrases = ["SUPER LAUNCH!", "RAD!", "ZOOM!", "STAR POWER!"];
+
+function clearRewardLayer() {
+  elements.rewardLayer.innerHTML = "";
+  elements.trailLayer.className = "trail-layer";
+}
+
+function spawnSparkles(count) {
+  const bounds = elements.rewardLayer.getBoundingClientRect();
+  for (let i = 0; i < count; i += 1) {
+    const sparkle = document.createElement("span");
+    sparkle.className = "sparkle";
+    sparkle.style.left = `${Math.random() * bounds.width}px`;
+    sparkle.style.top = `${Math.random() * bounds.height * 0.6 + bounds.height * 0.1}px`;
+    sparkle.style.background = `hsl(${Math.random() * 60 + 180}, 90%, 70%)`;
+    sparkle.style.animationDelay = `${Math.random() * 0.2}s`;
+    elements.rewardLayer.appendChild(sparkle);
+  }
+}
+
+function spawnMeteors(count) {
+  const bounds = elements.rewardLayer.getBoundingClientRect();
+  for (let i = 0; i < count; i += 1) {
+    const meteor = document.createElement("span");
+    meteor.className = "meteor";
+    meteor.style.left = `${Math.random() * bounds.width * 0.6}px`;
+    meteor.style.top = `${Math.random() * bounds.height * 0.5}px`;
+    meteor.style.animationDelay = `${Math.random() * 0.3}s`;
+    elements.rewardLayer.appendChild(meteor);
+  }
+}
+
+function spawnStickerBurst() {
+  const sticker = document.createElement("span");
+  sticker.className = "sticker";
+  sticker.textContent = stickerPhrases[Math.floor(Math.random() * stickerPhrases.length)];
+  sticker.style.left = "50%";
+  sticker.style.top = "25%";
+  sticker.style.transform = "translateX(-50%)";
+  elements.rewardLayer.appendChild(sticker);
+}
+
+function showRewardMessage(text) {
+  const message = document.createElement("div");
+  message.className = "reward-message";
+  message.textContent = text;
+  elements.rewardLayer.appendChild(message);
+}
+
+function applyTrail(tier) {
+  const trailClass = tier >= 4 ? "rainbow" : rewardTrails[Math.floor(Math.random() * rewardTrails.length)];
+  elements.trailLayer.className = `trail-layer active ${trailClass}`;
+}
+
+function triggerRewardTier(tier) {
+  clearRewardLayer();
+  if (tier >= 1) {
+    spawnSparkles(6 + tier * 2);
+  }
+  if (tier >= 2) {
+    spawnSparkles(6);
+  }
+  if (tier >= 3) {
+    spawnMeteors(4);
+  }
+  if (tier >= 4) {
+    applyTrail(tier);
+  }
+  if (tier >= 5) {
+    spawnStickerBurst();
+    showRewardMessage("SUPER LAUNCH!");
+  } else {
+    showRewardMessage(rewardMessages[Math.floor(Math.random() * rewardMessages.length)]);
+  }
+  window.setTimeout(() => {
+    elements.trailLayer.classList.remove("active");
+  }, 1200);
+}
 
 function setRingProgress(progress) {
   const offset = ringCircumference * (1 - progress);
@@ -82,6 +164,7 @@ function resetMission() {
   state.landingUntil = 0;
   updateNumber();
   showMessage("", "");
+  clearRewardLayer();
 }
 
 function startMission() {
@@ -112,7 +195,9 @@ function succeed() {
   state.successes += 1;
   state.streak += 1;
   state.bestStreak = Math.max(state.bestStreak, state.streak);
+  const rewardTier = Math.min(5, state.streak);
   showMessage("Boost!", "success");
+  triggerRewardTier(rewardTier);
   state.mode = "SUCCESS";
   state.cooldownUntil = performance.now() + COOLDOWN_MS;
 }
@@ -120,6 +205,7 @@ function succeed() {
 function miss() {
   showMessage("Oops! Try again!", "miss");
   state.streak = Math.max(0, state.streak - 1);
+  clearRewardLayer();
   state.mode = "MISS";
   state.cooldownUntil = performance.now() + COOLDOWN_MS;
 }
@@ -128,6 +214,7 @@ function startRound() {
   state.roundRemaining = ROUND_DURATION_MS;
   updateNumber();
   showMessage("", "");
+  clearRewardLayer();
   state.mode = "COUNTDOWN";
 }
 

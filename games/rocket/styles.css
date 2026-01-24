@@ -64,6 +64,114 @@ body {
   text-align: center;
 }
 
+.reward-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.trail-layer {
+  width: min(320px, 80vw);
+  height: 12px;
+  border-radius: 999px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.trail-layer.active {
+  opacity: 0.9;
+}
+
+.trail-layer.rainbow {
+  background: linear-gradient(90deg, #ff6b6b, #ffd166, #6cf0ff, #a3ff96, #b68cff);
+  box-shadow: 0 0 20px rgba(166, 255, 236, 0.6);
+}
+
+.trail-layer.comet {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), #6cf0ff, #ffffff);
+  box-shadow: 0 0 18px rgba(108, 240, 255, 0.8);
+}
+
+.reward-message {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+  color: #ffe8a3;
+  text-shadow: 0 0 14px rgba(255, 215, 120, 0.7);
+}
+
+.sparkle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  opacity: 0;
+  animation: sparkle 0.8s ease-out forwards;
+}
+
+.meteor {
+  position: absolute;
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), #fff);
+  opacity: 0;
+  animation: meteor 1s ease-out forwards;
+}
+
+.sticker {
+  position: absolute;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #0c1420;
+  font-weight: 700;
+  font-size: 0.9rem;
+  opacity: 0;
+  animation: sticker-pop 1s ease-out forwards;
+}
+
+@keyframes sparkle {
+  0% {
+    transform: scale(0.4) translateY(0);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.6) translateY(-40px);
+    opacity: 0;
+  }
+}
+
+@keyframes meteor {
+  0% {
+    transform: translateX(-20px) translateY(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(120px) translateY(40px);
+    opacity: 0;
+  }
+}
+
+@keyframes sticker-pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.1) translateY(-20px);
+    opacity: 0;
+  }
+}
 .ring-wrapper {
   position: relative;
   width: 200px;
