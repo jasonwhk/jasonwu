@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Snake</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <div>
+        <h1>Snake</h1>
+        <p class="subtitle">Classic snake with touch-first controls.</p>
+      </div>
+      <div class="hud">
+        <div class="hud-item">
+          <span class="label">Score</span>
+          <span id="score">0</span>
+        </div>
+        <div class="hud-item">
+          <span class="label">Best</span>
+          <span id="best">0</span>
+        </div>
+        <div class="hud-item">
+          <span class="label">Status</span>
+          <span id="status">Idle</span>
+        </div>
+        <div class="hud-item">
+          <span class="label">Speed</span>
+          <span id="speed-label">Normal</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="game-layout">
+      <div class="canvas-panel">
+        <div class="canvas-shell" id="canvas-shell">
+          <canvas id="game" width="400" height="400" aria-label="Snake game board"></canvas>
+          <div class="canvas-overlay" id="overlay"></div>
+        </div>
+        <div class="controls">
+          <button id="start-btn" class="primary">Start</button>
+          <button id="pause-btn">Pause</button>
+          <button id="restart-btn">Restart</button>
+        </div>
+        <div class="speed-control">
+          <label for="speed-select">Speed</label>
+          <select id="speed-select">
+            <option value="slow">Slow</option>
+            <option value="normal" selected>Normal</option>
+            <option value="fast">Fast</option>
+          </select>
+        </div>
+      </div>
+
+      <aside class="pad-panel">
+        <div class="dpad" aria-label="Directional pad">
+          <button class="pad up" data-dir="up" aria-label="Move up">▲</button>
+          <div class="pad-row">
+            <button class="pad left" data-dir="left" aria-label="Move left">◀</button>
+            <button class="pad down" data-dir="down" aria-label="Move down">▼</button>
+            <button class="pad right" data-dir="right" aria-label="Move right">▶</button>
+          </div>
+        </div>
+        <p class="pad-hint">Use the D-pad or swipe on the board.</p>
+      </aside>
+    </section>
+  </main>
+
+  <script src="snake.js"></script>
+</body>
+</html>
