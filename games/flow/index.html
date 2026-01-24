@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>Particle Flow Modes</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <canvas id="flow-canvas" aria-label="Particle flow"></canvas>
+
+    <div class="hud" id="hud" aria-live="polite">
+      <span id="fps">0 fps</span>
+      <span id="count">0 particles</span>
+    </div>
+
+    <div class="mode-selector" id="modeSelector">
+      <button class="mode-pill" id="modePill" type="button">
+        FLOW
+      </button>
+      <div class="mode-list" id="modeList" role="listbox" aria-hidden="true">
+        <button class="mode-item" data-mode="FLOW" type="button">FLOW</button>
+        <button class="mode-item" data-mode="GRAVITY" type="button">GRAVITY WELL</button>
+        <button class="mode-item" data-mode="ORBIT" type="button">ORBIT</button>
+        <button class="mode-item" data-mode="REPEL" type="button">REPEL</button>
+        <button class="mode-item" data-mode="MAGNET" type="button">MAGNET LINES</button>
+        <button class="mode-item" data-mode="FIREWORKS" type="button">FIREWORKS</button>
+      </div>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
