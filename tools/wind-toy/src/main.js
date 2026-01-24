@@ -12,6 +12,11 @@ const FIELD_DAMPING = 0.96;
 const MAX_WIND_SPEED = 1600;
 const GUST_SPEED = 1200;
 const SMOKE_DISSIPATION = 0.985;
+const IDLE_ATTRACT_MS = 5000;
+const IDLE_WIND_SPEED = 220;
+const IDLE_WIND_RADIUS = 120;
+const IDLE_SMOKE_AMOUNT = 0.16;
+const IDLE_SWIRL_STRENGTH = 0.35;
 
 const state = {
   width: 0,
@@ -30,6 +35,7 @@ const state = {
   lastFrame: performance.now(),
   accumulator: 0,
   idleTime: 0,
+  idleSeed: Math.random() * Math.PI * 2,
 };
 
 const field = createField({
@@ -186,6 +192,9 @@ function drawSmoke() {
 }
 
 function stepSimulation() {
+  if (state.idleTime > IDLE_ATTRACT_MS) {
+    applyIdleWind(state.lastFrame);
+  }
   applyDamping(field, FIELD_DAMPING);
   if (state.mode === "Particles") {
     stepParticles(particles, field, SIM_STEP, state.lastFrame / 1000);
@@ -214,6 +223,23 @@ function render(now) {
   drawBrushRing();
 
   requestAnimationFrame(render);
+}
+
+function applyIdleWind(now) {
+  const t = now / 1000;
+  const baseX = state.width * 0.5;
+  const baseY = state.height * 0.5;
+  const orbitX = Math.sin(t * 0.35 + state.idleSeed) * state.width * 0.22;
+  const orbitY = Math.cos(t * 0.4 + state.idleSeed * 0.7) * state.height * 0.18;
+  const x = baseX + orbitX;
+  const y = baseY + orbitY;
+  const angle = t * 0.8 + state.idleSeed;
+  const vx = Math.cos(angle) * IDLE_WIND_SPEED;
+  const vy = Math.sin(angle) * IDLE_WIND_SPEED;
+  addVelocity(field, x, y, vx, vy, IDLE_WIND_RADIUS, IDLE_SWIRL_STRENGTH);
+  if (state.mode === "Smoke") {
+    addScalar(smoke, x, y, IDLE_SMOKE_AMOUNT, IDLE_WIND_RADIUS * 0.7);
+  }
 }
 
 function injectWind(point, strength = 1) {
