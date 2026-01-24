@@ -2,6 +2,13 @@ import { initControls } from "./ui/controls.js";
 import { initGestures } from "./ui/gestures.js";
 import { addScalar, advectScalar, clearScalarField, createScalarField, resizeScalarField } from "./sim/advect.js";
 import { addVelocity, applyDamping, clearField, createField, diffuseField, resizeField } from "./sim/field.js";
+import {
+  applyObstaclesToField,
+  clearObstacles,
+  createObstacleField,
+  paintObstacle,
+  resizeObstacleField,
+} from "./sim/obstacles.js";
 import { createParticles, resizeParticles, seedParticles, stepParticles } from "./sim/particles.js";
 
 const canvas = document.querySelector("#wind-canvas");
@@ -72,14 +79,17 @@ const state = {
   brushRadius: 42,
   mode: "Particles",
   brushMode: "Push",
+  toolMode: "Wind",
   quality: "High",
   autoLowPower: false,
   showField: false,
   windMemory: false,
   physicsMode: "Wind",
   showTempOverlay: false,
+  showObstacleOverlay: false,
   buoyancyStrength: 0.5,
   theme: "Classic",
+  eraseObstacles: false,
   pointer: {
     active: false,
     x: 0,
@@ -121,6 +131,12 @@ const temp = createScalarField({
   gridWidth: 24,
   gridHeight: 24,
 });
+const obstacles = createObstacleField({
+  worldWidth: 1,
+  worldHeight: 1,
+  gridWidth: 24,
+  gridHeight: 24,
+});
 
 const smokeBuffer = {
   canvas: document.createElement("canvas"),
@@ -134,6 +150,12 @@ const tempBuffer = {
   imageData: null,
 };
 tempBuffer.ctx = tempBuffer.canvas.getContext("2d");
+const obstacleBuffer = {
+  canvas: document.createElement("canvas"),
+  ctx: null,
+  imageData: null,
+};
+obstacleBuffer.ctx = obstacleBuffer.canvas.getContext("2d");
 const fpsMeter = document.querySelector("#fps-meter");
 
 const controls = initControls({
@@ -176,6 +198,15 @@ const controls = initControls({
       reseed: false,
     });
   },
+  onToolToggle: (mode) => {
+    state.toolMode = mode;
+  },
+  onObstacleOverlayToggle: (enabled) => {
+    state.showObstacleOverlay = enabled;
+  },
+  onClearObstacles: () => {
+    clearObstacles(obstacles);
+  },
   onShare: () => {
     handleShare();
   },
@@ -206,8 +237,15 @@ function applyQuality(quality, { auto = false } = {}) {
     gridWidth: gridConfig.gridWidth,
     gridHeight: gridConfig.gridHeight,
   });
+  resizeObstacleField(obstacles, {
+    worldWidth: state.width,
+    worldHeight: state.height,
+    gridWidth: gridConfig.gridWidth,
+    gridHeight: gridConfig.gridHeight,
+  });
   resizeSmokeBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
   resizeTempBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
+  resizeObstacleBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
   resizeParticles(particles, {
     count: getParticleCount(),
     width: state.width,
@@ -247,8 +285,15 @@ function resizeCanvas() {
     gridWidth: gridConfig.gridWidth,
     gridHeight: gridConfig.gridHeight,
   });
+  resizeObstacleField(obstacles, {
+    worldWidth: state.width,
+    worldHeight: state.height,
+    gridWidth: gridConfig.gridWidth,
+    gridHeight: gridConfig.gridHeight,
+  });
   resizeSmokeBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
   resizeTempBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
+  resizeObstacleBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
 
   resizeParticles(particles, {
     count: getParticleCount(),
@@ -263,6 +308,7 @@ function resetScene() {
   clearField(field);
   clearScalarField(smoke);
   clearScalarField(temp);
+  clearObstacles(obstacles);
   seedParticles(particles);
   state.idleTime = 0;
 }
@@ -453,6 +499,37 @@ function drawTempOverlay() {
   ctx.restore();
 }
 
+function drawObstacleOverlay() {
+  if (!state.showObstacleOverlay) {
+    return;
+  }
+  const { width, height, data } = obstacles;
+  const { ctx: bufferCtx, imageData } = obstacleBuffer;
+  if (!imageData) {
+    return;
+  }
+  const pixels = imageData.data;
+  for (let i = 0; i < data.length; i += 1) {
+    const offset = i * 4;
+    if (data[i]) {
+      pixels[offset] = 180;
+      pixels[offset + 1] = 190;
+      pixels[offset + 2] = 210;
+      pixels[offset + 3] = 120;
+    } else {
+      pixels[offset] = 0;
+      pixels[offset + 1] = 0;
+      pixels[offset + 2] = 0;
+      pixels[offset + 3] = 0;
+    }
+  }
+  bufferCtx.putImageData(imageData, 0, 0);
+  ctx.save();
+  ctx.globalCompositeOperation = "lighter";
+  ctx.drawImage(obstacleBuffer.canvas, 0, 0, width, height, 0, 0, state.width, state.height);
+  ctx.restore();
+}
+
 function drawFieldDebug() {
   if (!state.showField) {
     return;
@@ -497,14 +574,18 @@ function stepSimulation() {
   if (state.windMemory) {
     diffuseField(field, MEMORY_DIFFUSION);
   }
+  applyObstaclesToField(field, obstacles, 0.25);
   if (state.physicsMode === "Wind+Temperature") {
-    advectScalar(temp, field, SIM_STEP, TEMP_DISSIPATION);
+    advectScalar(temp, field, SIM_STEP, TEMP_DISSIPATION, obstacles);
     applyBuoyancy(field, temp, state.buoyancyStrength, SIM_STEP);
   }
   if (state.mode === "Particles") {
-    stepParticles(particles, field, SIM_STEP, state.lastFrame / 1000, getThemeConfig().particleOptions);
+    stepParticles(particles, field, SIM_STEP, state.lastFrame / 1000, {
+      ...getThemeConfig().particleOptions,
+      obstacles,
+    });
   } else {
-    advectScalar(smoke, field, SIM_STEP, SMOKE_DISSIPATION);
+    advectScalar(smoke, field, SIM_STEP, SMOKE_DISSIPATION, obstacles);
   }
 }
 
@@ -527,6 +608,7 @@ function render(now) {
     drawSmoke();
   }
   drawTempOverlay();
+  drawObstacleOverlay();
   drawFieldDebug();
   drawBrushRing();
 
@@ -546,7 +628,7 @@ function applyIdleWind(now) {
   const vy = Math.sin(angle) * IDLE_WIND_SPEED;
   addVelocity(field, x, y, vx, vy, IDLE_WIND_RADIUS, IDLE_SWIRL_STRENGTH);
   if (state.mode === "Smoke") {
-    addScalar(smoke, x, y, IDLE_SMOKE_AMOUNT, IDLE_WIND_RADIUS * 0.7);
+    addScalar(smoke, x, y, IDLE_SMOKE_AMOUNT, IDLE_WIND_RADIUS * 0.7, obstacles);
   }
 }
 
@@ -565,11 +647,15 @@ function injectWind(point, strength = 1) {
 }
 
 function injectSmoke(point, amount = 1) {
-  addScalar(smoke, point.x, point.y, amount, state.brushRadius * 0.9);
+  addScalar(smoke, point.x, point.y, amount, state.brushRadius * 0.9, obstacles);
 }
 
 function injectTemperature(point, amount) {
-  addScalar(temp, point.x, point.y, amount, state.brushRadius * 0.9);
+  addScalar(temp, point.x, point.y, amount, state.brushRadius * 0.9, obstacles);
+}
+
+function injectObstacle(point, add = true) {
+  paintObstacle(obstacles, point.x, point.y, state.brushRadius * 0.9, add);
 }
 
 function resolveTempMode(point) {
@@ -623,6 +709,12 @@ function resizeTempBuffer(width, height) {
   tempBuffer.imageData = tempBuffer.ctx.createImageData(width, height);
 }
 
+function resizeObstacleBuffer(width, height) {
+  obstacleBuffer.canvas.width = width;
+  obstacleBuffer.canvas.height = height;
+  obstacleBuffer.imageData = obstacleBuffer.ctx.createImageData(width, height);
+}
+
 function setFpsMeter(enabled) {
   fpsState.enabled = enabled;
   if (!fpsMeter) {
@@ -669,6 +761,10 @@ initGestures(canvas, {
     state.pointer.vx = point.vx;
     state.pointer.vy = point.vy;
     state.idleTime = 0;
+    if (state.toolMode === "Obstacles") {
+      injectObstacle(point, !state.eraseObstacles);
+      return;
+    }
     injectWind(point, 0.9);
     const tempMode = resolveTempMode(point);
     if (tempMode !== 0) {
@@ -685,6 +781,10 @@ initGestures(canvas, {
     state.pointer.vx = point.vx;
     state.pointer.vy = point.vy;
     state.idleTime = 0;
+    if (state.toolMode === "Obstacles") {
+      injectObstacle(point, !state.eraseObstacles);
+      return;
+    }
     injectWind(point, 1);
     const tempMode = resolveTempMode(point);
     if (tempMode !== 0) {
@@ -703,6 +803,13 @@ initGestures(canvas, {
     state.pointer.y = point.y;
     state.pointer.vx = point.vx * 2;
     state.pointer.vy = point.vy * 2;
+    if (state.toolMode === "Obstacles") {
+      injectObstacle(point, !state.eraseObstacles);
+      setTimeout(() => {
+        state.pointer.active = false;
+      }, 120);
+      return;
+    }
     const gustAngle = Math.random() * Math.PI * 2;
     const gust = {
       x: point.x,
@@ -750,6 +857,15 @@ function hashFloat(index) {
 window.addEventListener("keydown", (event) => {
   if (event.key.toLowerCase() === "f") {
     setFpsMeter(!fpsState.enabled);
+  }
+  if (event.key.toLowerCase() === "e") {
+    state.eraseObstacles = true;
+  }
+});
+
+window.addEventListener("keyup", (event) => {
+  if (event.key.toLowerCase() === "e") {
+    state.eraseObstacles = false;
   }
 });
 
@@ -834,9 +950,11 @@ requestAnimationFrame(render);
 
 controls.setStatus("Mode: Particles", "Quality: High");
 controls.setBrush(state.brushMode);
+controls.setTool(state.toolMode);
 controls.setField(false);
 controls.setWindMemory(false);
 controls.setPhysics("Wind");
 controls.setTempOverlay(false);
+controls.setObstacleOverlay(false);
 controls.setBuoyancy(state.buoyancyStrength);
 controls.setTheme(state.theme);

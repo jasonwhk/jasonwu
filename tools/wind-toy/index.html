@@ -27,6 +27,9 @@
                 <option value="Fireflies">Fireflies</option>
               </select>
             </label>
+            <button id="tool-btn" type="button" aria-pressed="false">Tool: Wind</button>
+            <button id="obstacle-overlay-btn" type="button" aria-pressed="false">Obstacles: Off</button>
+            <button id="clear-obstacles-btn" type="button">Clear Obstacles</button>
           </div>
         </details>
         <button id="field-btn" type="button" aria-pressed="false">Field: Off</button>
@@ -41,7 +44,7 @@
         <button id="share-btn" type="button" aria-live="polite">Share</button>
       </div>
       <div id="fps-meter" class="fps-meter" aria-hidden="true">FPS 60</div>
-      <div class="hint" aria-hidden="true">Drag to paint wind · Long-press for heat · Two-finger tap for cold</div>
+      <div class="hint" aria-hidden="true">Drag to paint wind · Long-press for heat · Two-finger tap for cold · More for obstacles</div>
     </main>
     <script type="module" src="src/main.js"></script>
   </body>

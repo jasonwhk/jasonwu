@@ -37,8 +37,9 @@ export function clearScalarField(field) {
   field.next.fill(0);
 }
 
-export function addScalar(field, x, y, amount, radius) {
+export function addScalar(field, x, y, amount, radius, obstacles = null) {
   const { width, height, worldWidth, worldHeight, data } = field;
+  const solid = obstacles?.data;
   const gx = (x / worldWidth) * (width - 1);
   const gy = (y / worldHeight) * (height - 1);
   const rx = (radius / worldWidth) * (width - 1);
@@ -62,20 +63,29 @@ export function addScalar(field, x, y, amount, radius) {
         continue;
       }
       const weight = Math.exp(-dist2 / (2 * sigma2));
-      data[iy * width + ix] += amount * weight;
+      const index = iy * width + ix;
+      if (solid && solid[index]) {
+        continue;
+      }
+      data[index] += amount * weight;
     }
   }
 }
 
-export function advectScalar(field, velocityField, dt, dissipation = 0.985) {
+export function advectScalar(field, velocityField, dt, dissipation = 0.985, obstacles = null) {
   const { width, height, worldWidth, worldHeight, data, next } = field;
   const { u, v } = velocityField;
+  const solid = obstacles?.data;
 
   for (let iy = 0; iy < height; iy += 1) {
     const y = (iy / (height - 1)) * worldHeight;
     for (let ix = 0; ix < width; ix += 1) {
       const x = (ix / (width - 1)) * worldWidth;
       const index = iy * width + ix;
+      if (solid && solid[index]) {
+        next[index] = 0;
+        continue;
+      }
       const vx = u[index];
       const vy = v[index];
       const px = clamp(x - vx * dt, 0, worldWidth);

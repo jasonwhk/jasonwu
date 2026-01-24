@@ -62,13 +62,26 @@ function seedRange(particles, startIndex) {
 
 export function stepParticles(particles, field, dt, time, options = {}) {
   const { count, width, height, x, y, px, py } = particles;
-  const { drag = 0.18, noise = 18, gravity = 0, speedScale = 1 } = options;
+  const { drag = 0.18, noise = 18, gravity = 0, speedScale = 1, obstacles = null } = options;
+  const solid = obstacles?.data;
+  const solidWidth = obstacles?.width ?? 0;
+  const solidHeight = obstacles?.height ?? 0;
   const dragFactor = Math.max(0, 1 - drag * dt);
   const noisePhase = time * 0.6;
 
   for (let i = 0; i < count; i += 1) {
     const cx = x[i];
     const cy = y[i];
+
+    if (solid && isSolidAt(solid, solidWidth, solidHeight, field, cx, cy)) {
+      const nx = Math.random() * width;
+      const ny = Math.random() * height;
+      x[i] = nx;
+      y[i] = ny;
+      px[i] = nx;
+      py[i] = ny;
+      continue;
+    }
 
     const { vx, vy } = sampleField(field, cx, cy);
     const jitterX = Math.sin(cy * 0.01 + noisePhase) * noise;
@@ -89,6 +102,17 @@ export function stepParticles(particles, field, dt, time, options = {}) {
     x[i] = wrappedX;
     y[i] = wrappedY;
   }
+}
+
+function isSolidAt(solid, solidWidth, solidHeight, field, x, y) {
+  if (!solid || solidWidth <= 1 || solidHeight <= 1) {
+    return false;
+  }
+  const gx = Math.round((x / field.worldWidth) * (solidWidth - 1));
+  const gy = Math.round((y / field.worldHeight) * (solidHeight - 1));
+  const ix = clamp(gx, 0, solidWidth - 1);
+  const iy = clamp(gy, 0, solidHeight - 1);
+  return solid[iy * solidWidth + ix] === 1;
 }
 
 function sampleField(field, x, y) {
@@ -128,6 +152,10 @@ function wrap(value, max) {
     return value - max;
   }
   return value;
+}
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
 }
 
 function lerp(a, b, t) {

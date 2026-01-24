@@ -9,6 +9,9 @@ export function initControls({
   onTempOverlayToggle,
   onBuoyancyChange,
   onThemeChange,
+  onToolToggle,
+  onObstacleOverlayToggle,
+  onClearObstacles,
   onShare,
 }) {
   const resetButton = document.querySelector("#reset-btn");
@@ -22,6 +25,9 @@ export function initControls({
   const buoyancySlider = document.querySelector("#buoyancy-slider");
   const buoyancyValue = document.querySelector("#buoyancy-value");
   const themeSelect = document.querySelector("#theme-select");
+  const toolButton = document.querySelector("#tool-btn");
+  const obstacleOverlayButton = document.querySelector("#obstacle-overlay-btn");
+  const clearObstaclesButton = document.querySelector("#clear-obstacles-btn");
   const shareButton = document.querySelector("#share-btn");
 
   const state = {
@@ -34,6 +40,8 @@ export function initControls({
     tempOverlay: false,
     buoyancyStrength: 0.5,
     theme: "Classic",
+    toolMode: "Wind",
+    obstacleOverlay: false,
   };
 
   const updateModeLabel = (mode, label) => {
@@ -109,6 +117,24 @@ export function initControls({
     shareButton.textContent = label;
   };
 
+  const updateToolLabel = (mode, label) => {
+    if (!toolButton) {
+      return;
+    }
+    const nextLabel = label ?? `Tool: ${mode}`;
+    toolButton.textContent = nextLabel;
+    toolButton.setAttribute("aria-pressed", mode === "Obstacles" ? "true" : "false");
+  };
+
+  const updateObstacleOverlayLabel = (enabled, label) => {
+    if (!obstacleOverlayButton) {
+      return;
+    }
+    const nextLabel = label ?? `Obstacles: ${enabled ? "On" : "Off"}`;
+    obstacleOverlayButton.textContent = nextLabel;
+    obstacleOverlayButton.setAttribute("aria-pressed", enabled ? "true" : "false");
+  };
+
   const updateThemeLabel = (theme) => {
     if (!themeSelect) {
       return;
@@ -180,6 +206,22 @@ export function initControls({
     onShare?.();
   });
 
+  toolButton?.addEventListener("click", () => {
+    state.toolMode = state.toolMode === "Wind" ? "Obstacles" : "Wind";
+    updateToolLabel(state.toolMode);
+    onToolToggle?.(state.toolMode);
+  });
+
+  obstacleOverlayButton?.addEventListener("click", () => {
+    state.obstacleOverlay = !state.obstacleOverlay;
+    updateObstacleOverlayLabel(state.obstacleOverlay);
+    onObstacleOverlayToggle?.(state.obstacleOverlay);
+  });
+
+  clearObstaclesButton?.addEventListener("click", () => {
+    onClearObstacles?.();
+  });
+
   return {
     setMode: (mode, label) => {
       state.mode = mode;
@@ -216,6 +258,14 @@ export function initControls({
     setTheme: (theme) => {
       state.theme = theme;
       updateThemeLabel(theme);
+    },
+    setTool: (mode, label) => {
+      state.toolMode = mode;
+      updateToolLabel(mode, label);
+    },
+    setObstacleOverlay: (enabled, label) => {
+      state.obstacleOverlay = enabled;
+      updateObstacleOverlayLabel(enabled, label);
     },
     setShareLabel: (label) => {
       updateShareLabel(label);
