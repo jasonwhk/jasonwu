@@ -1,6 +1,7 @@
 export function initControls({
   onReset,
   onModeToggle,
+  onBrushToggle,
   onQualityToggle,
   onFieldToggle,
   onWindMemoryToggle,
@@ -12,6 +13,7 @@ export function initControls({
 }) {
   const resetButton = document.querySelector("#reset-btn");
   const modeButton = document.querySelector("#mode-btn");
+  const brushButton = document.querySelector("#brush-btn");
   const qualityButton = document.querySelector("#quality-btn");
   const fieldButton = document.querySelector("#field-btn");
   const windMemoryButton = document.querySelector("#wind-memory-btn");
@@ -24,6 +26,7 @@ export function initControls({
 
   const state = {
     mode: "Particles",
+    brushMode: "Push",
     quality: "High",
     field: false,
     windMemory: false,
@@ -43,6 +46,15 @@ export function initControls({
     const nextLabel = label ?? `Quality: ${quality}`;
     qualityButton.textContent = nextLabel;
     qualityButton.setAttribute("aria-pressed", quality === "Low");
+  };
+
+  const updateBrushLabel = (mode, label) => {
+    if (!brushButton) {
+      return;
+    }
+    const nextLabel = label ?? `Brush: ${mode}`;
+    brushButton.textContent = nextLabel;
+    brushButton.setAttribute("aria-pressed", mode === "Vortex" ? "true" : "false");
   };
 
   const updateFieldLabel = (fieldEnabled, label) => {
@@ -114,6 +126,12 @@ export function initControls({
     onModeToggle?.(state.mode);
   });
 
+  brushButton?.addEventListener("click", () => {
+    state.brushMode = state.brushMode === "Push" ? "Vortex" : "Push";
+    updateBrushLabel(state.brushMode);
+    onBrushToggle?.(state.brushMode);
+  });
+
   qualityButton?.addEventListener("click", () => {
     state.quality = state.quality === "High" ? "Low" : "High";
     updateQualityLabel(state.quality);
@@ -166,6 +184,10 @@ export function initControls({
     setMode: (mode, label) => {
       state.mode = mode;
       updateModeLabel(mode, label);
+    },
+    setBrush: (mode, label) => {
+      state.brushMode = mode;
+      updateBrushLabel(mode, label);
     },
     setQuality: (quality, label) => {
       state.quality = quality;
