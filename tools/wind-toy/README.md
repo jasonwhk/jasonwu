@@ -27,3 +27,10 @@ When idle for a few seconds, the canvas drifts into a gentle attract mode.
 
 - Smoke mode is still lightweight (no full fluid solver), so wispy trails fade quickly.
 - There is no debug visualization for the vector field yet.
+
+## Test checklist
+
+- Load the page and confirm the canvas renders without console errors.
+- Drag, tap, pinch/wheel, and verify wind responds in Particles and Smoke modes.
+- Toggle Quality and confirm particle density and flow resolution change.
+- Append `?fps=1` (or press `F`) to verify the FPS meter toggles and low-power mode auto-switches when performance dips.

@@ -17,6 +17,9 @@ const IDLE_WIND_SPEED = 220;
 const IDLE_WIND_RADIUS = 120;
 const IDLE_SMOKE_AMOUNT = 0.16;
 const IDLE_SWIRL_STRENGTH = 0.35;
+const FPS_SAMPLE_MS = 900;
+const LOW_POWER_FPS = 48;
+const LOW_POWER_SAMPLES = 3;
 
 const state = {
   width: 0,
@@ -25,6 +28,7 @@ const state = {
   brushRadius: 42,
   mode: "Particles",
   quality: "High",
+  autoLowPower: false,
   pointer: {
     active: false,
     x: 0,
@@ -36,6 +40,15 @@ const state = {
   accumulator: 0,
   idleTime: 0,
   idleSeed: Math.random() * Math.PI * 2,
+};
+
+const fpsState = {
+  enabled: false,
+  lastSample: performance.now(),
+  frameCount: 0,
+  fps: 60,
+  lowSamples: 0,
+  inLowPower: false,
 };
 
 const field = createField({
@@ -58,6 +71,7 @@ const smokeBuffer = {
   imageData: null,
 };
 smokeBuffer.ctx = smokeBuffer.canvas.getContext("2d");
+const fpsMeter = document.querySelector("#fps-meter");
 
 const controls = initControls({
   onReset: () => resetScene(),
@@ -68,28 +82,37 @@ const controls = initControls({
     }
   },
   onQualityToggle: (quality) => {
-    state.quality = quality;
-    const gridConfig = getGridConfig();
-    resizeField(field, {
-      worldWidth: state.width,
-      worldHeight: state.height,
-      gridWidth: gridConfig.gridWidth,
-      gridHeight: gridConfig.gridHeight,
-    });
-    resizeScalarField(smoke, {
-      worldWidth: state.width,
-      worldHeight: state.height,
-      gridWidth: gridConfig.gridWidth,
-      gridHeight: gridConfig.gridHeight,
-    });
-    resizeSmokeBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
-    resizeParticles(particles, {
-      count: getParticleCount(),
-      width: state.width,
-      height: state.height,
-    });
+    fpsState.inLowPower = false;
+    fpsState.lowSamples = 0;
+    applyQuality(quality, { auto: false });
   },
 });
+
+function applyQuality(quality, { auto = false } = {}) {
+  state.quality = quality;
+  state.autoLowPower = auto;
+  const gridConfig = getGridConfig();
+  resizeField(field, {
+    worldWidth: state.width,
+    worldHeight: state.height,
+    gridWidth: gridConfig.gridWidth,
+    gridHeight: gridConfig.gridHeight,
+  });
+  resizeScalarField(smoke, {
+    worldWidth: state.width,
+    worldHeight: state.height,
+    gridWidth: gridConfig.gridWidth,
+    gridHeight: gridConfig.gridHeight,
+  });
+  resizeSmokeBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
+  resizeParticles(particles, {
+    count: getParticleCount(),
+    width: state.width,
+    height: state.height,
+  });
+  const qualityLabel = auto ? `Quality: ${quality} (Auto)` : `Quality: ${quality}`;
+  controls.setQuality(quality, qualityLabel);
+}
 
 function resizeCanvas() {
   const { innerWidth, innerHeight, devicePixelRatio } = window;
@@ -214,6 +237,7 @@ function render(now) {
     state.accumulator -= SIM_STEP;
   }
 
+  updateFps(now);
   drawBackground();
   if (state.mode === "Particles") {
     drawParticles();
@@ -267,6 +291,44 @@ function resizeSmokeBuffer(width, height) {
   smokeBuffer.canvas.width = width;
   smokeBuffer.canvas.height = height;
   smokeBuffer.imageData = smokeBuffer.ctx.createImageData(width, height);
+}
+
+function setFpsMeter(enabled) {
+  fpsState.enabled = enabled;
+  if (!fpsMeter) {
+    return;
+  }
+  fpsMeter.style.display = enabled ? "block" : "none";
+  fpsMeter.setAttribute("aria-hidden", String(!enabled));
+}
+
+function updateFps(now) {
+  fpsState.frameCount += 1;
+  const elapsed = now - fpsState.lastSample;
+  if (elapsed < FPS_SAMPLE_MS) {
+    return;
+  }
+  const fps = (fpsState.frameCount * 1000) / elapsed;
+  fpsState.fps = fps;
+  fpsState.frameCount = 0;
+  fpsState.lastSample = now;
+
+  if (!fpsState.inLowPower && state.quality === "High") {
+    if (fps < LOW_POWER_FPS) {
+      fpsState.lowSamples += 1;
+    } else {
+      fpsState.lowSamples = 0;
+    }
+    if (fpsState.lowSamples >= LOW_POWER_SAMPLES) {
+      fpsState.inLowPower = true;
+      applyQuality("Low", { auto: true });
+    }
+  }
+
+  if (fpsState.enabled && fpsMeter) {
+    const suffix = fpsState.inLowPower ? " · Low power" : "";
+    fpsMeter.textContent = `FPS ${fps.toFixed(0)}${suffix}`;
+  }
 }
 
 initGestures(canvas, {
@@ -333,10 +395,21 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
+window.addEventListener("keydown", (event) => {
+  if (event.key.toLowerCase() === "f") {
+    setFpsMeter(!fpsState.enabled);
+  }
+});
+
 window.addEventListener("resize", () => {
   resizeCanvas();
   resetScene();
 });
+
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.has("fps")) {
+  setFpsMeter(true);
+}
 
 resizeCanvas();
 resetScene();
