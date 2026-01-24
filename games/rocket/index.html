@@ -19,6 +19,7 @@
       </header>
 
       <main class="stage" role="main">
+        <div class="reward-layer" id="rewardLayer" aria-hidden="true"></div>
         <div class="ring-wrapper" aria-live="polite">
           <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
             <circle class="ring-track" cx="60" cy="60" r="52"></circle>
@@ -26,6 +27,8 @@
           </svg>
           <div class="number" id="numberDisplay">7</div>
         </div>
+
+        <div class="trail-layer" id="trailLayer" aria-hidden="true"></div>
 
         <button class="fuel" id="fuelButton" type="button">FUEL!</button>
         <div class="message" id="message" aria-live="polite"></div>
