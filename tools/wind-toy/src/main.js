@@ -33,6 +33,10 @@ const IDLE_SWIRL_STRENGTH = 0.35;
 const FPS_SAMPLE_MS = 900;
 const LOW_POWER_FPS = 48;
 const LOW_POWER_SAMPLES = 3;
+const AUDIO_SAMPLE_MS = 1000;
+const AUDIO_BASE_GAIN = 0.018;
+const AUDIO_MIN_FREQ = 180;
+const AUDIO_MAX_FREQ = 1200;
 
 const THEMES = {
   Classic: {
@@ -90,6 +94,8 @@ const state = {
   buoyancyStrength: 0.5,
   theme: "Classic",
   eraseObstacles: false,
+  soundEnabled: false,
+  soundVolume: 0.25,
   pointer: {
     active: false,
     x: 0,
@@ -101,6 +107,20 @@ const state = {
   accumulator: 0,
   idleTime: 0,
   idleSeed: Math.random() * Math.PI * 2,
+};
+
+const audioState = {
+  ctx: null,
+  masterGain: null,
+  toneGain: null,
+  noiseGain: null,
+  filter: null,
+  osc1: null,
+  osc2: null,
+  noise: null,
+  lastSample: 0,
+  speedLevel: 0,
+  vorticityLevel: 0,
 };
 
 const fpsState = {
@@ -206,6 +226,14 @@ const controls = initControls({
   },
   onClearObstacles: () => {
     clearObstacles(obstacles);
+  },
+  onSoundToggle: (enabled) => {
+    state.soundEnabled = enabled;
+    syncAudioState();
+  },
+  onSoundVolumeChange: (volume) => {
+    state.soundVolume = volume;
+    updateAudioVolume();
   },
   onShare: () => {
     handleShare();
@@ -611,6 +639,7 @@ function render(now) {
   drawObstacleOverlay();
   drawFieldDebug();
   drawBrushRing();
+  updateAudio(now);
 
   requestAnimationFrame(render);
 }
@@ -755,6 +784,7 @@ function updateFps(now) {
 
 initGestures(canvas, {
   onStrokeStart: (point) => {
+    handleUserGestureAudio();
     state.pointer.active = true;
     state.pointer.x = point.x;
     state.pointer.y = point.y;
@@ -775,6 +805,7 @@ initGestures(canvas, {
     }
   },
   onStrokeMove: (point) => {
+    handleUserGestureAudio();
     state.pointer.active = true;
     state.pointer.x = point.x;
     state.pointer.y = point.y;
@@ -798,6 +829,7 @@ initGestures(canvas, {
     state.pointer.active = false;
   },
   onTap: (point) => {
+    handleUserGestureAudio();
     state.pointer.active = true;
     state.pointer.x = point.x;
     state.pointer.y = point.y;
@@ -829,15 +861,18 @@ initGestures(canvas, {
     }, 120);
   },
   onTwoFingerTap: (point) => {
+    handleUserGestureAudio();
     if (state.physicsMode !== "Wind+Temperature") {
       return;
     }
     injectTemperature(point, -TEMP_INJECTION * TEMP_TAP_BOOST);
   },
   onPinch: (delta) => {
+    handleUserGestureAudio();
     state.brushRadius = clamp(state.brushRadius + delta * 0.2, 12, 160);
   },
   onWheel: (delta) => {
+    handleUserGestureAudio();
     state.brushRadius = clamp(state.brushRadius + delta * -0.02, 12, 160);
   },
 });
@@ -958,3 +993,159 @@ controls.setTempOverlay(false);
 controls.setObstacleOverlay(false);
 controls.setBuoyancy(state.buoyancyStrength);
 controls.setTheme(state.theme);
+controls.setSound(state.soundEnabled);
+controls.setSoundVolume(state.soundVolume);
+
+function handleUserGestureAudio() {
+  if (state.soundEnabled) {
+    syncAudioState();
+  }
+}
+
+function ensureAudioContext() {
+  if (audioState.ctx) {
+    return audioState.ctx;
+  }
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) {
+    return null;
+  }
+  const ctx = new AudioContextClass();
+  const masterGain = ctx.createGain();
+  const toneGain = ctx.createGain();
+  const noiseGain = ctx.createGain();
+  const filter = ctx.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.value = 500;
+  filter.Q.value = 0.7;
+
+  const osc1 = ctx.createOscillator();
+  osc1.type = "sine";
+  osc1.frequency.value = 140;
+  const osc2 = ctx.createOscillator();
+  osc2.type = "triangle";
+  osc2.frequency.value = 220;
+
+  toneGain.gain.value = 0.28;
+  noiseGain.gain.value = 0.08;
+  masterGain.gain.value = 0;
+
+  const noise = createNoiseSource(ctx);
+  osc1.connect(toneGain);
+  osc2.connect(toneGain);
+  toneGain.connect(filter);
+  noise.connect(noiseGain);
+  noiseGain.connect(filter);
+  filter.connect(masterGain);
+  masterGain.connect(ctx.destination);
+
+  osc1.start();
+  osc2.start();
+  noise.start();
+
+  audioState.ctx = ctx;
+  audioState.masterGain = masterGain;
+  audioState.toneGain = toneGain;
+  audioState.noiseGain = noiseGain;
+  audioState.filter = filter;
+  audioState.osc1 = osc1;
+  audioState.osc2 = osc2;
+  audioState.noise = noise;
+  return ctx;
+}
+
+function createNoiseSource(ctx) {
+  const bufferSize = ctx.sampleRate * 1.5;
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i += 1) {
+    data[i] = Math.random() * 2 - 1;
+  }
+  const source = ctx.createBufferSource();
+  source.buffer = buffer;
+  source.loop = true;
+  return source;
+}
+
+function syncAudioState() {
+  if (!state.soundEnabled) {
+    if (audioState.ctx) {
+      audioState.masterGain?.gain.setTargetAtTime(0, audioState.ctx.currentTime, 0.2);
+      audioState.ctx.suspend().catch(() => {});
+    }
+    return;
+  }
+  const ctx = ensureAudioContext();
+  if (!ctx) {
+    return;
+  }
+  if (ctx.state === "suspended") {
+    ctx.resume().catch(() => {});
+  }
+  updateAudioVolume();
+}
+
+function updateAudioVolume() {
+  if (!audioState.ctx || !audioState.masterGain) {
+    return;
+  }
+  const base = AUDIO_BASE_GAIN * state.soundVolume;
+  const intensity = clamp(0.2 + audioState.speedLevel * 0.8, 0.1, 1);
+  const target = state.soundEnabled ? base * intensity : 0;
+  audioState.masterGain.gain.setTargetAtTime(target, audioState.ctx.currentTime, 0.15);
+}
+
+function updateAudio(now) {
+  if (!state.soundEnabled || !audioState.ctx) {
+    return;
+  }
+  const ctx = audioState.ctx;
+  if (ctx.state !== "running") {
+    return;
+  }
+  if (now - audioState.lastSample < AUDIO_SAMPLE_MS) {
+    return;
+  }
+  audioState.lastSample = now;
+  const stats = sampleFlowStats();
+  audioState.speedLevel = stats.speed;
+  audioState.vorticityLevel = stats.vorticity;
+  const freq = AUDIO_MIN_FREQ + (AUDIO_MAX_FREQ - AUDIO_MIN_FREQ) * stats.vorticity;
+  audioState.filter.frequency.setTargetAtTime(freq, ctx.currentTime, 0.2);
+  audioState.osc1.frequency.setTargetAtTime(140 + stats.speed * 80, ctx.currentTime, 0.2);
+  audioState.osc2.frequency.setTargetAtTime(220 + stats.speed * 140, ctx.currentTime, 0.2);
+  updateAudioVolume();
+}
+
+function sampleFlowStats() {
+  const { width, height, u, v } = field;
+  if (width < 3 || height < 3) {
+    return { speed: 0, vorticity: 0 };
+  }
+  const step = Math.max(2, Math.round(Math.max(width, height) / 26));
+  let speedSum = 0;
+  let vorticitySum = 0;
+  let samples = 0;
+  for (let iy = 1; iy < height - 1; iy += step) {
+    const row = iy * width;
+    for (let ix = 1; ix < width - 1; ix += step) {
+      const index = row + ix;
+      const vx = u[index];
+      const vy = v[index];
+      speedSum += Math.hypot(vx, vy);
+      const dvx = u[index + width] - u[index - width];
+      const dvy = v[index + 1] - v[index - 1];
+      const curl = dvy - dvx;
+      vorticitySum += Math.abs(curl);
+      samples += 1;
+    }
+  }
+  if (!samples) {
+    return { speed: 0, vorticity: 0 };
+  }
+  const meanSpeed = speedSum / samples;
+  const meanVorticity = vorticitySum / samples;
+  const speedLevel = clamp(meanSpeed / MAX_WIND_SPEED, 0, 1);
+  const vorticityLevel = clamp(meanVorticity / (MAX_WIND_SPEED * 0.4), 0, 1);
+  return { speed: speedLevel, vorticity: vorticityLevel };
+}

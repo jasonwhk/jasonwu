@@ -12,6 +12,8 @@ export function initControls({
   onToolToggle,
   onObstacleOverlayToggle,
   onClearObstacles,
+  onSoundToggle,
+  onSoundVolumeChange,
   onShare,
 }) {
   const resetButton = document.querySelector("#reset-btn");
@@ -28,6 +30,9 @@ export function initControls({
   const toolButton = document.querySelector("#tool-btn");
   const obstacleOverlayButton = document.querySelector("#obstacle-overlay-btn");
   const clearObstaclesButton = document.querySelector("#clear-obstacles-btn");
+  const soundButton = document.querySelector("#sound-btn");
+  const soundSlider = document.querySelector("#sound-slider");
+  const soundValue = document.querySelector("#sound-value");
   const shareButton = document.querySelector("#share-btn");
 
   const state = {
@@ -42,6 +47,8 @@ export function initControls({
     theme: "Classic",
     toolMode: "Wind",
     obstacleOverlay: false,
+    soundEnabled: false,
+    soundVolume: 0.25,
   };
 
   const updateModeLabel = (mode, label) => {
@@ -135,6 +142,24 @@ export function initControls({
     obstacleOverlayButton.setAttribute("aria-pressed", enabled ? "true" : "false");
   };
 
+  const updateSoundLabel = (enabled, label) => {
+    if (!soundButton) {
+      return;
+    }
+    const nextLabel = label ?? `Sound: ${enabled ? "On" : "Off"}`;
+    soundButton.textContent = nextLabel;
+    soundButton.setAttribute("aria-pressed", enabled ? "true" : "false");
+  };
+
+  const updateSoundVolumeLabel = (volume, label) => {
+    if (!soundSlider || !soundValue) {
+      return;
+    }
+    const percent = Math.round(volume * 100);
+    soundValue.textContent = label ?? `${percent}%`;
+    soundSlider.value = String(volume);
+  };
+
   const updateThemeLabel = (theme) => {
     if (!themeSelect) {
       return;
@@ -218,6 +243,19 @@ export function initControls({
     onObstacleOverlayToggle?.(state.obstacleOverlay);
   });
 
+  soundButton?.addEventListener("click", () => {
+    state.soundEnabled = !state.soundEnabled;
+    updateSoundLabel(state.soundEnabled);
+    onSoundToggle?.(state.soundEnabled);
+  });
+
+  soundSlider?.addEventListener("input", (event) => {
+    const value = Number(event.target.value);
+    state.soundVolume = value;
+    updateSoundVolumeLabel(value);
+    onSoundVolumeChange?.(value);
+  });
+
   clearObstaclesButton?.addEventListener("click", () => {
     onClearObstacles?.();
   });
@@ -266,6 +304,14 @@ export function initControls({
     setObstacleOverlay: (enabled, label) => {
       state.obstacleOverlay = enabled;
       updateObstacleOverlayLabel(enabled, label);
+    },
+    setSound: (enabled, label) => {
+      state.soundEnabled = enabled;
+      updateSoundLabel(enabled, label);
+    },
+    setSoundVolume: (volume, label) => {
+      state.soundVolume = volume;
+      updateSoundVolumeLabel(volume, label);
     },
     setShareLabel: (label) => {
       updateShareLabel(label);
