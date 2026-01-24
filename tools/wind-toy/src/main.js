@@ -52,35 +52,35 @@ const THEMES = {
   Classic: {
     label: "Classic",
     particleScale: 1,
-    background: "rgba(5, 7, 13, 0.2)",
+    background: { r: 5, g: 7, b: 13, alpha: 0.2 },
     particleOptions: { drag: 0.18, noise: 18, speedScale: 1, gravity: 0 },
     smokeTint: { r: 150, g: 190, b: 255, alpha: 180 },
   },
   Leaves: {
     label: "Autumn Leaves",
     particleScale: 0.85,
-    background: "rgba(12, 9, 6, 0.22)",
+    background: { r: 12, g: 9, b: 6, alpha: 0.22 },
     particleOptions: { drag: 0.22, noise: 22, speedScale: 0.9, gravity: 0 },
     smokeTint: { r: 210, g: 150, b: 120, alpha: 140 },
   },
   Snow: {
     label: "Snow",
     particleScale: 0.8,
-    background: "rgba(7, 10, 16, 0.2)",
+    background: { r: 7, g: 10, b: 16, alpha: 0.2 },
     particleOptions: { drag: 0.28, noise: 6, speedScale: 0.6, gravity: 48 },
     smokeTint: { r: 190, g: 210, b: 240, alpha: 130 },
   },
   Ink: {
     label: "Ink",
     particleScale: 0.9,
-    background: "rgba(244, 240, 233, 0.26)",
+    background: { r: 244, g: 240, b: 233, alpha: 0.26 },
     particleOptions: { drag: 0.16, noise: 12, speedScale: 0.95, gravity: 0 },
     smokeTint: { r: 30, g: 32, b: 40, alpha: 170 },
   },
   Fireflies: {
     label: "Fireflies",
     particleScale: 0.7,
-    background: "rgba(4, 7, 12, 0.16)",
+    background: { r: 4, g: 7, b: 12, alpha: 0.16 },
     particleOptions: { drag: 0.2, noise: 10, speedScale: 0.7, gravity: 0 },
     smokeTint: { r: 140, g: 200, b: 170, alpha: 120 },
   },
@@ -103,6 +103,7 @@ const state = {
   showObstacleOverlay: false,
   buoyancyStrength: 0.5,
   theme: "Classic",
+  trailStrength: 1,
   scienceOverlay: "Off",
   eraseObstacles: false,
   soundEnabled: false,
@@ -244,6 +245,9 @@ const controls = initControls({
       height: state.height,
       reseed: false,
     });
+  },
+  onTrailsChange: (strength) => {
+    state.trailStrength = strength;
   },
   onScienceOverlayChange: (mode) => {
     state.scienceOverlay = mode;
@@ -627,7 +631,9 @@ function drawBrushRing() {
 
 function drawBackground() {
   const theme = getThemeConfig();
-  ctx.fillStyle = theme.background;
+  const strength = clamp(state.trailStrength, 0.2, 1);
+  const { r, g, b, alpha } = theme.background;
+  ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * strength})`;
   ctx.fillRect(0, 0, state.width, state.height);
 }
 

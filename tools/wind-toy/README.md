@@ -20,7 +20,7 @@ Then open `http://localhost:8000/tools/wind-toy/`.
 ## Mobile gestures
 
 Drag to paint wind, tap for a gust, pinch to resize the brush.
-Use the More panel to switch to the Obstacles tool and draw walls (hold `E` on desktop to erase).
+Use the More panel to switch themes, tune trail strength, or enable the Obstacles tool and draw walls (hold `E` on desktop to erase).
 Toggle Sound in the More panel for subtle ambient audio (volume slider stays low).
 
 When idle for a few seconds, the canvas drifts into a gentle attract mode.
