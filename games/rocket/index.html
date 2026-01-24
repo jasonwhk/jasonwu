@@ -48,8 +48,16 @@
         </div>
       </section>
 
+      <section class="overlay hidden" id="pauseOverlay" aria-hidden="true">
+        <div class="card">
+          <h2>Mission Paused</h2>
+          <p>Waiting for a parent to resume.</p>
+        </div>
+      </section>
+
       <div class="parent-trigger" id="parentTrigger" aria-hidden="true"></div>
       <div class="parent-bar hidden" id="parentBar" aria-hidden="true">
+        <button class="parent-button" id="pauseButton" type="button">Pause</button>
         <button class="parent-button" id="landButton" type="button">Land & Exit</button>
       </div>
     </div>
