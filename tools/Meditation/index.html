@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Family Meditation</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app" aria-label="Family meditation app">
+      <canvas id="scene" aria-hidden="true"></canvas>
+      <div class="hud" id="hud">
+        <button class="hud-button" id="modeToggle" aria-label="Switch mode">
+          <span class="icon">🌬️</span>
+        </button>
+        <button class="hud-button" id="pauseToggle" aria-label="Pause or resume">
+          <span class="icon">⏸</span>
+        </button>
+        <button class="hud-button" id="motionToggle" aria-label="Toggle reduced motion">
+          <span class="icon">🌀</span>
+        </button>
+      </div>
+      <button class="start-overlay" id="startOverlay" aria-label="Tap to start">
+        <span>Tap to Start</span>
+      </button>
+    </main>
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>
