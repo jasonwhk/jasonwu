@@ -6,7 +6,7 @@
 
 (() => {
   const C_MIN = -50.0;
-  const C_MAX = 150.0;
+  const C_MAX = 204.5;
   const C_STEP = 0.5;
 
   const F_STEP = 1;
@@ -42,9 +42,9 @@
     return (f - 32) * (5 / 9);
   }
 
-  // Fahrenheit range derived from the Celsius endpoints (rounded outward to cover).
+  // Fahrenheit range derived from the Celsius minimum, with an explicit upper cap.
   const F_MIN = Math.floor(cToF(C_MIN));
-  const F_MAX = Math.ceil(cToF(C_MAX));
+  const F_MAX = 400;
 
   // --- Dial value arrays ---
   function buildValues(min, max, step) {
