@@ -31,17 +31,17 @@ function updatePresetButtons() {
   });
 }
 
-function render() {
+function render(dt) {
   if (state.mode === MODES.RAINBOW_BREATHING) {
-    renderRainbowBreathing(ctx, state, metrics);
+    renderRainbowBreathing(ctx, state, metrics, dt);
   } else {
-    renderPaintRainbow(ctx, state, metrics);
+    renderPaintRainbow(ctx, state, metrics, dt);
   }
 }
 
 const loop = createLoop((dt) => {
   advanceBreath(state, dt);
-  render();
+  render(dt);
 });
 
 function start() {
