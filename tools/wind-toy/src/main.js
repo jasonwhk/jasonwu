@@ -33,6 +33,8 @@ const IDLE_SWIRL_STRENGTH = 0.35;
 const FPS_SAMPLE_MS = 900;
 const LOW_POWER_FPS = 48;
 const LOW_POWER_SAMPLES = 3;
+const HIGH_POWER_FPS = 58;
+const HIGH_POWER_SAMPLES = 6;
 const AUDIO_SAMPLE_MS = 1000;
 const AUDIO_BASE_GAIN = 0.018;
 const AUDIO_MIN_FREQ = 180;
@@ -141,6 +143,7 @@ const fpsState = {
   frameCount: 0,
   fps: 60,
   lowSamples: 0,
+  highSamples: 0,
   inLowPower: false,
 };
 
@@ -346,20 +349,36 @@ function applyQuality(quality, { auto = false } = {}) {
     width: state.width,
     height: state.height,
   });
+  fpsState.lowSamples = 0;
+  fpsState.highSamples = 0;
+  applyCanvasScale();
   const qualityLabel = auto ? `Quality: ${quality} (Auto)` : `Quality: ${quality}`;
   controls.setQuality(quality, qualityLabel);
 }
 
+function getDprCap() {
+  if (state.autoLowPower && state.quality === "Low") {
+    return 1.5;
+  }
+  return 2;
+}
+
+function applyCanvasScale() {
+  const { devicePixelRatio } = window;
+  const dprCap = getDprCap();
+  state.dpr = Math.min(devicePixelRatio || 1, dprCap);
+  canvas.width = Math.floor(state.width * state.dpr);
+  canvas.height = Math.floor(state.height * state.dpr);
+  canvas.style.width = `${state.width}px`;
+  canvas.style.height = `${state.height}px`;
+  ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
+}
+
 function resizeCanvas() {
-  const { innerWidth, innerHeight, devicePixelRatio } = window;
-  state.dpr = Math.min(devicePixelRatio || 1, 2);
+  const { innerWidth, innerHeight } = window;
   state.width = innerWidth;
   state.height = innerHeight;
-  canvas.width = Math.floor(innerWidth * state.dpr);
-  canvas.height = Math.floor(innerHeight * state.dpr);
-  canvas.style.width = `${innerWidth}px`;
-  canvas.style.height = `${innerHeight}px`;
-  ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
+  applyCanvasScale();
 
   const gridConfig = getGridConfig();
   resizeField(field, {
@@ -1179,8 +1198,21 @@ function updateFps(now) {
     }
     if (fpsState.lowSamples >= LOW_POWER_SAMPLES) {
       fpsState.inLowPower = true;
+      fpsState.highSamples = 0;
       applyQuality("Low", { auto: true });
     }
+  } else if (fpsState.inLowPower && state.autoLowPower) {
+    if (fps > HIGH_POWER_FPS) {
+      fpsState.highSamples += 1;
+    } else {
+      fpsState.highSamples = 0;
+    }
+    if (fpsState.highSamples >= HIGH_POWER_SAMPLES) {
+      fpsState.inLowPower = false;
+      applyQuality("High", { auto: true });
+    }
+  } else {
+    fpsState.highSamples = 0;
   }
 
   if (fpsState.enabled && fpsMeter) {
