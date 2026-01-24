@@ -90,6 +90,9 @@ const controls = initControls({
   onFieldToggle: (enabled) => {
     state.showField = enabled;
   },
+  onShare: () => {
+    handleShare();
+  },
 });
 
 function applyQuality(quality, { auto = false } = {}) {
@@ -449,6 +452,71 @@ window.addEventListener("resize", () => {
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.has("fps")) {
   setFpsMeter(true);
+}
+
+let shareTimeout = 0;
+
+async function handleShare() {
+  if (!controls.setShareLabel) {
+    return;
+  }
+  if (shareTimeout) {
+    window.clearTimeout(shareTimeout);
+    shareTimeout = 0;
+  }
+  const result = await shareLink();
+  if (result === "canceled") {
+    return;
+  }
+  const label = result === "shared" ? "Shared!" : result === "copied" ? "Copied!" : "Copy failed";
+  controls.setShareLabel(label);
+  shareTimeout = window.setTimeout(() => {
+    controls.setShareLabel("Share");
+  }, 1400);
+}
+
+async function shareLink() {
+  const url = window.location.href;
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: document.title, url });
+      return "shared";
+    } catch (error) {
+      if (error?.name === "AbortError") {
+        return "canceled";
+      }
+    }
+  }
+  const copied = await copyToClipboard(url);
+  return copied ? "copied" : "failed";
+}
+
+async function copyToClipboard(text) {
+  if (navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (error) {
+      // Fallback to manual copy below.
+    }
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "absolute";
+  textarea.style.left = "-9999px";
+  document.body.appendChild(textarea);
+  textarea.select();
+  textarea.setSelectionRange(0, textarea.value.length);
+  let copied = false;
+  try {
+    copied = document.execCommand("copy");
+  } catch (error) {
+    copied = false;
+  }
+  document.body.removeChild(textarea);
+  return copied;
 }
 
 resizeCanvas();

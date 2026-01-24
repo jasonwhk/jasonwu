@@ -1,8 +1,9 @@
-export function initControls({ onReset, onModeToggle, onQualityToggle, onFieldToggle }) {
+export function initControls({ onReset, onModeToggle, onQualityToggle, onFieldToggle, onShare }) {
   const resetButton = document.querySelector("#reset-btn");
   const modeButton = document.querySelector("#mode-btn");
   const qualityButton = document.querySelector("#quality-btn");
   const fieldButton = document.querySelector("#field-btn");
+  const shareButton = document.querySelector("#share-btn");
 
   const state = {
     mode: "Particles",
@@ -31,6 +32,13 @@ export function initControls({ onReset, onModeToggle, onQualityToggle, onFieldTo
     fieldButton.setAttribute("aria-pressed", fieldEnabled ? "true" : "false");
   };
 
+  const updateShareLabel = (label = "Share") => {
+    if (!shareButton) {
+      return;
+    }
+    shareButton.textContent = label;
+  };
+
   resetButton?.addEventListener("click", () => {
     onReset?.();
   });
@@ -53,6 +61,10 @@ export function initControls({ onReset, onModeToggle, onQualityToggle, onFieldTo
     onFieldToggle?.(state.field);
   });
 
+  shareButton?.addEventListener("click", () => {
+    onShare?.();
+  });
+
   return {
     setMode: (mode, label) => {
       state.mode = mode;
@@ -65,6 +77,9 @@ export function initControls({ onReset, onModeToggle, onQualityToggle, onFieldTo
     setField: (fieldEnabled, label) => {
       state.field = fieldEnabled;
       updateFieldLabel(fieldEnabled, label);
+    },
+    setShareLabel: (label) => {
+      updateShareLabel(label);
     },
     setStatus: (modeLabel, qualityLabel) => {
       if (modeLabel) {
