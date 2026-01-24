@@ -2,7 +2,7 @@ import { easeInOutSine } from '../utils/easing.js';
 import { getRainbowColor } from '../utils/colors.js';
 import { getPhaseProgress } from '../state.js';
 
-export function renderRainbowBreathing(ctx, state, metrics) {
+export function renderRainbowBreathing(ctx, state, metrics, _dt) {
   const { width, height } = metrics;
   const centerX = width / 2;
   const centerY = height / 2;

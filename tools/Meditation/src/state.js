@@ -36,6 +36,7 @@ export function createState() {
     cycleCount: 0,
     reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
     phases: { ...DEFAULT_PHASES },
+    paintRainbow: null,
   };
 }
 
@@ -45,6 +46,7 @@ export function resetSession(state) {
   state.cycleCount = 1;
   state.completed = false;
   state.paused = false;
+  state.paintRainbow = null;
 }
 
 function getPresetTarget(preset) {
