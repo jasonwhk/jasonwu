@@ -1,14 +1,22 @@
 import { initControls } from "./ui/controls.js";
 import { initGestures } from "./ui/gestures.js";
+import { addVelocity, applyDamping, clearField, createField, resizeField } from "./sim/field.js";
 
 const canvas = document.querySelector("#wind-canvas");
 const ctx = canvas.getContext("2d", { alpha: false });
+
+const SIM_STEP = 1 / 60;
+const FIELD_DAMPING = 0.96;
+const MAX_WIND_SPEED = 1600;
+const GUST_SPEED = 1200;
 
 const state = {
   width: 0,
   height: 0,
   dpr: 1,
   brushRadius: 42,
+  mode: "Particles",
+  quality: "High",
   pointer: {
     active: false,
     x: 0,
@@ -17,8 +25,16 @@ const state = {
     vy: 0,
   },
   lastFrame: performance.now(),
+  accumulator: 0,
   idleTime: 0,
 };
+
+const field = createField({
+  worldWidth: 1,
+  worldHeight: 1,
+  gridWidth: 24,
+  gridHeight: 24,
+});
 
 const controls = initControls({
   onReset: () => resetScene(),
@@ -27,6 +43,13 @@ const controls = initControls({
   },
   onQualityToggle: (quality) => {
     state.quality = quality;
+    const gridConfig = getGridConfig();
+    resizeField(field, {
+      worldWidth: state.width,
+      worldHeight: state.height,
+      gridWidth: gridConfig.gridWidth,
+      gridHeight: gridConfig.gridHeight,
+    });
   },
 });
 
@@ -40,11 +63,20 @@ function resizeCanvas() {
   canvas.style.width = `${innerWidth}px`;
   canvas.style.height = `${innerHeight}px`;
   ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
+
+  const gridConfig = getGridConfig();
+  resizeField(field, {
+    worldWidth: state.width,
+    worldHeight: state.height,
+    gridWidth: gridConfig.gridWidth,
+    gridHeight: gridConfig.gridHeight,
+  });
 }
 
 function resetScene() {
   ctx.fillStyle = "#05070d";
   ctx.fillRect(0, 0, state.width, state.height);
+  clearField(field);
   state.idleTime = 0;
 }
 
@@ -66,15 +98,69 @@ function drawBackground() {
   ctx.fillRect(0, 0, state.width, state.height);
 }
 
+function drawFieldVectors() {
+  const { width, height, u, v } = field;
+  const step = state.quality === "High" ? 2 : 3;
+  ctx.save();
+  ctx.lineCap = "round";
+  ctx.lineWidth = 1.5;
+  for (let gy = 0; gy < height; gy += step) {
+    const y = (gy / (height - 1)) * state.height;
+    for (let gx = 0; gx < width; gx += step) {
+      const index = gy * width + gx;
+      const vx = u[index];
+      const vy = v[index];
+      const speed = Math.hypot(vx, vy);
+      if (speed < 8) {
+        continue;
+      }
+      const x = (gx / (width - 1)) * state.width;
+      const length = clamp(speed * 0.02, 2, 18);
+      const angle = Math.atan2(vy, vx);
+      const alpha = clamp(speed / 800, 0.08, 0.65);
+      ctx.strokeStyle = `rgba(120, 180, 255, ${alpha})`;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + Math.cos(angle) * length, y + Math.sin(angle) * length);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
+function stepSimulation() {
+  applyDamping(field, FIELD_DAMPING);
+}
+
 function render(now) {
-  const elapsed = now - state.lastFrame;
+  const elapsedMs = now - state.lastFrame;
   state.lastFrame = now;
-  state.idleTime += elapsed;
+  state.idleTime += elapsedMs;
+
+  state.accumulator += elapsedMs / 1000;
+  while (state.accumulator >= SIM_STEP) {
+    stepSimulation();
+    state.accumulator -= SIM_STEP;
+  }
 
   drawBackground();
+  drawFieldVectors();
   drawBrushRing();
 
   requestAnimationFrame(render);
+}
+
+function injectWind(point, strength = 1) {
+  const vx = clamp(point.vx * 1000, -MAX_WIND_SPEED, MAX_WIND_SPEED);
+  const vy = clamp(point.vy * 1000, -MAX_WIND_SPEED, MAX_WIND_SPEED);
+  addVelocity(field, point.x, point.y, vx, vy, state.brushRadius, strength);
+}
+
+function getGridConfig() {
+  const cellSize = state.quality === "High" ? 20 : 28;
+  const gridWidth = Math.max(24, Math.round(state.width / cellSize));
+  const gridHeight = Math.max(18, Math.round(state.height / cellSize));
+  return { gridWidth, gridHeight };
 }
 
 initGestures(canvas, {
@@ -85,6 +171,7 @@ initGestures(canvas, {
     state.pointer.vx = point.vx;
     state.pointer.vy = point.vy;
     state.idleTime = 0;
+    injectWind(point, 0.9);
   },
   onStrokeMove: (point) => {
     state.pointer.active = true;
@@ -93,6 +180,7 @@ initGestures(canvas, {
     state.pointer.vx = point.vx;
     state.pointer.vy = point.vy;
     state.idleTime = 0;
+    injectWind(point, 1);
   },
   onStrokeEnd: () => {
     state.pointer.active = false;
@@ -103,6 +191,14 @@ initGestures(canvas, {
     state.pointer.y = point.y;
     state.pointer.vx = point.vx * 2;
     state.pointer.vy = point.vy * 2;
+    const gustAngle = Math.random() * Math.PI * 2;
+    const gust = {
+      x: point.x,
+      y: point.y,
+      vx: Math.cos(gustAngle) * GUST_SPEED,
+      vy: Math.sin(gustAngle) * GUST_SPEED,
+    };
+    addVelocity(field, gust.x, gust.y, gust.vx, gust.vy, state.brushRadius * 1.2, 1.3);
     if (navigator.vibrate) {
       navigator.vibrate(10);
     }
