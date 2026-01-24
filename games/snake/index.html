@@ -34,7 +34,7 @@
     </header>
 
     <section class="game-layout">
-      <div class="canvas-panel">
+      <div class="game-stack">
         <div class="canvas-shell" id="canvas-shell">
           <canvas id="game" width="400" height="400" aria-label="Snake game board"></canvas>
           <div class="canvas-overlay" id="overlay"></div>
@@ -52,19 +52,18 @@
             <option value="fast">Fast</option>
           </select>
         </div>
-      </div>
-
-      <aside class="pad-panel">
-        <div class="dpad" aria-label="Directional pad">
-          <button class="pad up" data-dir="up" aria-label="Move up">▲</button>
-          <div class="pad-row">
-            <button class="pad left" data-dir="left" aria-label="Move left">◀</button>
-            <button class="pad down" data-dir="down" aria-label="Move down">▼</button>
-            <button class="pad right" data-dir="right" aria-label="Move right">▶</button>
+        <aside class="pad-panel">
+          <div class="dpad" aria-label="Directional pad">
+            <button class="pad up" data-dir="up" aria-label="Move up">▲</button>
+            <div class="pad-row">
+              <button class="pad left" data-dir="left" aria-label="Move left">◀</button>
+              <button class="pad down" data-dir="down" aria-label="Move down">▼</button>
+              <button class="pad right" data-dir="right" aria-label="Move right">▶</button>
+            </div>
           </div>
-        </div>
-        <p class="pad-hint">Use the D-pad or swipe on the board.</p>
-      </aside>
+          <p class="pad-hint">Use the D-pad or swipe on the board.</p>
+        </aside>
+      </div>
     </section>
   </main>
 

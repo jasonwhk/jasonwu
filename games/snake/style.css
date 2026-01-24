@@ -66,16 +66,15 @@ body {
 }
 
 .game-layout {
-  display: grid;
-  grid-template-columns: minmax(280px, 1fr) minmax(220px, 280px);
-  gap: 24px;
-  align-items: start;
+  display: flex;
+  justify-content: center;
 }
 
-.canvas-panel {
+.game-stack {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: min(560px, 100%);
 }
 
 .canvas-shell {
@@ -198,16 +197,8 @@ button.primary {
 }
 
 @media (max-width: 860px) {
-  .game-layout {
-    grid-template-columns: 1fr;
-  }
-
   .hud {
     grid-template-columns: repeat(2, minmax(120px, 1fr));
-  }
-
-  .pad-panel {
-    order: -1;
   }
 }
 
