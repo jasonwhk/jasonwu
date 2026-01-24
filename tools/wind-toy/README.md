@@ -23,5 +23,5 @@ Drag to paint wind, tap for a gust, pinch to resize the brush.
 
 ## Known limitations
 
-- Physics/particles are still in progress (Milestone 0 scaffolding only).
-- Smoke mode and quality scaling are placeholders.
+- Smoke mode is still lightweight (no full fluid solver), so wispy trails fade quickly.
+- There is no debug visualization for the vector field yet.

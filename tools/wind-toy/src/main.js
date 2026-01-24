@@ -1,5 +1,6 @@
 import { initControls } from "./ui/controls.js";
 import { initGestures } from "./ui/gestures.js";
+import { addScalar, advectScalar, clearScalarField, createScalarField, resizeScalarField } from "./sim/advect.js";
 import { addVelocity, applyDamping, clearField, createField, resizeField } from "./sim/field.js";
 import { createParticles, resizeParticles, seedParticles, stepParticles } from "./sim/particles.js";
 
@@ -10,6 +11,7 @@ const SIM_STEP = 1 / 60;
 const FIELD_DAMPING = 0.96;
 const MAX_WIND_SPEED = 1600;
 const GUST_SPEED = 1200;
+const SMOKE_DISSIPATION = 0.985;
 
 const state = {
   width: 0,
@@ -37,11 +39,27 @@ const field = createField({
   gridHeight: 24,
 });
 const particles = createParticles();
+const smoke = createScalarField({
+  worldWidth: 1,
+  worldHeight: 1,
+  gridWidth: 24,
+  gridHeight: 24,
+});
+
+const smokeBuffer = {
+  canvas: document.createElement("canvas"),
+  ctx: null,
+  imageData: null,
+};
+smokeBuffer.ctx = smokeBuffer.canvas.getContext("2d");
 
 const controls = initControls({
   onReset: () => resetScene(),
   onModeToggle: (mode) => {
     state.mode = mode;
+    if (mode === "Smoke") {
+      clearScalarField(smoke);
+    }
   },
   onQualityToggle: (quality) => {
     state.quality = quality;
@@ -52,6 +70,13 @@ const controls = initControls({
       gridWidth: gridConfig.gridWidth,
       gridHeight: gridConfig.gridHeight,
     });
+    resizeScalarField(smoke, {
+      worldWidth: state.width,
+      worldHeight: state.height,
+      gridWidth: gridConfig.gridWidth,
+      gridHeight: gridConfig.gridHeight,
+    });
+    resizeSmokeBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
     resizeParticles(particles, {
       count: getParticleCount(),
       width: state.width,
@@ -78,6 +103,13 @@ function resizeCanvas() {
     gridWidth: gridConfig.gridWidth,
     gridHeight: gridConfig.gridHeight,
   });
+  resizeScalarField(smoke, {
+    worldWidth: state.width,
+    worldHeight: state.height,
+    gridWidth: gridConfig.gridWidth,
+    gridHeight: gridConfig.gridHeight,
+  });
+  resizeSmokeBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
 
   resizeParticles(particles, {
     count: getParticleCount(),
@@ -90,6 +122,7 @@ function resetScene() {
   ctx.fillStyle = "#05070d";
   ctx.fillRect(0, 0, state.width, state.height);
   clearField(field);
+  clearScalarField(smoke);
   seedParticles(particles);
   state.idleTime = 0;
 }
@@ -129,9 +162,36 @@ function drawParticles() {
   ctx.restore();
 }
 
+function drawSmoke() {
+  const { width, height, data } = smoke;
+  const { ctx: bufferCtx, imageData } = smokeBuffer;
+  if (!imageData) {
+    return;
+  }
+  const pixels = imageData.data;
+  for (let i = 0; i < data.length; i += 1) {
+    const density = Math.min(data[i], 1.4);
+    const alpha = Math.min(255, density * 180);
+    const offset = i * 4;
+    pixels[offset] = 150;
+    pixels[offset + 1] = 190;
+    pixels[offset + 2] = 255;
+    pixels[offset + 3] = alpha;
+  }
+  bufferCtx.putImageData(imageData, 0, 0);
+  ctx.save();
+  ctx.globalCompositeOperation = "lighter";
+  ctx.drawImage(smokeBuffer.canvas, 0, 0, width, height, 0, 0, state.width, state.height);
+  ctx.restore();
+}
+
 function stepSimulation() {
   applyDamping(field, FIELD_DAMPING);
-  stepParticles(particles, field, SIM_STEP, state.lastFrame / 1000);
+  if (state.mode === "Particles") {
+    stepParticles(particles, field, SIM_STEP, state.lastFrame / 1000);
+  } else {
+    advectScalar(smoke, field, SIM_STEP, SMOKE_DISSIPATION);
+  }
 }
 
 function render(now) {
@@ -146,7 +206,11 @@ function render(now) {
   }
 
   drawBackground();
-  drawParticles();
+  if (state.mode === "Particles") {
+    drawParticles();
+  } else {
+    drawSmoke();
+  }
   drawBrushRing();
 
   requestAnimationFrame(render);
@@ -156,6 +220,10 @@ function injectWind(point, strength = 1) {
   const vx = clamp(point.vx * 1000, -MAX_WIND_SPEED, MAX_WIND_SPEED);
   const vy = clamp(point.vy * 1000, -MAX_WIND_SPEED, MAX_WIND_SPEED);
   addVelocity(field, point.x, point.y, vx, vy, state.brushRadius, strength);
+}
+
+function injectSmoke(point, amount = 1) {
+  addScalar(smoke, point.x, point.y, amount, state.brushRadius * 0.9);
 }
 
 function getGridConfig() {
@@ -169,6 +237,12 @@ function getParticleCount() {
   return state.quality === "High" ? 22000 : 12000;
 }
 
+function resizeSmokeBuffer(width, height) {
+  smokeBuffer.canvas.width = width;
+  smokeBuffer.canvas.height = height;
+  smokeBuffer.imageData = smokeBuffer.ctx.createImageData(width, height);
+}
+
 initGestures(canvas, {
   onStrokeStart: (point) => {
     state.pointer.active = true;
@@ -178,6 +252,9 @@ initGestures(canvas, {
     state.pointer.vy = point.vy;
     state.idleTime = 0;
     injectWind(point, 0.9);
+    if (state.mode === "Smoke") {
+      injectSmoke(point, 0.35);
+    }
   },
   onStrokeMove: (point) => {
     state.pointer.active = true;
@@ -187,6 +264,9 @@ initGestures(canvas, {
     state.pointer.vy = point.vy;
     state.idleTime = 0;
     injectWind(point, 1);
+    if (state.mode === "Smoke") {
+      injectSmoke(point, 0.4);
+    }
   },
   onStrokeEnd: () => {
     state.pointer.active = false;
@@ -205,6 +285,9 @@ initGestures(canvas, {
       vy: Math.sin(gustAngle) * GUST_SPEED,
     };
     addVelocity(field, gust.x, gust.y, gust.vx, gust.vy, state.brushRadius * 1.2, 1.3);
+    if (state.mode === "Smoke") {
+      injectSmoke(point, 0.7);
+    }
     if (navigator.vibrate) {
       navigator.vibrate(10);
     }
