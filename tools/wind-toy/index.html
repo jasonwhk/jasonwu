@@ -30,6 +30,12 @@
             <button id="tool-btn" type="button" aria-pressed="false">Tool: Wind</button>
             <button id="obstacle-overlay-btn" type="button" aria-pressed="false">Obstacles: Off</button>
             <button id="clear-obstacles-btn" type="button">Clear Obstacles</button>
+            <button id="sound-btn" type="button" aria-pressed="false">Sound: Off</button>
+            <label class="slider" for="sound-slider">
+              <span>Sound</span>
+              <input id="sound-slider" type="range" min="0" max="1" step="0.05" value="0.25" />
+              <span id="sound-value" aria-live="polite">25%</span>
+            </label>
           </div>
         </details>
         <button id="field-btn" type="button" aria-pressed="false">Field: Off</button>
