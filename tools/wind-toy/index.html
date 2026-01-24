@@ -45,6 +45,21 @@
               <input id="sound-slider" type="range" min="0" max="1" step="0.05" value="0.25" />
               <span id="sound-value" aria-live="polite">25%</span>
             </label>
+            <div id="pro-panel" class="pro-panel" hidden>
+              <div class="pro-panel__header">Pro</div>
+              <button id="force-fields-btn" type="button" aria-pressed="false">Force Fields: Off</button>
+              <label class="select" for="force-field-type">
+                <span>Field Type</span>
+                <select id="force-field-type">
+                  <option value="attractor">Attractor</option>
+                  <option value="repeller">Repeller</option>
+                  <option value="dipole">Dipole</option>
+                </select>
+              </label>
+              <button id="add-force-field-btn" type="button">Add Field</button>
+              <div id="force-fields-list" class="force-fields-list" aria-live="polite"></div>
+              <button id="clear-force-fields-btn" type="button">Clear Fields</button>
+            </div>
           </div>
         </details>
         <button id="field-btn" type="button" aria-pressed="false">Field: Off</button>

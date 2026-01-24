@@ -37,6 +37,14 @@ const AUDIO_SAMPLE_MS = 1000;
 const AUDIO_BASE_GAIN = 0.018;
 const AUDIO_MIN_FREQ = 180;
 const AUDIO_MAX_FREQ = 1200;
+const FORCE_FIELD_EPS = 1200;
+const FORCE_FIELD_MAX_ACCEL = 1400;
+const FORCE_FIELD_DEFAULTS = {
+  attractor: { label: "Attractor", strength: 1600, radius: 220 },
+  repeller: { label: "Repeller", strength: 1600, radius: 220 },
+  dipole: { label: "Dipole", strength: 1900, radius: 260 },
+};
+const PRO_STORAGE_KEY = "windToyProEnabled";
 
 const THEMES = {
   Classic: {
@@ -97,6 +105,9 @@ const state = {
   eraseObstacles: false,
   soundEnabled: false,
   soundVolume: 0.25,
+  forceFieldsEnabled: false,
+  forceFields: [],
+  proEnabled: false,
   pointer: {
     active: false,
     x: 0,
@@ -184,6 +195,12 @@ const scienceBuffer = {
 };
 scienceBuffer.ctx = scienceBuffer.canvas.getContext("2d");
 const fpsMeter = document.querySelector("#fps-meter");
+const proPanel = document.querySelector("#pro-panel");
+const forceFieldsList = document.querySelector("#force-fields-list");
+const forceFieldTypeSelect = document.querySelector("#force-field-type");
+const addForceFieldButton = document.querySelector("#add-force-field-btn");
+const clearForceFieldsButton = document.querySelector("#clear-force-fields-btn");
+let forceFieldId = 0;
 
 const controls = initControls({
   onReset: () => resetScene(),
@@ -245,6 +262,9 @@ const controls = initControls({
     state.soundVolume = volume;
     updateAudioVolume();
   },
+  onForceFieldsToggle: (enabled) => {
+    state.forceFieldsEnabled = enabled;
+  },
   onShare: () => {
     handleShare();
   },
@@ -252,6 +272,42 @@ const controls = initControls({
     state.brushMode = mode;
   },
 });
+
+const urlParams = new URLSearchParams(window.location.search);
+const queryProEnabled = urlParams.has("pro");
+if (queryProEnabled) {
+  localStorage.setItem(PRO_STORAGE_KEY, "true");
+}
+state.proEnabled = queryProEnabled || localStorage.getItem(PRO_STORAGE_KEY) === "true";
+if (proPanel) {
+  proPanel.hidden = !state.proEnabled;
+}
+
+addForceFieldButton?.addEventListener("click", () => {
+  if (!state.proEnabled) {
+    return;
+  }
+  const type = forceFieldTypeSelect?.value ?? "attractor";
+  addForceField(type);
+});
+
+clearForceFieldsButton?.addEventListener("click", () => {
+  clearForceFields();
+});
+
+forceFieldsList?.addEventListener("click", (event) => {
+  const target = event.target;
+  if (!(target instanceof HTMLElement)) {
+    return;
+  }
+  const id = target.dataset.forceFieldId;
+  if (!id) {
+    return;
+  }
+  removeForceField(Number(id));
+});
+
+renderForceFieldsList();
 
 function applyQuality(quality, { auto = false } = {}) {
   state.quality = quality;
@@ -349,8 +405,192 @@ function resetScene() {
   clearScalarField(smoke);
   clearScalarField(temp);
   clearObstacles(obstacles);
+  clearForceFields();
   seedParticles(particles);
   state.idleTime = 0;
+}
+
+function clearForceFields() {
+  state.forceFields = [];
+  forceFieldId = 0;
+  renderForceFieldsList();
+}
+
+function addForceField(type, { x, y, dx = 1, dy = 0 } = {}) {
+  const defaults = FORCE_FIELD_DEFAULTS[type] ?? FORCE_FIELD_DEFAULTS.attractor;
+  const position = getForceFieldPlacement(x, y);
+  const direction = normalizeVector(dx, dy);
+  const entry = {
+    id: (forceFieldId += 1),
+    type,
+    x: position.x,
+    y: position.y,
+    dx: direction.x,
+    dy: direction.y,
+    strength: defaults.strength,
+    radius: defaults.radius,
+  };
+  state.forceFields = [...state.forceFields, entry];
+  renderForceFieldsList();
+}
+
+function removeForceField(id) {
+  state.forceFields = state.forceFields.filter((fieldSource) => fieldSource.id !== id);
+  renderForceFieldsList();
+}
+
+function getForceFieldPlacement(x, y) {
+  if (typeof x === "number" && typeof y === "number") {
+    return { x, y };
+  }
+  if (state.pointer.active) {
+    return { x: state.pointer.x, y: state.pointer.y };
+  }
+  return { x: state.width * 0.5, y: state.height * 0.5 };
+}
+
+function normalizeVector(x, y) {
+  const length = Math.hypot(x, y);
+  if (length < 0.01) {
+    return { x: 1, y: 0 };
+  }
+  return { x: x / length, y: y / length };
+}
+
+function renderForceFieldsList() {
+  if (!forceFieldsList) {
+    return;
+  }
+  forceFieldsList.innerHTML = "";
+  if (state.forceFields.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "force-fields-empty";
+    empty.textContent = "No fields yet.";
+    forceFieldsList.appendChild(empty);
+    return;
+  }
+  state.forceFields.forEach((fieldSource) => {
+    const item = document.createElement("div");
+    item.className = "force-field-item";
+    const label = document.createElement("span");
+    label.textContent = formatForceFieldLabel(fieldSource);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.forceFieldId = String(fieldSource.id);
+    button.textContent = "Delete";
+    item.appendChild(label);
+    item.appendChild(button);
+    forceFieldsList.appendChild(item);
+  });
+}
+
+function formatForceFieldLabel(fieldSource) {
+  const defaults = FORCE_FIELD_DEFAULTS[fieldSource.type] ?? FORCE_FIELD_DEFAULTS.attractor;
+  const radius = Math.round(fieldSource.radius);
+  const strength = Math.round(fieldSource.strength);
+  return `${defaults.label} · ${radius}px · ${strength}`;
+}
+
+function applyForceFields(fieldToUpdate, dt) {
+  if (!state.forceFieldsEnabled || state.forceFields.length === 0) {
+    return;
+  }
+  const { width, height, worldWidth, worldHeight, u, v } = fieldToUpdate;
+  if (width < 2 || height < 2) {
+    return;
+  }
+  const cellWidth = worldWidth / (width - 1);
+  const cellHeight = worldHeight / (height - 1);
+
+  state.forceFields.forEach((fieldSource) => {
+    const { type, x, y, strength, radius } = fieldSource;
+    if (type === "dipole") {
+      const offset = radius * 0.35;
+      const offsetX = fieldSource.dx * offset;
+      const offsetY = fieldSource.dy * offset;
+      const dipoleStrength = strength * 0.85;
+      applyForceFieldSource(
+        fieldToUpdate,
+        x + offsetX,
+        y + offsetY,
+        radius,
+        dipoleStrength,
+        false,
+        dt,
+        cellWidth,
+        cellHeight
+      );
+      applyForceFieldSource(
+        fieldToUpdate,
+        x - offsetX,
+        y - offsetY,
+        radius,
+        dipoleStrength,
+        true,
+        dt,
+        cellWidth,
+        cellHeight
+      );
+      return;
+    }
+    applyForceFieldSource(
+      fieldToUpdate,
+      x,
+      y,
+      radius,
+      strength,
+      type === "repeller",
+      dt,
+      cellWidth,
+      cellHeight
+    );
+  });
+}
+
+function applyForceFieldSource(
+  fieldToUpdate,
+  centerX,
+  centerY,
+  radius,
+  strength,
+  isRepel,
+  dt,
+  cellWidth,
+  cellHeight
+) {
+  const { width, height, worldWidth, worldHeight, u, v } = fieldToUpdate;
+  const gx = (centerX / worldWidth) * (width - 1);
+  const gy = (centerY / worldHeight) * (height - 1);
+  const rx = (radius / worldWidth) * (width - 1);
+  const ry = (radius / worldHeight) * (height - 1);
+  const r = Math.max(1, Math.max(rx, ry));
+  const r2 = radius * radius;
+  const minX = Math.max(0, Math.floor(gx - r));
+  const maxX = Math.min(width - 1, Math.ceil(gx + r));
+  const minY = Math.max(0, Math.floor(gy - r));
+  const maxY = Math.min(height - 1, Math.ceil(gy + r));
+  const dirSign = isRepel ? 1 : -1;
+
+  for (let iy = minY; iy <= maxY; iy += 1) {
+    const y = iy * cellHeight;
+    const dy = y - centerY;
+    for (let ix = minX; ix <= maxX; ix += 1) {
+      const x = ix * cellWidth;
+      const dx = x - centerX;
+      const dist2 = dx * dx + dy * dy;
+      if (dist2 > r2) {
+        continue;
+      }
+      const dist = Math.sqrt(dist2) + 0.001;
+      const falloff = 1 - dist / radius;
+      const accel = Math.min(FORCE_FIELD_MAX_ACCEL, (strength * falloff) / (dist2 + FORCE_FIELD_EPS));
+      const nx = (dx / dist) * dirSign;
+      const ny = (dy / dist) * dirSign;
+      const index = iy * width + ix;
+      u[index] += nx * accel * dt;
+      v[index] += ny * accel * dt;
+    }
+  }
 }
 
 function drawBrushRing() {
@@ -761,6 +1001,7 @@ function stepSimulation() {
   if (state.windMemory) {
     diffuseField(field, MEMORY_DIFFUSION);
   }
+  applyForceFields(field, SIM_STEP);
   applyObstaclesToField(field, obstacles, 0.25);
   if (state.physicsMode === "Wind+Temperature") {
     advectScalar(temp, field, SIM_STEP, TEMP_DISSIPATION, obstacles);
@@ -1026,12 +1267,39 @@ initGestures(canvas, {
       state.pointer.active = false;
     }, 120);
   },
+  onDoubleTap: (point) => {
+    if (!state.proEnabled) {
+      return;
+    }
+    addForceField("attractor", point);
+    if (navigator.vibrate) {
+      navigator.vibrate(8);
+    }
+  },
+  onTripleTap: (point) => {
+    if (!state.proEnabled) {
+      return;
+    }
+    addForceField("repeller", point);
+    if (navigator.vibrate) {
+      navigator.vibrate([6, 20, 6]);
+    }
+  },
   onTwoFingerTap: (point) => {
     handleUserGestureAudio();
     if (state.physicsMode !== "Wind+Temperature") {
       return;
     }
     injectTemperature(point, -TEMP_INJECTION * TEMP_TAP_BOOST);
+  },
+  onTwoFingerLongPress: (point) => {
+    if (!state.proEnabled) {
+      return;
+    }
+    addForceField("dipole", point);
+    if (navigator.vibrate) {
+      navigator.vibrate(10);
+    }
   },
   onPinch: (delta) => {
     handleUserGestureAudio();
@@ -1118,7 +1386,6 @@ window.addEventListener("resize", () => {
   resetScene();
 });
 
-const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.has("fps")) {
   setFpsMeter(true);
 }
@@ -1205,6 +1472,7 @@ controls.setTheme(state.theme);
 controls.setScienceOverlay(state.scienceOverlay);
 controls.setSound(state.soundEnabled);
 controls.setSoundVolume(state.soundVolume);
+controls.setForceFields(state.forceFieldsEnabled);
 
 function handleUserGestureAudio() {
   if (state.soundEnabled) {

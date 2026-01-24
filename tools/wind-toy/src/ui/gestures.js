@@ -1,5 +1,6 @@
 const TAP_MAX_TIME = 220;
 const TAP_MAX_DISTANCE = 16;
+const MULTI_TAP_DELAY = 260;
 const LONG_PRESS_MS = 420;
 const LONG_PRESS_MOVE = 12;
 
@@ -7,6 +8,8 @@ export function initGestures(canvas, handlers) {
   const pointers = new Map();
   let pinchDistance = null;
   let twoFingerTap = null;
+  let multiTap = null;
+  let twoFingerLongPress = null;
 
   function toCanvasPosition(event) {
     const rect = canvas.getBoundingClientRect();
@@ -72,6 +75,12 @@ export function initGestures(canvas, handlers) {
       }, LONG_PRESS_MS);
       handlers.onStrokeStart?.({ x: pointer.x, y: pointer.y, vx: 0, vy: 0 });
     } else if (pointers.size === 2) {
+      pointers.forEach((pointer) => {
+        if (pointer.longPressTimer) {
+          clearTimeout(pointer.longPressTimer);
+          pointer.longPressTimer = null;
+        }
+      });
       pinchDistance = getPinchDistance();
       const points = Array.from(pointers.values()).map((p) => ({
         x: p.x,
@@ -84,6 +93,7 @@ export function initGestures(canvas, handlers) {
         points,
         active: true,
       };
+      scheduleTwoFingerLongPress();
     }
   }
 
@@ -109,6 +119,15 @@ export function initGestures(canvas, handlers) {
           }));
         }
       }
+      if (twoFingerLongPress?.active === false) {
+        const movedTooFar = Array.from(pointers.values()).some(
+          (pointer) =>
+            Math.hypot(pointer.x - pointer.startX, pointer.y - pointer.startY) > LONG_PRESS_MOVE
+        );
+        if (movedTooFar) {
+          clearTwoFingerLongPress();
+        }
+      }
       const nextDistance = getPinchDistance();
       if (pinchDistance !== null && nextDistance !== null) {
         handlers.onPinch?.(nextDistance - pinchDistance);
@@ -129,13 +148,14 @@ export function initGestures(canvas, handlers) {
       const elapsed = performance.now() - pointer.time;
       const distance = Math.hypot(pointer.x - pointer.startX, pointer.y - pointer.startY);
       if (elapsed < TAP_MAX_TIME && distance < TAP_MAX_DISTANCE) {
-        handlers.onTap?.({ x: pointer.x, y: pointer.y, vx: 0, vy: 0 });
+        registerTap({ x: pointer.x, y: pointer.y, vx: 0, vy: 0 });
       }
     }
     pointers.delete(event.pointerId);
 
     if (pointers.size < 2) {
       pinchDistance = null;
+      clearTwoFingerLongPress();
     }
     if (pointers.size === 0) {
       if (twoFingerTap?.active) {
@@ -162,6 +182,79 @@ export function initGestures(canvas, handlers) {
     }
     const [first, second] = Array.from(pointers.values());
     return Math.hypot(first.x - second.x, first.y - second.y);
+  }
+
+  function registerTap(point) {
+    const now = performance.now();
+    const lastPoint = multiTap?.point;
+    const inWindow =
+      multiTap &&
+      now - multiTap.time < MULTI_TAP_DELAY &&
+      (!lastPoint || Math.hypot(point.x - lastPoint.x, point.y - lastPoint.y) < TAP_MAX_DISTANCE * 1.5);
+    const count = inWindow ? multiTap.count + 1 : 1;
+    if (multiTap?.timerId) {
+      clearTimeout(multiTap.timerId);
+    }
+    multiTap = {
+      count,
+      point,
+      time: now,
+      timerId: window.setTimeout(() => {
+        if (!multiTap) {
+          return;
+        }
+        const { count: tapCount, point: lastTap } = multiTap;
+        if (tapCount === 1) {
+          handlers.onTap?.(lastTap);
+        } else if (tapCount === 2) {
+          handlers.onDoubleTap?.(lastTap);
+        } else {
+          handlers.onTripleTap?.(lastTap);
+        }
+        multiTap = null;
+      }, MULTI_TAP_DELAY),
+    };
+  }
+
+  function scheduleTwoFingerLongPress() {
+    if (twoFingerLongPress?.timerId || pointers.size !== 2) {
+      return;
+    }
+    const startPoints = Array.from(pointers.values()).map((pointer) => ({
+      x: pointer.x,
+      y: pointer.y,
+      startX: pointer.startX,
+      startY: pointer.startY,
+    }));
+    twoFingerLongPress = {
+      active: false,
+      timerId: window.setTimeout(() => {
+        if (!twoFingerLongPress || pointers.size !== 2) {
+          return;
+        }
+        const [first, second] = Array.from(pointers.values());
+        const centerX = (first.x + second.x) / 2;
+        const centerY = (first.y + second.y) / 2;
+        const dx = second.x - first.x;
+        const dy = second.y - first.y;
+        handlers.onTwoFingerLongPress?.({ x: centerX, y: centerY, dx, dy });
+        twoFingerLongPress.active = true;
+        if (twoFingerTap) {
+          twoFingerTap.active = false;
+        }
+      }, LONG_PRESS_MS),
+      startPoints,
+    };
+  }
+
+  function clearTwoFingerLongPress() {
+    if (!twoFingerLongPress) {
+      return;
+    }
+    if (twoFingerLongPress.timerId) {
+      clearTimeout(twoFingerLongPress.timerId);
+    }
+    twoFingerLongPress = null;
   }
 
   canvas.addEventListener("pointerdown", handlePointerDown, { passive: false });
