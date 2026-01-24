@@ -93,6 +93,7 @@ const state = {
   showObstacleOverlay: false,
   buoyancyStrength: 0.5,
   theme: "Classic",
+  scienceOverlay: "Off",
   eraseObstacles: false,
   soundEnabled: false,
   soundVolume: 0.25,
@@ -176,6 +177,12 @@ const obstacleBuffer = {
   imageData: null,
 };
 obstacleBuffer.ctx = obstacleBuffer.canvas.getContext("2d");
+const scienceBuffer = {
+  canvas: document.createElement("canvas"),
+  ctx: null,
+  imageData: null,
+};
+scienceBuffer.ctx = scienceBuffer.canvas.getContext("2d");
 const fpsMeter = document.querySelector("#fps-meter");
 
 const controls = initControls({
@@ -217,6 +224,9 @@ const controls = initControls({
       height: state.height,
       reseed: false,
     });
+  },
+  onScienceOverlayChange: (mode) => {
+    state.scienceOverlay = mode;
   },
   onToolToggle: (mode) => {
     state.toolMode = mode;
@@ -274,6 +284,7 @@ function applyQuality(quality, { auto = false } = {}) {
   resizeSmokeBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
   resizeTempBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
   resizeObstacleBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
+  resizeScienceBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
   resizeParticles(particles, {
     count: getParticleCount(),
     width: state.width,
@@ -322,6 +333,7 @@ function resizeCanvas() {
   resizeSmokeBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
   resizeTempBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
   resizeObstacleBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
+  resizeScienceBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
 
   resizeParticles(particles, {
     count: getParticleCount(),
@@ -558,6 +570,153 @@ function drawObstacleOverlay() {
   ctx.restore();
 }
 
+function drawScienceOverlay() {
+  if (state.scienceOverlay === "Off") {
+    return;
+  }
+  switch (state.scienceOverlay) {
+    case "Arrows":
+      drawScienceArrows();
+      return;
+    case "Streamlines":
+      drawScienceStreamlines();
+      return;
+    case "Vorticity":
+      drawScienceVorticity();
+      return;
+    default:
+      return;
+  }
+}
+
+function drawScienceArrows() {
+  const { width, height, u, v } = field;
+  if (width < 2 || height < 2) {
+    return;
+  }
+  const config = getOverlayConfig();
+  const stepX = Math.max(1, Math.round(width / config.arrowCols));
+  const stepY = Math.max(1, Math.round(height / config.arrowRows));
+  const scale = config.arrowScale;
+
+  ctx.save();
+  ctx.strokeStyle = "rgba(120, 200, 255, 0.65)";
+  ctx.lineWidth = 1;
+  ctx.globalCompositeOperation = "lighter";
+
+  for (let iy = 0; iy < height; iy += stepY) {
+    const y = (iy / (height - 1)) * state.height;
+    for (let ix = 0; ix < width; ix += stepX) {
+      const index = iy * width + ix;
+      const vx = u[index];
+      const vy = v[index];
+      const mag = Math.hypot(vx, vy);
+      if (mag < config.arrowMinSpeed) {
+        continue;
+      }
+      const x = (ix / (width - 1)) * state.width;
+      const nx = x + vx * scale;
+      const ny = y + vy * scale;
+      const angle = Math.atan2(vy, vx);
+      const head = 4;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(nx, ny);
+      ctx.lineTo(nx - Math.cos(angle - Math.PI / 6) * head, ny - Math.sin(angle - Math.PI / 6) * head);
+      ctx.moveTo(nx, ny);
+      ctx.lineTo(nx - Math.cos(angle + Math.PI / 6) * head, ny - Math.sin(angle + Math.PI / 6) * head);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
+function drawScienceStreamlines() {
+  const { width, height } = field;
+  if (width < 2 || height < 2) {
+    return;
+  }
+  const config = getOverlayConfig();
+  const spacing = config.streamlineSpacing;
+  const steps = config.streamlineSteps;
+  const stepSize = config.streamlineStepSize;
+
+  ctx.save();
+  ctx.strokeStyle = "rgba(140, 220, 255, 0.5)";
+  ctx.lineWidth = 1;
+  ctx.globalCompositeOperation = "lighter";
+
+  const sample = { vx: 0, vy: 0 };
+  for (let y = spacing * 0.5; y < state.height; y += spacing) {
+    for (let x = spacing * 0.5; x < state.width; x += spacing) {
+      let cx = x;
+      let cy = y;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      for (let i = 0; i < steps; i += 1) {
+        sampleFieldAt(field, cx, cy, sample);
+        const mag = Math.hypot(sample.vx, sample.vy);
+        if (mag < config.streamlineMinSpeed) {
+          break;
+        }
+        const nx = cx + sample.vx * stepSize;
+        const ny = cy + sample.vy * stepSize;
+        ctx.lineTo(nx, ny);
+        cx = nx;
+        cy = ny;
+        if (cx < 0 || cx > state.width || cy < 0 || cy > state.height) {
+          break;
+        }
+      }
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
+function drawScienceVorticity() {
+  const { width, height, u, v } = field;
+  const { ctx: bufferCtx, imageData } = scienceBuffer;
+  if (!imageData || width < 3 || height < 3) {
+    return;
+  }
+  const config = getOverlayConfig();
+  const pixels = imageData.data;
+  const maxCurl = config.vorticityMax;
+  for (let y = 0; y < height; y += 1) {
+    const yOffset = y * width;
+    const yMinus = Math.max(0, y - 1) * width;
+    const yPlus = Math.min(height - 1, y + 1) * width;
+    for (let x = 0; x < width; x += 1) {
+      const xMinus = Math.max(0, x - 1);
+      const xPlus = Math.min(width - 1, x + 1);
+      const index = yOffset + x;
+      const dvx = v[yOffset + xPlus] - v[yOffset + xMinus];
+      const duy = u[yPlus + x] - u[yMinus + x];
+      const curl = dvx - duy;
+      const normalized = clamp(curl / maxCurl, -1, 1);
+      const intensity = Math.abs(normalized);
+      const alpha = Math.round(intensity * config.vorticityAlpha);
+      const offset = index * 4;
+      if (normalized >= 0) {
+        pixels[offset] = 255;
+        pixels[offset + 1] = 140;
+        pixels[offset + 2] = 120;
+      } else {
+        pixels[offset] = 120;
+        pixels[offset + 1] = 170;
+        pixels[offset + 2] = 255;
+      }
+      pixels[offset + 3] = alpha;
+    }
+  }
+  bufferCtx.putImageData(imageData, 0, 0);
+  ctx.save();
+  ctx.globalCompositeOperation = "lighter";
+  ctx.drawImage(scienceBuffer.canvas, 0, 0, width, height, 0, 0, state.width, state.height);
+  ctx.restore();
+}
+
 function drawFieldDebug() {
   if (!state.showField) {
     return;
@@ -637,6 +796,7 @@ function render(now) {
   }
   drawTempOverlay();
   drawObstacleOverlay();
+  drawScienceOverlay();
   drawFieldDebug();
   drawBrushRing();
   updateAudio(now);
@@ -742,6 +902,12 @@ function resizeObstacleBuffer(width, height) {
   obstacleBuffer.canvas.width = width;
   obstacleBuffer.canvas.height = height;
   obstacleBuffer.imageData = obstacleBuffer.ctx.createImageData(width, height);
+}
+
+function resizeScienceBuffer(width, height) {
+  scienceBuffer.canvas.width = width;
+  scienceBuffer.canvas.height = height;
+  scienceBuffer.imageData = scienceBuffer.ctx.createImageData(width, height);
 }
 
 function setFpsMeter(enabled) {
@@ -881,6 +1047,49 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
+function sampleFieldAt(fieldToSample, x, y, out) {
+  const { width, height, worldWidth, worldHeight, u, v } = fieldToSample;
+  const gx = (x / worldWidth) * (width - 1);
+  const gy = (y / worldHeight) * (height - 1);
+  const x0 = Math.floor(gx);
+  const y0 = Math.floor(gy);
+  const x1 = Math.min(width - 1, x0 + 1);
+  const y1 = Math.min(height - 1, y0 + 1);
+  const tx = gx - x0;
+  const ty = gy - y0;
+  const idx00 = y0 * width + x0;
+  const idx10 = y0 * width + x1;
+  const idx01 = y1 * width + x0;
+  const idx11 = y1 * width + x1;
+  const u0 = lerp(u[idx00], u[idx10], tx);
+  const u1 = lerp(u[idx01], u[idx11], tx);
+  const v0 = lerp(v[idx00], v[idx10], tx);
+  const v1 = lerp(v[idx01], v[idx11], tx);
+  out.vx = lerp(u0, u1, ty);
+  out.vy = lerp(v0, v1, ty);
+  return out;
+}
+
+function lerp(a, b, t) {
+  return a + (b - a) * t;
+}
+
+function getOverlayConfig() {
+  const lowPower = fpsState.inLowPower || state.quality === "Low";
+  return {
+    arrowCols: lowPower ? 16 : 22,
+    arrowRows: lowPower ? 10 : 16,
+    arrowScale: lowPower ? 0.018 : 0.022,
+    arrowMinSpeed: lowPower ? 30 : 20,
+    streamlineSpacing: lowPower ? 120 : 90,
+    streamlineSteps: lowPower ? 12 : 18,
+    streamlineStepSize: lowPower ? 0.012 : 0.016,
+    streamlineMinSpeed: lowPower ? 18 : 12,
+    vorticityMax: lowPower ? 900 : 700,
+    vorticityAlpha: lowPower ? 110 : 140,
+  };
+}
+
 function hashFloat(index) {
   let x = index + 1;
   x = (x ^ (x >>> 16)) * 0x7feb352d;
@@ -993,6 +1202,7 @@ controls.setTempOverlay(false);
 controls.setObstacleOverlay(false);
 controls.setBuoyancy(state.buoyancyStrength);
 controls.setTheme(state.theme);
+controls.setScienceOverlay(state.scienceOverlay);
 controls.setSound(state.soundEnabled);
 controls.setSoundVolume(state.soundVolume);
 
