@@ -1,6 +1,7 @@
 import { initControls } from "./ui/controls.js";
 import { initGestures } from "./ui/gestures.js";
 import { addVelocity, applyDamping, clearField, createField, resizeField } from "./sim/field.js";
+import { createParticles, resizeParticles, seedParticles, stepParticles } from "./sim/particles.js";
 
 const canvas = document.querySelector("#wind-canvas");
 const ctx = canvas.getContext("2d", { alpha: false });
@@ -35,6 +36,7 @@ const field = createField({
   gridWidth: 24,
   gridHeight: 24,
 });
+const particles = createParticles();
 
 const controls = initControls({
   onReset: () => resetScene(),
@@ -49,6 +51,11 @@ const controls = initControls({
       worldHeight: state.height,
       gridWidth: gridConfig.gridWidth,
       gridHeight: gridConfig.gridHeight,
+    });
+    resizeParticles(particles, {
+      count: getParticleCount(),
+      width: state.width,
+      height: state.height,
     });
   },
 });
@@ -71,12 +78,19 @@ function resizeCanvas() {
     gridWidth: gridConfig.gridWidth,
     gridHeight: gridConfig.gridHeight,
   });
+
+  resizeParticles(particles, {
+    count: getParticleCount(),
+    width: state.width,
+    height: state.height,
+  });
 }
 
 function resetScene() {
   ctx.fillStyle = "#05070d";
   ctx.fillRect(0, 0, state.width, state.height);
   clearField(field);
+  seedParticles(particles);
   state.idleTime = 0;
 }
 
@@ -94,42 +108,30 @@ function drawBrushRing() {
 }
 
 function drawBackground() {
-  ctx.fillStyle = "rgba(5, 7, 13, 0.35)";
+  ctx.fillStyle = "rgba(5, 7, 13, 0.2)";
   ctx.fillRect(0, 0, state.width, state.height);
 }
 
-function drawFieldVectors() {
-  const { width, height, u, v } = field;
-  const step = state.quality === "High" ? 2 : 3;
+function drawParticles() {
+  const { count, x, y, px, py } = particles;
   ctx.save();
-  ctx.lineCap = "round";
-  ctx.lineWidth = 1.5;
-  for (let gy = 0; gy < height; gy += step) {
-    const y = (gy / (height - 1)) * state.height;
-    for (let gx = 0; gx < width; gx += step) {
-      const index = gy * width + gx;
-      const vx = u[index];
-      const vy = v[index];
-      const speed = Math.hypot(vx, vy);
-      if (speed < 8) {
-        continue;
-      }
-      const x = (gx / (width - 1)) * state.width;
-      const length = clamp(speed * 0.02, 2, 18);
-      const angle = Math.atan2(vy, vx);
-      const alpha = clamp(speed / 800, 0.08, 0.65);
-      ctx.strokeStyle = `rgba(120, 180, 255, ${alpha})`;
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(x + Math.cos(angle) * length, y + Math.sin(angle) * length);
-      ctx.stroke();
-    }
+  ctx.strokeStyle =
+    state.mode === "Smoke"
+      ? "rgba(130, 170, 255, 0.18)"
+      : "rgba(168, 200, 255, 0.35)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let i = 0; i < count; i += 1) {
+    ctx.moveTo(px[i], py[i]);
+    ctx.lineTo(x[i], y[i]);
   }
+  ctx.stroke();
   ctx.restore();
 }
 
 function stepSimulation() {
   applyDamping(field, FIELD_DAMPING);
+  stepParticles(particles, field, SIM_STEP, state.lastFrame / 1000);
 }
 
 function render(now) {
@@ -144,7 +146,7 @@ function render(now) {
   }
 
   drawBackground();
-  drawFieldVectors();
+  drawParticles();
   drawBrushRing();
 
   requestAnimationFrame(render);
@@ -161,6 +163,10 @@ function getGridConfig() {
   const gridWidth = Math.max(24, Math.round(state.width / cellSize));
   const gridHeight = Math.max(18, Math.round(state.height / cellSize));
   return { gridWidth, gridHeight };
+}
+
+function getParticleCount() {
+  return state.quality === "High" ? 22000 : 12000;
 }
 
 initGestures(canvas, {
