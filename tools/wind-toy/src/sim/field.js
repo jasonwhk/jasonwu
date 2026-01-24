@@ -8,6 +8,8 @@ export function createField({ worldWidth, worldHeight, gridWidth, gridHeight }) 
     cellHeight: 1,
     u: null,
     v: null,
+    uScratch: null,
+    vScratch: null,
   };
 
   resizeField(field, { worldWidth, worldHeight, gridWidth, gridHeight });
@@ -26,9 +28,13 @@ export function resizeField(field, { worldWidth, worldHeight, gridWidth, gridHei
   if (!field.u || field.u.length !== nextSize) {
     field.u = new Float32Array(nextSize);
     field.v = new Float32Array(nextSize);
+    field.uScratch = new Float32Array(nextSize);
+    field.vScratch = new Float32Array(nextSize);
   } else {
     field.u.fill(0);
     field.v.fill(0);
+    field.uScratch.fill(0);
+    field.vScratch.fill(0);
   }
 }
 
@@ -77,4 +83,32 @@ export function addVelocity(field, x, y, vx, vy, radius, strength = 1) {
       v[index] += vyScaled * weight;
     }
   }
+}
+
+export function diffuseField(field, strength = 0.35) {
+  const { width, height, u, v, uScratch, vScratch } = field;
+  if (!uScratch || !vScratch) {
+    return;
+  }
+  const clampStrength = Math.min(Math.max(strength, 0), 1);
+
+  for (let y = 0; y < height; y += 1) {
+    const yOffset = y * width;
+    const yMinus = Math.max(0, y - 1) * width;
+    const yPlus = Math.min(height - 1, y + 1) * width;
+    for (let x = 0; x < width; x += 1) {
+      const left = Math.max(0, x - 1);
+      const right = Math.min(width - 1, x + 1);
+      const index = yOffset + x;
+      const uAvg =
+        (u[index] * 4 + u[yOffset + left] + u[yOffset + right] + u[yMinus + x] + u[yPlus + x]) / 8;
+      const vAvg =
+        (v[index] * 4 + v[yOffset + left] + v[yOffset + right] + v[yMinus + x] + v[yPlus + x]) / 8;
+      uScratch[index] = u[index] + (uAvg - u[index]) * clampStrength;
+      vScratch[index] = v[index] + (vAvg - v[index]) * clampStrength;
+    }
+  }
+
+  u.set(uScratch);
+  v.set(vScratch);
 }

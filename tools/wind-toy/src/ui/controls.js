@@ -1,14 +1,23 @@
-export function initControls({ onReset, onModeToggle, onQualityToggle, onFieldToggle, onShare }) {
+export function initControls({
+  onReset,
+  onModeToggle,
+  onQualityToggle,
+  onFieldToggle,
+  onWindMemoryToggle,
+  onShare,
+}) {
   const resetButton = document.querySelector("#reset-btn");
   const modeButton = document.querySelector("#mode-btn");
   const qualityButton = document.querySelector("#quality-btn");
   const fieldButton = document.querySelector("#field-btn");
+  const windMemoryButton = document.querySelector("#wind-memory-btn");
   const shareButton = document.querySelector("#share-btn");
 
   const state = {
     mode: "Particles",
     quality: "High",
     field: false,
+    windMemory: false,
   };
 
   const updateModeLabel = (mode, label) => {
@@ -30,6 +39,15 @@ export function initControls({ onReset, onModeToggle, onQualityToggle, onFieldTo
     const nextLabel = label ?? `Field: ${fieldEnabled ? "On" : "Off"}`;
     fieldButton.textContent = nextLabel;
     fieldButton.setAttribute("aria-pressed", fieldEnabled ? "true" : "false");
+  };
+
+  const updateWindMemoryLabel = (enabled, label) => {
+    if (!windMemoryButton) {
+      return;
+    }
+    const nextLabel = label ?? `Wind Memory: ${enabled ? "On" : "Off"}`;
+    windMemoryButton.textContent = nextLabel;
+    windMemoryButton.setAttribute("aria-pressed", enabled ? "true" : "false");
   };
 
   const updateShareLabel = (label = "Share") => {
@@ -61,6 +79,12 @@ export function initControls({ onReset, onModeToggle, onQualityToggle, onFieldTo
     onFieldToggle?.(state.field);
   });
 
+  windMemoryButton?.addEventListener("click", () => {
+    state.windMemory = !state.windMemory;
+    updateWindMemoryLabel(state.windMemory);
+    onWindMemoryToggle?.(state.windMemory);
+  });
+
   shareButton?.addEventListener("click", () => {
     onShare?.();
   });
@@ -77,6 +101,10 @@ export function initControls({ onReset, onModeToggle, onQualityToggle, onFieldTo
     setField: (fieldEnabled, label) => {
       state.field = fieldEnabled;
       updateFieldLabel(fieldEnabled, label);
+    },
+    setWindMemory: (enabled, label) => {
+      state.windMemory = enabled;
+      updateWindMemoryLabel(enabled, label);
     },
     setShareLabel: (label) => {
       updateShareLabel(label);
