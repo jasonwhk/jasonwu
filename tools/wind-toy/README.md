@@ -21,6 +21,8 @@ Then open `http://localhost:8000/tools/wind-toy/`.
 
 Drag to paint wind, tap for a gust, pinch to resize the brush.
 
+When idle for a few seconds, the canvas drifts into a gentle attract mode.
+
 ## Known limitations
 
 - Smoke mode is still lightweight (no full fluid solver), so wispy trails fade quickly.
