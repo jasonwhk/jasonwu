@@ -4,6 +4,9 @@ export function initControls({
   onQualityToggle,
   onFieldToggle,
   onWindMemoryToggle,
+  onPhysicsToggle,
+  onTempOverlayToggle,
+  onBuoyancyChange,
   onShare,
 }) {
   const resetButton = document.querySelector("#reset-btn");
@@ -11,6 +14,10 @@ export function initControls({
   const qualityButton = document.querySelector("#quality-btn");
   const fieldButton = document.querySelector("#field-btn");
   const windMemoryButton = document.querySelector("#wind-memory-btn");
+  const physicsButton = document.querySelector("#physics-btn");
+  const tempOverlayButton = document.querySelector("#temp-overlay-btn");
+  const buoyancySlider = document.querySelector("#buoyancy-slider");
+  const buoyancyValue = document.querySelector("#buoyancy-value");
   const shareButton = document.querySelector("#share-btn");
 
   const state = {
@@ -18,6 +25,9 @@ export function initControls({
     quality: "High",
     field: false,
     windMemory: false,
+    physicsMode: "Wind",
+    tempOverlay: false,
+    buoyancyStrength: 0.5,
   };
 
   const updateModeLabel = (mode, label) => {
@@ -48,6 +58,33 @@ export function initControls({
     const nextLabel = label ?? `Wind Memory: ${enabled ? "On" : "Off"}`;
     windMemoryButton.textContent = nextLabel;
     windMemoryButton.setAttribute("aria-pressed", enabled ? "true" : "false");
+  };
+
+  const updatePhysicsLabel = (mode, label) => {
+    if (!physicsButton) {
+      return;
+    }
+    const nextLabel = label ?? `Physics: ${mode}`;
+    physicsButton.textContent = nextLabel;
+    physicsButton.setAttribute("aria-pressed", mode === "Wind+Temperature" ? "true" : "false");
+  };
+
+  const updateTempOverlayLabel = (enabled, label) => {
+    if (!tempOverlayButton) {
+      return;
+    }
+    const nextLabel = label ?? `Temp Overlay: ${enabled ? "On" : "Off"}`;
+    tempOverlayButton.textContent = nextLabel;
+    tempOverlayButton.setAttribute("aria-pressed", enabled ? "true" : "false");
+  };
+
+  const updateBuoyancyLabel = (strength, label) => {
+    if (!buoyancySlider || !buoyancyValue) {
+      return;
+    }
+    const percent = Math.round(strength * 100);
+    buoyancyValue.textContent = label ?? `${percent}%`;
+    buoyancySlider.value = String(strength);
   };
 
   const updateShareLabel = (label = "Share") => {
@@ -85,6 +122,25 @@ export function initControls({
     onWindMemoryToggle?.(state.windMemory);
   });
 
+  physicsButton?.addEventListener("click", () => {
+    state.physicsMode = state.physicsMode === "Wind" ? "Wind+Temperature" : "Wind";
+    updatePhysicsLabel(state.physicsMode);
+    onPhysicsToggle?.(state.physicsMode);
+  });
+
+  tempOverlayButton?.addEventListener("click", () => {
+    state.tempOverlay = !state.tempOverlay;
+    updateTempOverlayLabel(state.tempOverlay);
+    onTempOverlayToggle?.(state.tempOverlay);
+  });
+
+  buoyancySlider?.addEventListener("input", (event) => {
+    const value = Number(event.target.value);
+    state.buoyancyStrength = value;
+    updateBuoyancyLabel(value);
+    onBuoyancyChange?.(value);
+  });
+
   shareButton?.addEventListener("click", () => {
     onShare?.();
   });
@@ -105,6 +161,18 @@ export function initControls({
     setWindMemory: (enabled, label) => {
       state.windMemory = enabled;
       updateWindMemoryLabel(enabled, label);
+    },
+    setPhysics: (mode, label) => {
+      state.physicsMode = mode;
+      updatePhysicsLabel(mode, label);
+    },
+    setTempOverlay: (enabled, label) => {
+      state.tempOverlay = enabled;
+      updateTempOverlayLabel(enabled, label);
+    },
+    setBuoyancy: (strength, label) => {
+      state.buoyancyStrength = strength;
+      updateBuoyancyLabel(strength, label);
     },
     setShareLabel: (label) => {
       updateShareLabel(label);

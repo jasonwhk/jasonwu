@@ -39,9 +39,11 @@ body {
   flex-direction: column;
   gap: 8px;
   z-index: 10;
+  min-width: 180px;
 }
 
-.ui button {
+.ui button,
+.ui .slider {
   padding: 8px 12px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -50,6 +52,33 @@ body {
   font-size: 0.85rem;
   cursor: pointer;
   backdrop-filter: blur(6px);
+}
+
+.ui .slider {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px 10px;
+  align-items: center;
+  cursor: default;
+  padding: 10px 12px;
+}
+
+.ui .slider span:first-child {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.75;
+}
+
+.ui .slider input[type="range"] {
+  grid-column: 1 / span 2;
+  width: 100%;
+}
+
+.ui .slider span:last-child {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  justify-self: end;
 }
 
 .ui button:focus-visible {

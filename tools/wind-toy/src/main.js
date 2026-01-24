@@ -14,6 +14,10 @@ const MEMORY_DIFFUSION = 0.35;
 const MAX_WIND_SPEED = 1600;
 const GUST_SPEED = 1200;
 const SMOKE_DISSIPATION = 0.985;
+const TEMP_DISSIPATION = 0.992;
+const TEMP_INJECTION = 0.65;
+const TEMP_TAP_BOOST = 1.1;
+const BUOYANCY_SCALE = 180;
 const IDLE_ATTRACT_MS = 5000;
 const IDLE_WIND_SPEED = 220;
 const IDLE_WIND_RADIUS = 120;
@@ -33,6 +37,9 @@ const state = {
   autoLowPower: false,
   showField: false,
   windMemory: false,
+  physicsMode: "Wind",
+  showTempOverlay: false,
+  buoyancyStrength: 0.5,
   pointer: {
     active: false,
     x: 0,
@@ -68,6 +75,12 @@ const smoke = createScalarField({
   gridWidth: 24,
   gridHeight: 24,
 });
+const temp = createScalarField({
+  worldWidth: 1,
+  worldHeight: 1,
+  gridWidth: 24,
+  gridHeight: 24,
+});
 
 const smokeBuffer = {
   canvas: document.createElement("canvas"),
@@ -75,6 +88,12 @@ const smokeBuffer = {
   imageData: null,
 };
 smokeBuffer.ctx = smokeBuffer.canvas.getContext("2d");
+const tempBuffer = {
+  canvas: document.createElement("canvas"),
+  ctx: null,
+  imageData: null,
+};
+tempBuffer.ctx = tempBuffer.canvas.getContext("2d");
 const fpsMeter = document.querySelector("#fps-meter");
 
 const controls = initControls({
@@ -95,6 +114,18 @@ const controls = initControls({
   },
   onWindMemoryToggle: (enabled) => {
     state.windMemory = enabled;
+  },
+  onPhysicsToggle: (mode) => {
+    state.physicsMode = mode;
+    if (mode === "Wind") {
+      clearScalarField(temp);
+    }
+  },
+  onTempOverlayToggle: (enabled) => {
+    state.showTempOverlay = enabled;
+  },
+  onBuoyancyChange: (strength) => {
+    state.buoyancyStrength = strength;
   },
   onShare: () => {
     handleShare();
@@ -117,7 +148,14 @@ function applyQuality(quality, { auto = false } = {}) {
     gridWidth: gridConfig.gridWidth,
     gridHeight: gridConfig.gridHeight,
   });
+  resizeScalarField(temp, {
+    worldWidth: state.width,
+    worldHeight: state.height,
+    gridWidth: gridConfig.gridWidth,
+    gridHeight: gridConfig.gridHeight,
+  });
   resizeSmokeBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
+  resizeTempBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
   resizeParticles(particles, {
     count: getParticleCount(),
     width: state.width,
@@ -151,7 +189,14 @@ function resizeCanvas() {
     gridWidth: gridConfig.gridWidth,
     gridHeight: gridConfig.gridHeight,
   });
+  resizeScalarField(temp, {
+    worldWidth: state.width,
+    worldHeight: state.height,
+    gridWidth: gridConfig.gridWidth,
+    gridHeight: gridConfig.gridHeight,
+  });
   resizeSmokeBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
+  resizeTempBuffer(gridConfig.gridWidth, gridConfig.gridHeight);
 
   resizeParticles(particles, {
     count: getParticleCount(),
@@ -165,6 +210,7 @@ function resetScene() {
   ctx.fillRect(0, 0, state.width, state.height);
   clearField(field);
   clearScalarField(smoke);
+  clearScalarField(temp);
   seedParticles(particles);
   state.idleTime = 0;
 }
@@ -227,6 +273,39 @@ function drawSmoke() {
   ctx.restore();
 }
 
+function drawTempOverlay() {
+  if (!state.showTempOverlay) {
+    return;
+  }
+  const { width, height, data } = temp;
+  const { ctx: bufferCtx, imageData } = tempBuffer;
+  if (!imageData) {
+    return;
+  }
+  const pixels = imageData.data;
+  for (let i = 0; i < data.length; i += 1) {
+    const value = clamp(data[i], -1.2, 1.2);
+    const intensity = Math.min(1, Math.abs(value));
+    const alpha = Math.round(intensity * 140);
+    const offset = i * 4;
+    if (value >= 0) {
+      pixels[offset] = 255;
+      pixels[offset + 1] = 110;
+      pixels[offset + 2] = 90;
+    } else {
+      pixels[offset] = 90;
+      pixels[offset + 1] = 140;
+      pixels[offset + 2] = 255;
+    }
+    pixels[offset + 3] = alpha;
+  }
+  bufferCtx.putImageData(imageData, 0, 0);
+  ctx.save();
+  ctx.globalCompositeOperation = "lighter";
+  ctx.drawImage(tempBuffer.canvas, 0, 0, width, height, 0, 0, state.width, state.height);
+  ctx.restore();
+}
+
 function drawFieldDebug() {
   if (!state.showField) {
     return;
@@ -271,6 +350,10 @@ function stepSimulation() {
   if (state.windMemory) {
     diffuseField(field, MEMORY_DIFFUSION);
   }
+  if (state.physicsMode === "Wind+Temperature") {
+    advectScalar(temp, field, SIM_STEP, TEMP_DISSIPATION);
+    applyBuoyancy(field, temp, state.buoyancyStrength, SIM_STEP);
+  }
   if (state.mode === "Particles") {
     stepParticles(particles, field, SIM_STEP, state.lastFrame / 1000);
   } else {
@@ -296,6 +379,7 @@ function render(now) {
   } else {
     drawSmoke();
   }
+  drawTempOverlay();
   drawFieldDebug();
   drawBrushRing();
 
@@ -329,6 +413,32 @@ function injectSmoke(point, amount = 1) {
   addScalar(smoke, point.x, point.y, amount, state.brushRadius * 0.9);
 }
 
+function injectTemperature(point, amount) {
+  addScalar(temp, point.x, point.y, amount, state.brushRadius * 0.9);
+}
+
+function resolveTempMode(point) {
+  if (state.physicsMode !== "Wind+Temperature") {
+    return 0;
+  }
+  if (point.altKey) {
+    return -1;
+  }
+  if (point.longPress || point.shiftKey) {
+    return 1;
+  }
+  return 0;
+}
+
+function applyBuoyancy(fieldToUpdate, tempField, strength, dt) {
+  const { v } = fieldToUpdate;
+  const tempData = tempField.data;
+  const factor = strength * BUOYANCY_SCALE * dt;
+  for (let i = 0; i < v.length; i += 1) {
+    v[i] += tempData[i] * factor;
+  }
+}
+
 function getGridConfig() {
   const cellSize = state.quality === "High" ? 20 : 28;
   const gridWidth = Math.max(24, Math.round(state.width / cellSize));
@@ -344,6 +454,12 @@ function resizeSmokeBuffer(width, height) {
   smokeBuffer.canvas.width = width;
   smokeBuffer.canvas.height = height;
   smokeBuffer.imageData = smokeBuffer.ctx.createImageData(width, height);
+}
+
+function resizeTempBuffer(width, height) {
+  tempBuffer.canvas.width = width;
+  tempBuffer.canvas.height = height;
+  tempBuffer.imageData = tempBuffer.ctx.createImageData(width, height);
 }
 
 function setFpsMeter(enabled) {
@@ -393,6 +509,10 @@ initGestures(canvas, {
     state.pointer.vy = point.vy;
     state.idleTime = 0;
     injectWind(point, 0.9);
+    const tempMode = resolveTempMode(point);
+    if (tempMode !== 0) {
+      injectTemperature(point, TEMP_INJECTION * tempMode);
+    }
     if (state.mode === "Smoke") {
       injectSmoke(point, 0.35);
     }
@@ -405,6 +525,10 @@ initGestures(canvas, {
     state.pointer.vy = point.vy;
     state.idleTime = 0;
     injectWind(point, 1);
+    const tempMode = resolveTempMode(point);
+    if (tempMode !== 0) {
+      injectTemperature(point, TEMP_INJECTION * tempMode);
+    }
     if (state.mode === "Smoke") {
       injectSmoke(point, 0.4);
     }
@@ -435,6 +559,12 @@ initGestures(canvas, {
     setTimeout(() => {
       state.pointer.active = false;
     }, 120);
+  },
+  onTwoFingerTap: (point) => {
+    if (state.physicsMode !== "Wind+Temperature") {
+      return;
+    }
+    injectTemperature(point, -TEMP_INJECTION * TEMP_TAP_BOOST);
   },
   onPinch: (delta) => {
     state.brushRadius = clamp(state.brushRadius + delta * 0.2, 12, 160);
@@ -536,3 +666,6 @@ requestAnimationFrame(render);
 controls.setStatus("Mode: Particles", "Quality: High");
 controls.setField(false);
 controls.setWindMemory(false);
+controls.setPhysics("Wind");
+controls.setTempOverlay(false);
+controls.setBuoyancy(state.buoyancyStrength);
