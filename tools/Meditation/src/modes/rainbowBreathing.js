@@ -25,7 +25,8 @@ export function renderRainbowBreathing(ctx, state, metrics) {
   const size = (Math.min(width, height) * 0.15) + eased * (Math.min(width, height) * 0.12);
 
   ctx.save();
-  ctx.fillStyle = getRainbowColor(state.cycleCount);
+  const colorIndex = Math.max(0, state.cycleCount - 1);
+  ctx.fillStyle = getRainbowColor(colorIndex);
   ctx.shadowColor = 'rgba(255, 255, 255, 0.4)';
   ctx.shadowBlur = 40;
   ctx.beginPath();
@@ -37,4 +38,10 @@ export function renderRainbowBreathing(ctx, state, metrics) {
   ctx.font = `${Math.max(16, width * 0.02)}px sans-serif`;
   ctx.textAlign = 'center';
   ctx.fillText(state.phase.toUpperCase(), centerX, centerY + size + 30);
+
+  if (state.completed) {
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.font = `${Math.max(18, width * 0.024)}px sans-serif`;
+    ctx.fillText('Session complete', centerX, centerY + size + 60);
+  }
 }

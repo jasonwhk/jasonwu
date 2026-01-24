@@ -1,6 +1,6 @@
 import { createLoop } from './utils/raf.js';
 import { fitCanvas } from './utils/fitCanvas.js';
-import { createState, advanceBreath, MODES } from './state.js';
+import { createState, advanceBreath, MODES, PRESETS, resetSession } from './state.js';
 import { renderRainbowBreathing } from './modes/rainbowBreathing.js';
 import { renderPaintRainbow } from './modes/paintRainbow.js';
 import { setupHud } from './ui/hud.js';
@@ -12,6 +12,7 @@ const modeToggle = document.getElementById('modeToggle');
 const pauseToggle = document.getElementById('pauseToggle');
 const motionToggle = document.getElementById('motionToggle');
 const hud = document.getElementById('hud');
+const presetButtons = Array.from(document.querySelectorAll('[data-preset]'));
 
 const state = createState();
 const hudManager = setupHud(hud);
@@ -22,6 +23,12 @@ function updateIcons() {
     state.mode === MODES.RAINBOW_BREATHING ? '🌬️' : '🌈';
   pauseToggle.querySelector('.icon').textContent = state.paused ? '▶️' : '⏸';
   motionToggle.querySelector('.icon').textContent = state.reducedMotion ? '🚫' : '🌀';
+}
+
+function updatePresetButtons() {
+  presetButtons.forEach((button) => {
+    button.classList.toggle('is-active', button.dataset.preset === state.preset);
+  });
 }
 
 function render() {
@@ -39,6 +46,7 @@ const loop = createLoop((dt) => {
 
 function start() {
   state.started = true;
+  resetSession(state);
   startOverlay.classList.add('is-hidden');
   hudManager.showHud();
   loop.start();
@@ -61,12 +69,17 @@ canvas.addEventListener('pointerdown', () => {
 modeToggle.addEventListener('click', () => {
   state.mode =
     state.mode === MODES.RAINBOW_BREATHING ? MODES.PAINT_RAINBOW : MODES.RAINBOW_BREATHING;
+  resetSession(state);
   hudManager.showHud();
   updateIcons();
 });
 
 pauseToggle.addEventListener('click', () => {
-  state.paused = !state.paused;
+  if (state.completed) {
+    resetSession(state);
+  } else {
+    state.paused = !state.paused;
+  }
   hudManager.showHud();
   updateIcons();
 });
@@ -75,6 +88,22 @@ motionToggle.addEventListener('click', () => {
   state.reducedMotion = !state.reducedMotion;
   hudManager.showHud();
   updateIcons();
+});
+
+presetButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    const preset = button.dataset.preset;
+    if (!preset || preset === state.preset) {
+      return;
+    }
+    state.preset = preset;
+    if (state.started) {
+      resetSession(state);
+    }
+    hudManager.showHud();
+    updatePresetButtons();
+    updateIcons();
+  });
 });
 
 window.addEventListener('keydown', (event) => {
@@ -87,4 +116,5 @@ window.addEventListener('keydown', (event) => {
 
 hudManager.showHud();
 updateIcons();
+updatePresetButtons();
 render();

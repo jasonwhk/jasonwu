@@ -13,9 +13,10 @@ export function renderPaintRainbow(ctx, state, metrics) {
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, width, height);
 
-  const cycleProgress = Math.min(state.cycleCount / TOTAL_BANDS, 1);
   const phaseProgress = getPhaseProgress(state);
-  const fillBands = Math.min(TOTAL_BANDS, Math.floor(state.cycleCount + phaseProgress));
+  const completedCycles = Math.max(0, state.cycleCount - 1);
+  const cycleProgress = Math.min((completedCycles + phaseProgress) / TOTAL_BANDS, 1);
+  const fillBands = Math.min(TOTAL_BANDS, Math.floor(completedCycles + phaseProgress));
 
   const arcRadius = Math.min(width, height) * 0.4;
   const centerX = width / 2;
@@ -40,5 +41,6 @@ export function renderPaintRainbow(ctx, state, metrics) {
   ctx.fillStyle = 'rgba(255,255,255,0.6)';
   ctx.font = `${Math.max(16, width * 0.02)}px sans-serif`;
   ctx.textAlign = 'center';
-  ctx.fillText('Breathe to paint the rainbow', centerX, centerY - arcRadius - 20);
+  const message = state.completed ? 'Rainbow complete' : 'Breathe to paint the rainbow';
+  ctx.fillText(message, centerX, centerY - arcRadius - 20);
 }
