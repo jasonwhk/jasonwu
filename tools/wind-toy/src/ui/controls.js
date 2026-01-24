@@ -9,6 +9,7 @@ export function initControls({
   onTempOverlayToggle,
   onBuoyancyChange,
   onThemeChange,
+  onTrailsChange,
   onScienceOverlayChange,
   onToolToggle,
   onObstacleOverlayToggle,
@@ -30,6 +31,8 @@ export function initControls({
   const buoyancyValue = document.querySelector("#buoyancy-value");
   const themeSelect = document.querySelector("#theme-select");
   const toolButton = document.querySelector("#tool-btn");
+  const trailsSlider = document.querySelector("#trails-slider");
+  const trailsValue = document.querySelector("#trails-value");
   const scienceSelect = document.querySelector("#science-select");
   const obstacleOverlayButton = document.querySelector("#obstacle-overlay-btn");
   const clearObstaclesButton = document.querySelector("#clear-obstacles-btn");
@@ -49,6 +52,7 @@ export function initControls({
     tempOverlay: false,
     buoyancyStrength: 0.5,
     theme: "Classic",
+    trailStrength: 1,
     scienceOverlay: "Off",
     toolMode: "Wind",
     obstacleOverlay: false,
@@ -182,6 +186,15 @@ export function initControls({
     themeSelect.value = theme;
   };
 
+  const updateTrailsLabel = (value, label) => {
+    if (!trailsSlider || !trailsValue) {
+      return;
+    }
+    const percent = Math.round(value * 100);
+    trailsValue.textContent = label ?? `${percent}%`;
+    trailsSlider.value = String(value);
+  };
+
   const updateScienceLabel = (value) => {
     if (!scienceSelect) {
       return;
@@ -247,6 +260,13 @@ export function initControls({
     state.theme = value;
     updateThemeLabel(value);
     onThemeChange?.(value);
+  });
+
+  trailsSlider?.addEventListener("input", (event) => {
+    const value = Number(event.target.value);
+    state.trailStrength = value;
+    updateTrailsLabel(value);
+    onTrailsChange?.(value);
   });
 
   scienceSelect?.addEventListener("change", (event) => {
@@ -331,6 +351,10 @@ export function initControls({
     setTheme: (theme) => {
       state.theme = theme;
       updateThemeLabel(theme);
+    },
+    setTrails: (strength, label) => {
+      state.trailStrength = strength;
+      updateTrailsLabel(strength, label);
     },
     setScienceOverlay: (value) => {
       state.scienceOverlay = value;
