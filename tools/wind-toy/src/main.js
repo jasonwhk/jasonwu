@@ -27,6 +27,44 @@ const FPS_SAMPLE_MS = 900;
 const LOW_POWER_FPS = 48;
 const LOW_POWER_SAMPLES = 3;
 
+const THEMES = {
+  Classic: {
+    label: "Classic",
+    particleScale: 1,
+    background: "rgba(5, 7, 13, 0.2)",
+    particleOptions: { drag: 0.18, noise: 18, speedScale: 1, gravity: 0 },
+    smokeTint: { r: 150, g: 190, b: 255, alpha: 180 },
+  },
+  Leaves: {
+    label: "Autumn Leaves",
+    particleScale: 0.85,
+    background: "rgba(12, 9, 6, 0.22)",
+    particleOptions: { drag: 0.22, noise: 22, speedScale: 0.9, gravity: 0 },
+    smokeTint: { r: 210, g: 150, b: 120, alpha: 140 },
+  },
+  Snow: {
+    label: "Snow",
+    particleScale: 0.8,
+    background: "rgba(7, 10, 16, 0.2)",
+    particleOptions: { drag: 0.28, noise: 6, speedScale: 0.6, gravity: 48 },
+    smokeTint: { r: 190, g: 210, b: 240, alpha: 130 },
+  },
+  Ink: {
+    label: "Ink",
+    particleScale: 0.9,
+    background: "rgba(244, 240, 233, 0.26)",
+    particleOptions: { drag: 0.16, noise: 12, speedScale: 0.95, gravity: 0 },
+    smokeTint: { r: 30, g: 32, b: 40, alpha: 170 },
+  },
+  Fireflies: {
+    label: "Fireflies",
+    particleScale: 0.7,
+    background: "rgba(4, 7, 12, 0.16)",
+    particleOptions: { drag: 0.2, noise: 10, speedScale: 0.7, gravity: 0 },
+    smokeTint: { r: 140, g: 200, b: 170, alpha: 120 },
+  },
+};
+
 const state = {
   width: 0,
   height: 0,
@@ -40,6 +78,7 @@ const state = {
   physicsMode: "Wind",
   showTempOverlay: false,
   buoyancyStrength: 0.5,
+  theme: "Classic",
   pointer: {
     active: false,
     x: 0,
@@ -126,6 +165,15 @@ const controls = initControls({
   },
   onBuoyancyChange: (strength) => {
     state.buoyancyStrength = strength;
+  },
+  onThemeChange: (theme) => {
+    state.theme = theme;
+    resizeParticles(particles, {
+      count: getParticleCount(),
+      width: state.width,
+      height: state.height,
+      reseed: false,
+    });
   },
   onShare: () => {
     handleShare();
@@ -229,11 +277,31 @@ function drawBrushRing() {
 }
 
 function drawBackground() {
-  ctx.fillStyle = "rgba(5, 7, 13, 0.2)";
+  const theme = getThemeConfig();
+  ctx.fillStyle = theme.background;
   ctx.fillRect(0, 0, state.width, state.height);
 }
 
-function drawParticles() {
+function drawParticles(time) {
+  switch (state.theme) {
+    case "Leaves":
+      drawLeafParticles();
+      return;
+    case "Snow":
+      drawSnowParticles();
+      return;
+    case "Ink":
+      drawInkParticles();
+      return;
+    case "Fireflies":
+      drawFireflyParticles(time);
+      return;
+    default:
+      drawClassicParticles();
+  }
+}
+
+function drawClassicParticles() {
   const { count, x, y, px, py } = particles;
   ctx.save();
   ctx.strokeStyle =
@@ -250,20 +318,95 @@ function drawParticles() {
   ctx.restore();
 }
 
+function drawLeafParticles() {
+  const { count, x, y, px, py } = particles;
+  ctx.save();
+  ctx.globalCompositeOperation = "lighter";
+  const colors = ["rgba(255, 176, 92, 0.55)", "rgba(199, 109, 64, 0.5)"];
+  for (let pass = 0; pass < colors.length; pass += 1) {
+    ctx.fillStyle = colors[pass];
+    ctx.beginPath();
+    for (let i = pass; i < count; i += colors.length) {
+      const dx = x[i] - px[i];
+      const dy = y[i] - py[i];
+      const angle = Math.atan2(dy, dx);
+      const size = 3 + hashFloat(i) * 4;
+      const tipX = x[i] + Math.cos(angle) * size;
+      const tipY = y[i] + Math.sin(angle) * size;
+      const leftX = x[i] + Math.cos(angle + 2.4) * size * 0.6;
+      const leftY = y[i] + Math.sin(angle + 2.4) * size * 0.6;
+      const rightX = x[i] + Math.cos(angle - 2.4) * size * 0.6;
+      const rightY = y[i] + Math.sin(angle - 2.4) * size * 0.6;
+      ctx.moveTo(tipX, tipY);
+      ctx.lineTo(leftX, leftY);
+      ctx.lineTo(rightX, rightY);
+      ctx.closePath();
+    }
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawSnowParticles() {
+  const { count, x, y } = particles;
+  ctx.save();
+  ctx.fillStyle = "rgba(220, 236, 255, 0.65)";
+  ctx.beginPath();
+  for (let i = 0; i < count; i += 1) {
+    const radius = 1.5 + hashFloat(i) * 2.4;
+    ctx.moveTo(x[i] + radius, y[i]);
+    ctx.arc(x[i], y[i], radius, 0, Math.PI * 2);
+  }
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawInkParticles() {
+  const { count, x, y, px, py } = particles;
+  ctx.save();
+  ctx.globalCompositeOperation = "multiply";
+  ctx.strokeStyle = "rgba(20, 20, 24, 0.45)";
+  ctx.lineWidth = 1.4;
+  ctx.beginPath();
+  for (let i = 0; i < count; i += 1) {
+    ctx.moveTo(px[i], py[i]);
+    ctx.lineTo(x[i], y[i]);
+  }
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawFireflyParticles(time) {
+  const { count, x, y } = particles;
+  ctx.save();
+  ctx.globalCompositeOperation = "lighter";
+  ctx.fillStyle = "rgba(170, 255, 200, 0.9)";
+  for (let i = 0; i < count; i += 1) {
+    const phase = hashFloat(i) * Math.PI * 2;
+    const twinkle = 0.35 + 0.65 * Math.sin(time * 2 + phase);
+    const alpha = clamp(twinkle, 0, 1) * 0.85;
+    const size = 1.2 + hashFloat(i + 9) * 2.2;
+    ctx.globalAlpha = alpha;
+    ctx.fillRect(x[i] - size * 0.5, y[i] - size * 0.5, size, size);
+  }
+  ctx.restore();
+}
+
 function drawSmoke() {
   const { width, height, data } = smoke;
   const { ctx: bufferCtx, imageData } = smokeBuffer;
   if (!imageData) {
     return;
   }
+  const tint = getThemeConfig().smokeTint;
   const pixels = imageData.data;
   for (let i = 0; i < data.length; i += 1) {
     const density = Math.min(data[i], 1.4);
-    const alpha = Math.min(255, density * 180);
+    const alpha = Math.min(255, density * tint.alpha);
     const offset = i * 4;
-    pixels[offset] = 150;
-    pixels[offset + 1] = 190;
-    pixels[offset + 2] = 255;
+    pixels[offset] = tint.r;
+    pixels[offset + 1] = tint.g;
+    pixels[offset + 2] = tint.b;
     pixels[offset + 3] = alpha;
   }
   bufferCtx.putImageData(imageData, 0, 0);
@@ -355,7 +498,7 @@ function stepSimulation() {
     applyBuoyancy(field, temp, state.buoyancyStrength, SIM_STEP);
   }
   if (state.mode === "Particles") {
-    stepParticles(particles, field, SIM_STEP, state.lastFrame / 1000);
+    stepParticles(particles, field, SIM_STEP, state.lastFrame / 1000, getThemeConfig().particleOptions);
   } else {
     advectScalar(smoke, field, SIM_STEP, SMOKE_DISSIPATION);
   }
@@ -375,7 +518,7 @@ function render(now) {
   updateFps(now);
   drawBackground();
   if (state.mode === "Particles") {
-    drawParticles();
+    drawParticles(now / 1000);
   } else {
     drawSmoke();
   }
@@ -439,6 +582,10 @@ function applyBuoyancy(fieldToUpdate, tempField, strength, dt) {
   }
 }
 
+function getThemeConfig() {
+  return THEMES[state.theme] ?? THEMES.Classic;
+}
+
 function getGridConfig() {
   const cellSize = state.quality === "High" ? 20 : 28;
   const gridWidth = Math.max(24, Math.round(state.width / cellSize));
@@ -447,7 +594,9 @@ function getGridConfig() {
 }
 
 function getParticleCount() {
-  return state.quality === "High" ? 22000 : 12000;
+  const base = state.quality === "High" ? 22000 : 12000;
+  const scale = getThemeConfig().particleScale ?? 1;
+  return Math.max(6000, Math.round(base * scale));
 }
 
 function resizeSmokeBuffer(width, height) {
@@ -578,6 +727,14 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
+function hashFloat(index) {
+  let x = index + 1;
+  x = (x ^ (x >>> 16)) * 0x7feb352d;
+  x = (x ^ (x >>> 15)) * 0x846ca68b;
+  x ^= x >>> 16;
+  return (x >>> 0) / 4294967295;
+}
+
 window.addEventListener("keydown", (event) => {
   if (event.key.toLowerCase() === "f") {
     setFpsMeter(!fpsState.enabled);
@@ -669,3 +826,4 @@ controls.setWindMemory(false);
 controls.setPhysics("Wind");
 controls.setTempOverlay(false);
 controls.setBuoyancy(state.buoyancyStrength);
+controls.setTheme(state.theme);

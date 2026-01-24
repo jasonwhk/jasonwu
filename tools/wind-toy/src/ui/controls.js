@@ -7,6 +7,7 @@ export function initControls({
   onPhysicsToggle,
   onTempOverlayToggle,
   onBuoyancyChange,
+  onThemeChange,
   onShare,
 }) {
   const resetButton = document.querySelector("#reset-btn");
@@ -18,6 +19,7 @@ export function initControls({
   const tempOverlayButton = document.querySelector("#temp-overlay-btn");
   const buoyancySlider = document.querySelector("#buoyancy-slider");
   const buoyancyValue = document.querySelector("#buoyancy-value");
+  const themeSelect = document.querySelector("#theme-select");
   const shareButton = document.querySelector("#share-btn");
 
   const state = {
@@ -28,6 +30,7 @@ export function initControls({
     physicsMode: "Wind",
     tempOverlay: false,
     buoyancyStrength: 0.5,
+    theme: "Classic",
   };
 
   const updateModeLabel = (mode, label) => {
@@ -94,6 +97,13 @@ export function initControls({
     shareButton.textContent = label;
   };
 
+  const updateThemeLabel = (theme) => {
+    if (!themeSelect) {
+      return;
+    }
+    themeSelect.value = theme;
+  };
+
   resetButton?.addEventListener("click", () => {
     onReset?.();
   });
@@ -141,6 +151,13 @@ export function initControls({
     onBuoyancyChange?.(value);
   });
 
+  themeSelect?.addEventListener("change", (event) => {
+    const value = event.target.value;
+    state.theme = value;
+    updateThemeLabel(value);
+    onThemeChange?.(value);
+  });
+
   shareButton?.addEventListener("click", () => {
     onShare?.();
   });
@@ -173,6 +190,10 @@ export function initControls({
     setBuoyancy: (strength, label) => {
       state.buoyancyStrength = strength;
       updateBuoyancyLabel(strength, label);
+    },
+    setTheme: (theme) => {
+      state.theme = theme;
+      updateThemeLabel(theme);
     },
     setShareLabel: (label) => {
       updateShareLabel(label);

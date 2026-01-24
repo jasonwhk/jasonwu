@@ -10,7 +10,12 @@ export function createParticles() {
   };
 }
 
-export function resizeParticles(particles, { count, width, height }) {
+export function resizeParticles(particles, { count, width, height, reseed = true }) {
+  const prevCount = particles.count;
+  const prevX = particles.x;
+  const prevY = particles.y;
+  const prevPx = particles.px;
+  const prevPy = particles.py;
   particles.count = count;
   particles.width = width;
   particles.height = height;
@@ -20,14 +25,32 @@ export function resizeParticles(particles, { count, width, height }) {
     particles.y = new Float32Array(count);
     particles.px = new Float32Array(count);
     particles.py = new Float32Array(count);
+
+    if (!reseed && prevX && prevY && prevPx && prevPy) {
+      const copyCount = Math.min(prevCount, count);
+      particles.x.set(prevX.subarray(0, copyCount));
+      particles.y.set(prevY.subarray(0, copyCount));
+      particles.px.set(prevPx.subarray(0, copyCount));
+      particles.py.set(prevPy.subarray(0, copyCount));
+      if (count > copyCount) {
+        seedRange(particles, copyCount);
+      }
+      return;
+    }
   }
 
-  seedParticles(particles);
+  if (reseed) {
+    seedParticles(particles);
+  }
 }
 
 export function seedParticles(particles) {
+  seedRange(particles, 0);
+}
+
+function seedRange(particles, startIndex) {
   const { count, width, height, x, y, px, py } = particles;
-  for (let i = 0; i < count; i += 1) {
+  for (let i = startIndex; i < count; i += 1) {
     const nx = Math.random() * width;
     const ny = Math.random() * height;
     x[i] = nx;
@@ -39,7 +62,7 @@ export function seedParticles(particles) {
 
 export function stepParticles(particles, field, dt, time, options = {}) {
   const { count, width, height, x, y, px, py } = particles;
-  const { drag = 0.18, noise = 18 } = options;
+  const { drag = 0.18, noise = 18, gravity = 0, speedScale = 1 } = options;
   const dragFactor = Math.max(0, 1 - drag * dt);
   const noisePhase = time * 0.6;
 
@@ -50,8 +73,8 @@ export function stepParticles(particles, field, dt, time, options = {}) {
     const { vx, vy } = sampleField(field, cx, cy);
     const jitterX = Math.sin(cy * 0.01 + noisePhase) * noise;
     const jitterY = Math.cos(cx * 0.01 + noisePhase) * noise;
-    const nextVx = (vx + jitterX) * dragFactor;
-    const nextVy = (vy + jitterY) * dragFactor;
+    const nextVx = (vx + jitterX) * dragFactor * speedScale;
+    const nextVy = (vy + jitterY) * dragFactor * speedScale + gravity * dt;
 
     const nx = cx + nextVx * dt;
     const ny = cy + nextVy * dt;
