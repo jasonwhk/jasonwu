@@ -22,8 +22,10 @@ export function createScene(canvas) {
 
   const geometry = createRoundedCardGeometry(2.4, 3.2, 0.2, 0.25);
 
-  const frontMaterial = new THREE.MeshStandardMaterial({ color: '#ffffff' });
-  const backMaterial = new THREE.MeshStandardMaterial({ color: '#f9f7ff' });
+  const baseFrontColor = new THREE.Color('#ffffff');
+  const baseBackColor = new THREE.Color('#f9f7ff');
+  const frontMaterial = new THREE.MeshBasicMaterial({ color: baseFrontColor.clone() });
+  const backMaterial = new THREE.MeshBasicMaterial({ color: baseBackColor.clone() });
   const sideMaterial = new THREE.MeshStandardMaterial({ color: '#f3f1ff' });
 
   const shell = new THREE.Mesh(geometry, sideMaterial);
@@ -31,12 +33,18 @@ export function createScene(canvas) {
 
   const faceGeometry = new THREE.PlaneGeometry(2.36, 3.16);
   const frontFace = new THREE.Mesh(faceGeometry, frontMaterial);
-  frontFace.position.z = 0.11;
+  frontFace.position.z = 0.12;
+  frontFace.renderOrder = 2;
+  frontMaterial.depthTest = false;
+  frontMaterial.depthWrite = false;
   cardGroup.add(frontFace);
 
   const backFace = new THREE.Mesh(faceGeometry, backMaterial);
-  backFace.position.z = -0.11;
+  backFace.position.z = -0.12;
   backFace.rotation.y = Math.PI;
+  backFace.renderOrder = 2;
+  backMaterial.depthTest = false;
+  backMaterial.depthWrite = false;
   cardGroup.add(backFace);
 
   let targetRotation = 0;
@@ -86,15 +94,12 @@ export function createScene(canvas) {
     } else {
       cardGroup.rotation.z = 0;
     }
+    frontMaterial.color.copy(baseFrontColor);
+    backMaterial.color.copy(baseBackColor);
     if (glowStrength > 0) {
-      frontMaterial.emissive = new THREE.Color('#fff2b0');
-      frontMaterial.emissiveIntensity = glowStrength;
-      backMaterial.emissive = new THREE.Color('#fff2b0');
-      backMaterial.emissiveIntensity = glowStrength * 0.8;
+      frontMaterial.color.lerp(new THREE.Color('#fff2b0'), glowStrength * 0.4);
+      backMaterial.color.lerp(new THREE.Color('#fff2b0'), glowStrength * 0.3);
       glowStrength -= 0.04;
-    } else {
-      frontMaterial.emissiveIntensity = 0;
-      backMaterial.emissiveIntensity = 0;
     }
     renderer.render(scene, camera);
   }
