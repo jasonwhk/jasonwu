@@ -4,6 +4,7 @@ import { createCardTextures } from './card.js';
 export function createScene(canvas) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('#f6f4ff');
@@ -25,7 +26,7 @@ export function createScene(canvas) {
   const backMaterial = new THREE.MeshStandardMaterial({ color: '#f9f7ff' });
   const sideMaterial = new THREE.MeshStandardMaterial({ color: '#f3f1ff' });
 
-  const mesh = new THREE.Mesh(geometry, [sideMaterial, sideMaterial, sideMaterial, sideMaterial, frontMaterial, backMaterial]);
+  const mesh = new THREE.Mesh(geometry, [frontMaterial, backMaterial, sideMaterial]);
   cardGroup.add(mesh);
 
   let targetRotation = 0;

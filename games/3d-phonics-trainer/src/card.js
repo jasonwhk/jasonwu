@@ -12,6 +12,8 @@ export function createCardTextures(card, mode) {
 
   const frontTexture = new THREE.CanvasTexture(frontCanvas);
   const backTexture = new THREE.CanvasTexture(backCanvas);
+  frontTexture.colorSpace = THREE.SRGBColorSpace;
+  backTexture.colorSpace = THREE.SRGBColorSpace;
   frontTexture.needsUpdate = true;
   backTexture.needsUpdate = true;
   return { front: frontTexture, back: backTexture };
