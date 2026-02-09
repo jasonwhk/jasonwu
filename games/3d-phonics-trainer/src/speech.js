@@ -10,20 +10,44 @@ export class SpeechCoach {
     }
   }
 
-  encourage(word) {
+  listenForWord(word, onResult) {
     if (!this.supported || !this.recognition) {
+      onResult?.(false);
       return;
     }
+    const target = word.toLowerCase();
+    let handled = false;
+    const finish = (matched) => {
+      if (handled) {
+        return;
+      }
+      handled = true;
+      onResult?.(matched);
+    };
     try {
-      this.recognition.start();
+      const timeout = setTimeout(() => {
+        try {
+          this.recognition.stop();
+        } catch (error) {
+          // Ignore stop errors.
+        }
+        finish(false);
+      }, 2500);
+
       this.recognition.onresult = (event) => {
+        clearTimeout(timeout);
         const transcript = event.results[0][0].transcript.toLowerCase();
-        if (transcript.includes(word)) {
-          console.log(`Heard something like ${word}`);
+        finish(transcript.includes(target));
+      };
+      this.recognition.onerror = () => finish(false);
+      this.recognition.onend = () => {
+        if (!handled) {
+          finish(false);
         }
       };
+      this.recognition.start();
     } catch (error) {
-      // Ignore restart errors.
+      finish(false);
     }
   }
 }

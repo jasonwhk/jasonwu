@@ -40,7 +40,7 @@ function drawCardFront(ctx, card, mode) {
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  const mainText = mode === 'phoneme' ? card.letter : '_'.repeat(card.word.length);
+  const mainText = mode === 'phoneme' ? card.letter : card.word;
   ctx.fillText(mainText.toUpperCase(), ctx.canvas.width / 2, 420);
 
   const drawIcon = iconDrawers[card.imageKey];

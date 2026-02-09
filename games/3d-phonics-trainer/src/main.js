@@ -22,9 +22,16 @@ const state = {
 const audio = new AudioManager();
 const speechCoach = new SpeechCoach();
 const progress = new ProgressTracker();
+let speechPending = false;
+
 const mic = new MicMonitor({
   onLevel: (level) => ui.updateMicLevel(level),
-  onSpeech: () => handleSuccess('Great listening!'),
+  onSpeech: () => {
+    if (state.mode === 'blend' && speechPending) {
+      return;
+    }
+    handleSuccess('Great listening!');
+  },
   onSilence: () => {
     scene.wobble();
     ui.showHint('Try again when you are ready.');
@@ -41,7 +48,7 @@ const ui = new UIController({
   onNext: () => nextCard(),
   onShuffle: () => shuffleCards(),
   onModeToggle: () => toggleMode(),
-  onMicStart: () => mic.start(),
+  onMicStart: () => startListening(),
   onMicStop: () => mic.stop(),
   onParentOpen: () => showParent(),
   onParentClose: () => hideParent(),
@@ -75,7 +82,7 @@ function updateCard() {
   scene.updateCard(card, state.mode);
   promptText.textContent = state.mode === 'phoneme'
     ? `Say the sound: ${card.prompt}`
-    : 'Say the word';
+    : `Say the word: ${card.word}`;
   hintText.textContent = '';
   ui.setRevealLabel(state.mode === 'phoneme' ? 'Reveal' : 'Show Word');
   progress.recordAttempt(card.id);
@@ -136,10 +143,25 @@ function handleSuccess(message) {
   scene.glow();
   ui.showSuccessFX();
   ui.showHint(message);
-  if (state.mode === 'blend') {
-    speechCoach.encourage(card.word);
-  }
+  speechPending = false;
   setTimeout(() => nextCard(), 1200);
+}
+
+function startListening() {
+  const card = state.cards[state.currentIndex];
+  if (state.mode === 'blend' && speechCoach.supported) {
+    speechPending = true;
+    speechCoach.listenForWord(card.word, (matched) => {
+      speechPending = false;
+      if (matched) {
+        handleSuccess(`That sounded like ${card.word}!`);
+      } else {
+        scene.wobble();
+        ui.showHint(`Try saying “${card.word}”.`);
+      }
+    });
+  }
+  mic.start();
 }
 
 function showParent() {
