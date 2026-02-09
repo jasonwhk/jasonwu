@@ -26,8 +26,18 @@ export function createScene(canvas) {
   const backMaterial = new THREE.MeshStandardMaterial({ color: '#f9f7ff' });
   const sideMaterial = new THREE.MeshStandardMaterial({ color: '#f3f1ff' });
 
-  const mesh = new THREE.Mesh(geometry, [frontMaterial, backMaterial, sideMaterial]);
-  cardGroup.add(mesh);
+  const shell = new THREE.Mesh(geometry, sideMaterial);
+  cardGroup.add(shell);
+
+  const faceGeometry = new THREE.PlaneGeometry(2.36, 3.16);
+  const frontFace = new THREE.Mesh(faceGeometry, frontMaterial);
+  frontFace.position.z = 0.11;
+  cardGroup.add(frontFace);
+
+  const backFace = new THREE.Mesh(faceGeometry, backMaterial);
+  backFace.position.z = -0.11;
+  backFace.rotation.y = Math.PI;
+  cardGroup.add(backFace);
 
   let targetRotation = 0;
   let glowStrength = 0;
