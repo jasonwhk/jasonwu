@@ -43,10 +43,7 @@ function drawCardFront(ctx, card, mode) {
   const mainText = mode === 'phoneme' ? card.letter : card.word;
   ctx.fillText(mainText.toUpperCase(), ctx.canvas.width / 2, 420);
 
-  const drawIcon = iconDrawers[card.imageKey];
-  if (drawIcon) {
-    drawIcon(ctx, 280, 720, 460, 460);
-  }
+  // Intentionally no picture icon for text-first focus.
 }
 
 function drawCardBack(ctx, card, mode) {
