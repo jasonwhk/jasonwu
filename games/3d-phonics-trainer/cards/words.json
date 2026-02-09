@@ -1,0 +1,7 @@
+[
+  { "id": "sat", "type": "word", "word": "sat", "imageKey": "sun", "phonemes": ["s", "a", "t"] },
+  { "id": "cat", "type": "word", "word": "cat", "imageKey": "cat", "phonemes": ["c", "a", "t"] },
+  { "id": "pin", "type": "word", "word": "pin", "imageKey": "pin", "phonemes": ["p", "i", "n"] },
+  { "id": "tap", "type": "word", "word": "tap", "imageKey": "tap", "phonemes": ["t", "a", "p"] },
+  { "id": "nap", "type": "word", "word": "nap", "imageKey": "nest", "phonemes": ["n", "a", "p"] }
+]

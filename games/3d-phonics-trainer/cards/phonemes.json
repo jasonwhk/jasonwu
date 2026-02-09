@@ -1,0 +1,17 @@
+[
+  { "id": "s", "type": "phoneme", "letter": "s", "prompt": "/s/", "imageKey": "sun" },
+  { "id": "a", "type": "phoneme", "letter": "a", "prompt": "/a/", "imageKey": "apple" },
+  { "id": "t", "type": "phoneme", "letter": "t", "prompt": "/t/", "imageKey": "turtle" },
+  { "id": "p", "type": "phoneme", "letter": "p", "prompt": "/p/", "imageKey": "pear" },
+  { "id": "i", "type": "phoneme", "letter": "i", "prompt": "/i/", "imageKey": "igloo" },
+  { "id": "n", "type": "phoneme", "letter": "n", "prompt": "/n/", "imageKey": "nest" },
+  { "id": "c", "type": "phoneme", "letter": "c", "prompt": "/k/", "imageKey": "cat" },
+  { "id": "k", "type": "phoneme", "letter": "k", "prompt": "/k/", "imageKey": "kite" },
+  { "id": "e", "type": "phoneme", "letter": "e", "prompt": "/e/", "imageKey": "egg" },
+  { "id": "h", "type": "phoneme", "letter": "h", "prompt": "/h/", "imageKey": "hat" },
+  { "id": "r", "type": "phoneme", "letter": "r", "prompt": "/r/", "imageKey": "rain" },
+  { "id": "m", "type": "phoneme", "letter": "m", "prompt": "/m/", "imageKey": "moon" },
+  { "id": "d", "type": "phoneme", "letter": "d", "prompt": "/d/", "imageKey": "dog" },
+  { "id": "g", "type": "phoneme", "letter": "g", "prompt": "/g/", "imageKey": "gift" },
+  { "id": "o", "type": "phoneme", "letter": "o", "prompt": "/o/", "imageKey": "octopus" }
+]
