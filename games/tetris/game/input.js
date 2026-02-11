@@ -8,10 +8,11 @@ export function setupInput(game, canvas) {
     if (game.paused || game.over) return;
 
     switch (e.code) {
-      case 'ArrowLeft': game.move(-1); break;
-      case 'ArrowRight': game.move(1); break;
+      case 'KeyA': game.move(-1); break;
+      case 'KeyD': game.move(1); break;
       case 'ArrowDown': game.softDrop(); break;
-      case 'ArrowUp': game.rotate(1); break;
+      case 'ArrowLeft': game.rotate(-1); break;
+      case 'ArrowRight': game.rotate(1); break;
       case 'KeyZ': game.rotate(-1); break;
       case 'Space': game.hardDrop(); break;
       case 'KeyC': game.hold(); break;
