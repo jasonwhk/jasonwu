@@ -4,7 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tetris Classic</title>
-    <link rel="stylesheet" href="style.css" />
+    <script>
+      if (location.protocol.startsWith('http') && !location.pathname.endsWith('/')) {
+        location.replace(`${location.pathname}/${location.search}${location.hash}`);
+      }
+    </script>
+    <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
     <main class="app">
@@ -39,6 +44,6 @@
       </aside>
     </main>
 
-    <script type="module" src="main.js"></script>
+    <script type="module" src="./main.js"></script>
   </body>
 </html>
