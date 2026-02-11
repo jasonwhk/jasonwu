@@ -125,7 +125,8 @@ const state = {
   elapsed: 0,
   currentHoop: 0,
   lastCheckpoint: 0,
-  invertPitch: localStorage.getItem('hoopFlightInvertPitch') === 'true'
+  invertPitch: localStorage.getItem('hoopFlightInvertPitch') === 'true',
+  mouseSteer: localStorage.getItem('hoopFlightMouseSteer') === 'true'
 };
 
 const ui = {
@@ -134,7 +135,8 @@ const ui = {
   timer: document.getElementById('timer'),
   speed: document.getElementById('speed'),
   finish: document.getElementById('finish'),
-  invertPitchToggle: document.getElementById('invertPitchToggle')
+  invertPitchToggle: document.getElementById('invertPitchToggle'),
+  mouseSteerToggle: document.getElementById('mouseSteerToggle')
 };
 ui.total.textContent = `${HOOP_COUNT}`;
 ui.invertPitchToggle.checked = state.invertPitch;
@@ -142,9 +144,19 @@ ui.invertPitchToggle.addEventListener('change', () => {
   state.invertPitch = ui.invertPitchToggle.checked;
   localStorage.setItem('hoopFlightInvertPitch', String(state.invertPitch));
 });
+ui.mouseSteerToggle.checked = state.mouseSteer;
+ui.mouseSteerToggle.addEventListener('change', () => {
+  state.mouseSteer = ui.mouseSteerToggle.checked;
+  localStorage.setItem('hoopFlightMouseSteer', String(state.mouseSteer));
+  if (!state.mouseSteer && document.pointerLockElement === renderer.domElement) {
+    document.exitPointerLock();
+  }
+});
 
 const keys = new Set();
 const inputKeys = new Set(['KeyW', 'KeyS', 'KeyA', 'KeyD', 'KeyQ', 'KeyE', 'ShiftLeft', 'ShiftRight', 'ControlLeft', 'ControlRight']);
+const mouseInput = { pitch: 0, yaw: 0 };
+const mouseSettings = { pitchScale: 0.0028, yawScale: 0.0024, returnSpeed: 3.2, maxAxis: 1.5 };
 
 window.addEventListener('keydown', (event) => {
   keys.add(event.code);
@@ -160,6 +172,38 @@ window.addEventListener('keydown', (event) => {
   }
 });
 window.addEventListener('keyup', (event) => keys.delete(event.code));
+
+renderer.domElement.addEventListener('click', () => {
+  if (!state.mouseSteer || state.finished) return;
+  renderer.domElement.requestPointerLock();
+});
+
+document.addEventListener('pointerlockchange', () => {
+  if (document.pointerLockElement !== renderer.domElement) {
+    mouseInput.pitch = 0;
+    mouseInput.yaw = 0;
+  }
+});
+
+window.addEventListener('mousemove', (event) => {
+  if (!state.mouseSteer || document.pointerLockElement !== renderer.domElement) return;
+
+  mouseInput.pitch = THREE.MathUtils.clamp(
+    mouseInput.pitch - event.movementY * mouseSettings.pitchScale,
+    -mouseSettings.maxAxis,
+    mouseSettings.maxAxis
+  );
+  mouseInput.yaw = THREE.MathUtils.clamp(
+    mouseInput.yaw - event.movementX * mouseSettings.yawScale,
+    -mouseSettings.maxAxis,
+    mouseSettings.maxAxis
+  );
+
+  if (!state.started && !state.finished) {
+    state.started = true;
+    state.startTime = performance.now();
+  }
+});
 
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
@@ -201,6 +245,11 @@ function resetRun() {
   state.elapsed = 0;
   state.currentHoop = 0;
   state.lastCheckpoint = 0;
+  mouseInput.pitch = 0;
+  mouseInput.yaw = 0;
+  if (document.pointerLockElement === renderer.domElement) {
+    document.exitPointerLock();
+  }
   ui.finish.classList.add('hidden');
   ui.finish.textContent = '';
   hoops.forEach((hoop) => {
@@ -227,10 +276,19 @@ function respawnAtCheckpoint() {
 }
 
 function updatePlane(dt) {
-  const pitchInput = (keys.has('KeyW') ? 1 : 0) - (keys.has('KeyS') ? 1 : 0);
-  const pitch = state.invertPitch ? -pitchInput : pitchInput;
-  const yaw = (keys.has('KeyD') ? 1 : 0) - (keys.has('KeyA') ? 1 : 0);
+  const keyboardPitch = (keys.has('KeyW') ? 1 : 0) - (keys.has('KeyS') ? 1 : 0);
+  const keyboardYaw = (keys.has('KeyD') ? 1 : 0) - (keys.has('KeyA') ? 1 : 0);
   const roll = (keys.has('KeyE') ? 1 : 0) - (keys.has('KeyQ') ? 1 : 0);
+
+  if (!state.mouseSteer || document.pointerLockElement !== renderer.domElement) {
+    const damp = Math.max(0, 1 - dt * mouseSettings.returnSpeed);
+    mouseInput.pitch *= damp;
+    mouseInput.yaw *= damp;
+  }
+
+  const combinedPitch = keyboardPitch + mouseInput.pitch;
+  const pitch = state.invertPitch ? -combinedPitch : combinedPitch;
+  const yaw = keyboardYaw + mouseInput.yaw;
 
   const pitchRate = 1.4;
   const yawRate = 1.25;
