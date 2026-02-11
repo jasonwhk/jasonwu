@@ -12,46 +12,78 @@
       <div class="ui" role="group" aria-label="Wind toy controls">
         <button id="reset-btn" type="button">Reset</button>
         <button id="mode-btn" type="button" aria-pressed="false">Mode: Particles</button>
-        <button id="brush-btn" type="button" aria-pressed="false">Brush: Push</button>
-        <button id="quality-btn" type="button" aria-pressed="false">Quality: High</button>
-        <details class="more-panel">
-          <summary>More</summary>
-          <div class="more-panel__body">
-            <label class="select" for="theme-select">
-              <span>Theme</span>
-              <select id="theme-select">
-                <option value="Classic">Classic</option>
-                <option value="Leaves">Autumn Leaves</option>
-                <option value="Snow">Snow</option>
-                <option value="Ink">Ink</option>
-                <option value="Fireflies">Fireflies</option>
-              </select>
-            </label>
-            <label class="slider" for="trails-slider">
-              <span>Trails</span>
-              <input id="trails-slider" type="range" min="0.2" max="1" step="0.05" value="1" />
-              <span id="trails-value" aria-live="polite">100%</span>
-            </label>
-            <label class="select" for="science-select">
-              <span>Science Overlay</span>
-              <select id="science-select">
-                <option value="Off">Off</option>
-                <option value="Arrows">Arrows</option>
-                <option value="Streamlines">Streamlines</option>
-                <option value="Vorticity">Vorticity</option>
-              </select>
-            </label>
-            <button id="tool-btn" type="button" aria-pressed="false">Tool: Wind</button>
-            <button id="obstacle-overlay-btn" type="button" aria-pressed="false">Obstacles: Off</button>
-            <button id="clear-obstacles-btn" type="button">Clear Obstacles</button>
-            <button id="sound-btn" type="button" aria-pressed="false">Sound: Off</button>
-            <label class="slider" for="sound-slider">
-              <span>Sound</span>
-              <input id="sound-slider" type="range" min="0" max="1" step="0.05" value="0.25" />
-              <span id="sound-value" aria-live="polite">25%</span>
-            </label>
-            <div id="pro-panel" class="pro-panel" hidden>
-              <div class="pro-panel__header">Pro</div>
+        <button id="more-btn" type="button" aria-expanded="false" aria-controls="more-drawer">More</button>
+      </div>
+
+      <div id="more-drawer" class="more-drawer" role="dialog" aria-modal="true" hidden>
+        <div class="more-drawer__backdrop"></div>
+        <div class="more-drawer__container">
+          <div class="more-drawer__header">
+            <h2>Settings</h2>
+            <button id="close-more-drawer" type="button" aria-label="Close settings">×</button>
+          </div>
+          <div class="more-drawer__body">
+            <div class="more-drawer__section">
+              <h3>Visual</h3>
+              <label class="select" for="theme-select">
+                <span>Theme</span>
+                <select id="theme-select">
+                  <option value="Classic">Classic</option>
+                  <option value="Leaves">Autumn Leaves</option>
+                  <option value="Snow">Snow</option>
+                  <option value="Ink">Ink</option>
+                  <option value="Fireflies">Fireflies</option>
+                </select>
+              </label>
+              <label class="slider" for="trails-slider">
+                <span>Trails</span>
+                <input id="trails-slider" type="range" min="0.2" max="1" step="0.05" value="1" />
+                <span id="trails-value" aria-live="polite">100%</span>
+              </label>
+              <label class="select" for="science-select">
+                <span>Science Overlay</span>
+                <select id="science-select">
+                  <option value="Off">Off</option>
+                  <option value="Arrows">Arrows</option>
+                  <option value="Streamlines">Streamlines</option>
+                  <option value="Vorticity">Vorticity</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="more-drawer__section">
+              <h3>Physics</h3>
+              <button id="field-btn" type="button" aria-pressed="false">Field: Off</button>
+              <button id="wind-memory-btn" type="button" aria-pressed="false">Wind Memory: Off</button>
+              <button id="physics-btn" type="button" aria-pressed="false">Physics: Wind</button>
+              <button id="temp-overlay-btn" type="button" aria-pressed="false">Temp Overlay: Off</button>
+              <label class="slider" for="buoyancy-slider">
+                <span>Buoyancy</span>
+                <input id="buoyancy-slider" type="range" min="0" max="1" step="0.05" value="0.5" />
+                <span id="buoyancy-value" aria-live="polite">50%</span>
+              </label>
+            </div>
+
+            <div class="more-drawer__section">
+              <h3>Tools</h3>
+              <button id="brush-btn" type="button" aria-pressed="false">Brush: Push</button>
+              <button id="tool-btn" type="button" aria-pressed="false">Tool: Wind</button>
+              <button id="obstacle-overlay-btn" type="button" aria-pressed="false">Obstacles: Off</button>
+              <button id="clear-obstacles-btn" type="button">Clear Obstacles</button>
+            </div>
+
+            <div class="more-drawer__section">
+              <h3>Audio</h3>
+              <button id="sound-btn" type="button" aria-pressed="false">Sound: Off</button>
+              <label class="slider" for="sound-slider">
+                <span>Sound</span>
+                <input id="sound-slider" type="range" min="0" max="1" step="0.05" value="0.25" />
+                <span id="sound-value" aria-live="polite">25%</span>
+              </label>
+            </div>
+
+            <div class="more-drawer__section">
+              <h3>Pro</h3>
               <button id="force-fields-btn" type="button" aria-pressed="false">Force Fields: Off</button>
               <label class="select" for="force-field-type">
                 <span>Field Type</span>
@@ -65,18 +97,12 @@
               <div id="force-fields-list" class="force-fields-list" aria-live="polite"></div>
               <button id="clear-force-fields-btn" type="button">Clear Fields</button>
             </div>
+
+            <div class="more-drawer__actions">
+              <button id="reset-all-btn" type="button" class="reset-all-btn">Reset All</button>
+            </div>
           </div>
-        </details>
-        <button id="field-btn" type="button" aria-pressed="false">Field: Off</button>
-        <button id="wind-memory-btn" type="button" aria-pressed="false">Wind Memory: Off</button>
-        <button id="physics-btn" type="button" aria-pressed="false">Physics: Wind</button>
-        <button id="temp-overlay-btn" type="button" aria-pressed="false">Temp Overlay: Off</button>
-        <label class="slider" for="buoyancy-slider">
-          <span>Buoyancy</span>
-          <input id="buoyancy-slider" type="range" min="0" max="1" step="0.05" value="0.5" />
-          <span id="buoyancy-value" aria-live="polite">50%</span>
-        </label>
-        <button id="share-btn" type="button" aria-live="polite">Share</button>
+        </div>
       </div>
       <div id="fps-meter" class="fps-meter" aria-hidden="true">FPS 60</div>
       <div class="hint" aria-hidden="true">Drag to paint wind · Long-press for heat · Two-finger tap for cold · More for obstacles</div>
