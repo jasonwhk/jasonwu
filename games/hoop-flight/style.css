@@ -66,6 +66,19 @@ canvas {
   text-align: center;
 }
 
+
+.mouse-mode-hint {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(6, 30, 45, 0.8);
+  border: 1px solid rgba(106, 212, 255, 0.55);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #c7f1ff;
+}
+
 .finish {
   position: absolute;
   top: 50%;

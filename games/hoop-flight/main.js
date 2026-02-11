@@ -136,7 +136,8 @@ const ui = {
   speed: document.getElementById('speed'),
   finish: document.getElementById('finish'),
   invertPitchToggle: document.getElementById('invertPitchToggle'),
-  mouseSteerToggle: document.getElementById('mouseSteerToggle')
+  mouseSteerToggle: document.getElementById('mouseSteerToggle'),
+  mouseModeHint: document.getElementById('mouseModeHint')
 };
 ui.total.textContent = `${HOOP_COUNT}`;
 ui.invertPitchToggle.checked = state.invertPitch;
@@ -151,6 +152,7 @@ ui.mouseSteerToggle.addEventListener('change', () => {
   if (!state.mouseSteer && document.pointerLockElement === renderer.domElement) {
     document.exitPointerLock();
   }
+  ui.mouseModeHint.classList.add('hidden');
 });
 
 const keys = new Set();
@@ -170,6 +172,14 @@ window.addEventListener('keydown', (event) => {
   if (event.code === 'Space') {
     respawnAtCheckpoint();
   }
+  if (event.code === 'KeyM') {
+    state.mouseSteer = false;
+    ui.mouseSteerToggle.checked = false;
+    localStorage.setItem('hoopFlightMouseSteer', 'false');
+    if (document.pointerLockElement === renderer.domElement) {
+      document.exitPointerLock();
+    }
+  }
 });
 window.addEventListener('keyup', (event) => keys.delete(event.code));
 
@@ -182,6 +192,9 @@ document.addEventListener('pointerlockchange', () => {
   if (document.pointerLockElement !== renderer.domElement) {
     mouseInput.pitch = 0;
     mouseInput.yaw = 0;
+    ui.mouseModeHint.classList.add('hidden');
+  } else {
+    ui.mouseModeHint.classList.remove('hidden');
   }
 });
 
