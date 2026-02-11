@@ -1,3 +1,70 @@
+function bindHoldable(button, onPress, onRepeat = null, initialDelay = 140, repeatEvery = 70) {
+  if (!button) return () => {};
+
+  let timeoutId = null;
+  let intervalId = null;
+
+  const clearTimers = () => {
+    if (timeoutId) clearTimeout(timeoutId);
+    if (intervalId) clearInterval(intervalId);
+    timeoutId = null;
+    intervalId = null;
+  };
+
+  const start = (event) => {
+    event.preventDefault();
+    onPress();
+    if (!onRepeat) return;
+    timeoutId = setTimeout(() => {
+      intervalId = setInterval(onRepeat, repeatEvery);
+    }, initialDelay);
+  };
+
+  const stop = () => clearTimers();
+
+  button.addEventListener('pointerdown', start);
+  button.addEventListener('pointerup', stop);
+  button.addEventListener('pointerleave', stop);
+  button.addEventListener('pointercancel', stop);
+
+  return () => {
+    clearTimers();
+    button.removeEventListener('pointerdown', start);
+    button.removeEventListener('pointerup', stop);
+    button.removeEventListener('pointerleave', stop);
+    button.removeEventListener('pointercancel', stop);
+  };
+}
+
+function setupMobileButtons(game) {
+  const controls = [
+    bindHoldable(
+      document.getElementById('touch-left'),
+      () => !game.paused && !game.over && game.move(-1),
+      () => !game.paused && !game.over && game.move(-1)
+    ),
+    bindHoldable(
+      document.getElementById('touch-right'),
+      () => !game.paused && !game.over && game.move(1),
+      () => !game.paused && !game.over && game.move(1)
+    ),
+    bindHoldable(document.getElementById('touch-rotate-left'), () => !game.paused && !game.over && game.rotate(-1)),
+    bindHoldable(document.getElementById('touch-rotate-right'), () => !game.paused && !game.over && game.rotate(1)),
+    bindHoldable(
+      document.getElementById('touch-soft-drop'),
+      () => !game.paused && !game.over && game.softDrop(),
+      () => !game.paused && !game.over && game.softDrop(),
+      90,
+      45
+    ),
+    bindHoldable(document.getElementById('touch-hard-drop'), () => !game.paused && !game.over && game.hardDrop()),
+    bindHoldable(document.getElementById('touch-hold'), () => !game.paused && !game.over && game.hold()),
+    bindHoldable(document.getElementById('touch-pause'), () => game.togglePause())
+  ];
+
+  return () => controls.forEach((unbind) => unbind());
+}
+
 export function setupInput(game, canvas) {
   const keyHandler = (e) => {
     if (e.repeat) return;
@@ -51,5 +118,10 @@ export function setupInput(game, canvas) {
     touchStart = null;
   }, { passive: true });
 
-  return () => window.removeEventListener('keydown', keyHandler);
+  const unbindMobileButtons = setupMobileButtons(game);
+
+  return () => {
+    window.removeEventListener('keydown', keyHandler);
+    unbindMobileButtons();
+  };
 }
