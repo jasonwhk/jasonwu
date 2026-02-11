@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoop Flight - Jason's Homepage</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <a href="#main" class="skip-to-main">Skip to main content</a>
+
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/games/">Games</a></li>
+          <li><a href="/tools/">Tools</a></li>
+          <li><a href="/simulators/">Simulators</a></li>
+          <li><a href="/lab/">Lab</a></li>
+        </ul>
+      </nav>
+
+      <main id="main">
+        <div class="container game-shell">
+          <h1>🛸 Hoop Flight</h1>
+          <p class="subtitle">Tap, click, or press space to fly through as many hoops as you can.</p>
+
+          <div class="hud" role="status" aria-live="polite">
+            <div>Score: <strong id="score">0</strong></div>
+            <div>Best: <strong id="best">0</strong></div>
+          </div>
+
+          <canvas id="game" width="420" height="720" aria-label="Hoop Flight game area"></canvas>
+
+          <p class="game-help">Controls: Tap/click/Space to rise. Avoid hoop edges and the floor/ceiling.</p>
+          <button id="restart" class="restart" type="button">Restart</button>
+        </div>
+      </main>
+    </div>
+
+    <script src="./main.js" defer></script>
+  </body>
+</html>

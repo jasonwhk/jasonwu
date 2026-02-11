@@ -1,0 +1,43 @@
+.game-shell {
+  max-width: 520px;
+  text-align: center;
+}
+
+.hud {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 0.75rem 0;
+  font-size: 1rem;
+}
+
+#game {
+  width: min(100%, 420px);
+  height: auto;
+  border-radius: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: #10182b;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  touch-action: manipulation;
+}
+
+.game-help {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+.restart {
+  margin-top: 0.75rem;
+  background: #9dd9ff;
+  color: #0a1630;
+  border: none;
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.restart:hover {
+  filter: brightness(1.05);
+}
