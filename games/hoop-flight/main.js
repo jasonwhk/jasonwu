@@ -159,6 +159,17 @@ const keys = new Set();
 const inputKeys = new Set(['KeyW', 'KeyS', 'KeyA', 'KeyD', 'KeyQ', 'KeyE', 'ShiftLeft', 'ShiftRight', 'ControlLeft', 'ControlRight']);
 const mouseInput = { pitch: 0, yaw: 0 };
 const mouseSettings = { pitchScale: 0.0028, yawScale: 0.0024, returnSpeed: 3.2, maxAxis: 1.5 };
+const flightTuning = {
+  pitchSensitivity: 2.3,
+  yawSensitivity: 1.9,
+  rollSensitivity: 2.7,
+  angularResponse: 8.0,
+  angularDamping: 1.4,
+  autoRollStrength: 2.2,
+  autoRollMax: 0.75,
+  noseDropStrength: 0.32,
+  noseDropStart: 0.52
+};
 
 window.addEventListener('keydown', (event) => {
   keys.add(event.code);
@@ -248,6 +259,8 @@ const camTarget = new THREE.Vector3();
 const camDesired = new THREE.Vector3();
 const smokeOrigin = new THREE.Vector3();
 const smokeVel = new THREE.Vector3();
+const worldRight = new THREE.Vector3();
+const angularVelocity = new THREE.Vector3();
 
 function resetRun() {
   state.throttle = 26;
@@ -260,6 +273,7 @@ function resetRun() {
   state.lastCheckpoint = 0;
   mouseInput.pitch = 0;
   mouseInput.yaw = 0;
+  angularVelocity.set(0, 0, 0);
   if (document.pointerLockElement === renderer.domElement) {
     document.exitPointerLock();
   }
@@ -291,7 +305,7 @@ function respawnAtCheckpoint() {
 function updatePlane(dt) {
   const keyboardPitch = (keys.has('KeyW') ? 1 : 0) - (keys.has('KeyS') ? 1 : 0);
   const keyboardYaw = (keys.has('KeyD') ? 1 : 0) - (keys.has('KeyA') ? 1 : 0);
-  const roll = (keys.has('KeyE') ? 1 : 0) - (keys.has('KeyQ') ? 1 : 0);
+  const keyboardRoll = (keys.has('KeyE') ? 1 : 0) - (keys.has('KeyQ') ? 1 : 0);
 
   if (!state.mouseSteer || document.pointerLockElement !== renderer.domElement) {
     const damp = Math.max(0, 1 - dt * mouseSettings.returnSpeed);
@@ -299,20 +313,46 @@ function updatePlane(dt) {
     mouseInput.yaw *= damp;
   }
 
-  const combinedPitch = keyboardPitch + mouseInput.pitch;
-  const pitch = state.invertPitch ? -combinedPitch : combinedPitch;
-  const yaw = keyboardYaw + mouseInput.yaw;
-
-  const pitchRate = 1.4;
-  const yawRate = 1.25;
-  const rollRate = 1.9;
-
-  const deltaQ = new THREE.Quaternion().setFromEuler(new THREE.Euler(pitch * pitchRate * dt, yaw * yawRate * dt, -roll * rollRate * dt, 'XYZ'));
-  plane.quaternion.multiply(deltaQ).normalize();
-
   if (keys.has('ShiftLeft') || keys.has('ShiftRight')) state.throttle += state.accel * dt;
   if (keys.has('ControlLeft') || keys.has('ControlRight')) state.throttle -= state.accel * dt;
   state.throttle = THREE.MathUtils.clamp(state.throttle, state.minSpeed, state.maxSpeed);
+
+  const combinedPitch = keyboardPitch + mouseInput.pitch;
+  const pitchInput = state.invertPitch ? -combinedPitch : combinedPitch;
+  const yawInput = keyboardYaw + mouseInput.yaw;
+
+  let rollAssist = 0;
+  if (Math.abs(keyboardRoll) < 0.001) {
+    worldRight.set(1, 0, 0).applyQuaternion(plane.quaternion).normalize();
+    rollAssist = THREE.MathUtils.clamp(-worldRight.y * flightTuning.autoRollStrength, -flightTuning.autoRollMax, flightTuning.autoRollMax);
+  }
+  const rollInput = keyboardRoll + rollAssist;
+
+  const throttleNorm = (state.throttle - state.minSpeed) / (state.maxSpeed - state.minSpeed);
+  const lowThrottleFactor = THREE.MathUtils.clamp((flightTuning.noseDropStart - throttleNorm) / flightTuning.noseDropStart, 0, 1);
+  const pitchWithNoseDrop = pitchInput - lowThrottleFactor * flightTuning.noseDropStrength;
+
+  const targetPitchRate = pitchWithNoseDrop * flightTuning.pitchSensitivity;
+  const targetYawRate = yawInput * flightTuning.yawSensitivity;
+  const targetRollRate = rollInput * flightTuning.rollSensitivity;
+
+  const response = 1 - Math.exp(-flightTuning.angularResponse * dt);
+  angularVelocity.x += (targetPitchRate - angularVelocity.x) * response;
+  angularVelocity.y += (targetYawRate - angularVelocity.y) * response;
+  angularVelocity.z += (targetRollRate - angularVelocity.z) * response;
+
+  const decay = Math.exp(-flightTuning.angularDamping * dt);
+  angularVelocity.multiplyScalar(decay);
+
+  const deltaQ = new THREE.Quaternion().setFromEuler(
+    new THREE.Euler(
+      angularVelocity.x * dt,
+      angularVelocity.y * dt,
+      -angularVelocity.z * dt,
+      'XYZ'
+    )
+  );
+  plane.quaternion.multiply(deltaQ).normalize();
 
   state.speed += (state.throttle - state.speed) * Math.min(1, state.drag * dt * 4.5);
 
