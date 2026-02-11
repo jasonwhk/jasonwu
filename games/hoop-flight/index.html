@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hoop Flight</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.166.1/build/three.module.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="ui" class="ui">
+      <div class="panel">
+        <div><strong>Hoops:</strong> <span id="score">0</span>/<span id="total">0</span></div>
+        <div><strong>Time:</strong> <span id="timer">0.00</span>s</div>
+        <div><strong>Speed:</strong> <span id="speed">0</span></div>
+      </div>
+      <div class="controls">
+        W/S Pitch · A/D Yaw · Q/E Roll · Shift/Ctrl Throttle · R Restart · Space Respawn
+      </div>
+      <div id="finish" class="finish hidden"></div>
+    </div>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
