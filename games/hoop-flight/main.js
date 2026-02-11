@@ -162,11 +162,12 @@ const mouseSettings = { pitchScale: 0.0028, yawScale: 0.0024, returnSpeed: 3.2, 
 const flightTuning = {
   pitchSensitivity: 2.3,
   yawSensitivity: 1.9,
-  rollSensitivity: 2.7,
-  angularResponse: 8.0,
-  angularDamping: 1.4,
-  autoRollStrength: 2.2,
-  autoRollMax: 0.75,
+  rollSensitivity: 2.05,
+  angularResponse: 7.2,
+  angularDamping: 2.15,
+  autoRollStrength: 0.9,
+  autoRollMax: 0.2,
+  autoRollDeadzone: 0.03,
   noseDropStrength: 0.32,
   noseDropStart: 0.52
 };
@@ -324,7 +325,9 @@ function updatePlane(dt) {
   let rollAssist = 0;
   if (Math.abs(keyboardRoll) < 0.001) {
     worldRight.set(1, 0, 0).applyQuaternion(plane.quaternion).normalize();
-    rollAssist = THREE.MathUtils.clamp(-worldRight.y * flightTuning.autoRollStrength, -flightTuning.autoRollMax, flightTuning.autoRollMax);
+    if (Math.abs(worldRight.y) > flightTuning.autoRollDeadzone) {
+      rollAssist = THREE.MathUtils.clamp(worldRight.y * flightTuning.autoRollStrength, -flightTuning.autoRollMax, flightTuning.autoRollMax);
+    }
   }
   const rollInput = keyboardRoll + rollAssist;
 
@@ -343,6 +346,9 @@ function updatePlane(dt) {
 
   const decay = Math.exp(-flightTuning.angularDamping * dt);
   angularVelocity.multiplyScalar(decay);
+  if (Math.abs(keyboardRoll) < 0.001) {
+    angularVelocity.z *= Math.exp(-3.5 * dt);
+  }
 
   const deltaQ = new THREE.Quaternion().setFromEuler(
     new THREE.Euler(
