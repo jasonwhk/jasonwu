@@ -33,6 +33,21 @@ canvas {
   backdrop-filter: blur(4px);
 }
 
+
+.toggle-row {
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  pointer-events: auto;
+  user-select: none;
+}
+
+.toggle-row input {
+  accent-color: #6ad4ff;
+}
+
 .controls {
   position: absolute;
   bottom: 16px;

@@ -84,6 +84,34 @@ for (let i = 0; i < 650; i += 1) {
 starGeo.setAttribute('position', new THREE.Float32BufferAttribute(stars, 3));
 scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 1.6, sizeAttenuation: true })));
 
+const SMOKE_COUNT = 120;
+const smokeParticles = Array.from({ length: SMOKE_COUNT }, () => ({
+  mesh: null,
+  velocity: new THREE.Vector3(),
+  life: 0,
+  maxLife: 1,
+  active: false
+}));
+const smokeGroup = new THREE.Group();
+const smokeGeometry = new THREE.SphereGeometry(0.45, 8, 8);
+for (let i = 0; i < SMOKE_COUNT; i += 1) {
+  const mat = new THREE.MeshStandardMaterial({
+    color: 0xd8d8d8,
+    emissive: 0x2e2e2e,
+    roughness: 1,
+    metalness: 0,
+    transparent: true,
+    opacity: 0,
+    depthWrite: false
+  });
+  const puff = new THREE.Mesh(smokeGeometry, mat);
+  puff.visible = false;
+  smokeGroup.add(puff);
+  smokeParticles[i].mesh = puff;
+}
+scene.add(smokeGroup);
+let smokeCursor = 0;
+
 const state = {
   throttle: 26,
   speed: 26,
@@ -96,7 +124,8 @@ const state = {
   startTime: 0,
   elapsed: 0,
   currentHoop: 0,
-  lastCheckpoint: 0
+  lastCheckpoint: 0,
+  invertPitch: localStorage.getItem('hoopFlightInvertPitch') === 'true'
 };
 
 const ui = {
@@ -104,9 +133,15 @@ const ui = {
   total: document.getElementById('total'),
   timer: document.getElementById('timer'),
   speed: document.getElementById('speed'),
-  finish: document.getElementById('finish')
+  finish: document.getElementById('finish'),
+  invertPitchToggle: document.getElementById('invertPitchToggle')
 };
 ui.total.textContent = `${HOOP_COUNT}`;
+ui.invertPitchToggle.checked = state.invertPitch;
+ui.invertPitchToggle.addEventListener('change', () => {
+  state.invertPitch = ui.invertPitchToggle.checked;
+  localStorage.setItem('hoopFlightInvertPitch', String(state.invertPitch));
+});
 
 const keys = new Set();
 const inputKeys = new Set(['KeyW', 'KeyS', 'KeyA', 'KeyD', 'KeyQ', 'KeyE', 'ShiftLeft', 'ShiftRight', 'ControlLeft', 'ControlRight']);
@@ -154,6 +189,8 @@ const toPlane = new THREE.Vector3();
 const local = new THREE.Vector3();
 const camTarget = new THREE.Vector3();
 const camDesired = new THREE.Vector3();
+const smokeOrigin = new THREE.Vector3();
+const smokeVel = new THREE.Vector3();
 
 function resetRun() {
   state.throttle = 26;
@@ -171,6 +208,11 @@ function resetRun() {
     hoop.prevSide = null;
     hoop.mesh.material = hoopMaterial.clone();
   });
+  smokeParticles.forEach((particle) => {
+    particle.active = false;
+    particle.mesh.visible = false;
+    particle.mesh.material.opacity = 0;
+  });
   const startPos = hoops[0].center.clone().add(new THREE.Vector3(0, 0, 18));
   plane.position.copy(startPos);
   plane.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, -1), hoops[0].normal.clone().multiplyScalar(-1).normalize());
@@ -185,7 +227,8 @@ function respawnAtCheckpoint() {
 }
 
 function updatePlane(dt) {
-  const pitch = (keys.has('KeyW') ? 1 : 0) - (keys.has('KeyS') ? 1 : 0);
+  const pitchInput = (keys.has('KeyW') ? 1 : 0) - (keys.has('KeyS') ? 1 : 0);
+  const pitch = state.invertPitch ? -pitchInput : pitchInput;
   const yaw = (keys.has('KeyD') ? 1 : 0) - (keys.has('KeyA') ? 1 : 0);
   const roll = (keys.has('KeyE') ? 1 : 0) - (keys.has('KeyQ') ? 1 : 0);
 
@@ -245,6 +288,63 @@ function updateHoops() {
   }
 }
 
+
+function spawnSmoke(dt) {
+  if (state.finished) return;
+  const spawnCount = Math.max(1, Math.round(dt * 70));
+  worldForward.set(0, 0, -1).applyQuaternion(plane.quaternion).normalize();
+  worldUp.set(0, 1, 0).applyQuaternion(plane.quaternion).normalize();
+
+  for (let i = 0; i < spawnCount; i += 1) {
+    const particle = smokeParticles[smokeCursor];
+    smokeCursor = (smokeCursor + 1) % SMOKE_COUNT;
+
+    smokeOrigin.copy(plane.position)
+      .addScaledVector(worldForward, 1.8)
+      .addScaledVector(worldUp, 0.15);
+
+    const jitter = 0.4;
+    particle.mesh.position.set(
+      smokeOrigin.x + (Math.random() - 0.5) * jitter,
+      smokeOrigin.y + (Math.random() - 0.5) * jitter,
+      smokeOrigin.z + (Math.random() - 0.5) * jitter
+    );
+    smokeVel.copy(worldForward).multiplyScalar(4 + Math.random() * 4);
+    smokeVel.y += 2 + Math.random() * 1.2;
+    smokeVel.x += (Math.random() - 0.5) * 1.3;
+    smokeVel.z += (Math.random() - 0.5) * 1.3;
+    particle.velocity.copy(smokeVel);
+    particle.life = 0;
+    particle.maxLife = 0.9 + Math.random() * 0.7;
+    particle.active = true;
+    particle.mesh.visible = true;
+    particle.mesh.scale.setScalar(0.45);
+    particle.mesh.material.opacity = 0.35;
+  }
+}
+
+function updateSmoke(dt) {
+  for (let i = 0; i < SMOKE_COUNT; i += 1) {
+    const particle = smokeParticles[i];
+    if (!particle.active) continue;
+
+    particle.life += dt;
+    if (particle.life >= particle.maxLife) {
+      particle.active = false;
+      particle.mesh.visible = false;
+      particle.mesh.material.opacity = 0;
+      continue;
+    }
+
+    const t = particle.life / particle.maxLife;
+    particle.velocity.y += 0.7 * dt;
+    particle.mesh.position.addScaledVector(particle.velocity, dt);
+    const scale = 0.45 + t * 1.9;
+    particle.mesh.scale.setScalar(scale);
+    particle.mesh.material.opacity = (1 - t) * 0.35;
+  }
+}
+
 function updateCamera(dt) {
   worldForward.set(0, 0, -1).applyQuaternion(plane.quaternion).normalize();
   worldUp.set(0, 1, 0).applyQuaternion(plane.quaternion).normalize();
@@ -264,6 +364,8 @@ function tick(now) {
   prev = now;
 
   updatePlane(dt);
+  spawnSmoke(dt);
+  updateSmoke(dt);
   updateHoops();
   updateCamera(dt);
 
