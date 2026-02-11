@@ -18,8 +18,8 @@ You pilot a small plane through a sequence of sky hoops as quickly as possible.
 ### Keyboard
 
 - `W` / `S`: Pitch
-- `A` / `D`: Yaw
-- `Q` / `E`: Roll
+- `A` / `D`: Roll
+- `Q` / `E`: Yaw
 - `Shift`: Increase throttle
 - `Ctrl`: Decrease throttle
 - `R`: Restart run

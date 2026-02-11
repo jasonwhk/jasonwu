@@ -305,8 +305,8 @@ function respawnAtCheckpoint() {
 
 function updatePlane(dt) {
   const keyboardPitch = (keys.has('KeyW') ? 1 : 0) - (keys.has('KeyS') ? 1 : 0);
-  const keyboardYaw = (keys.has('KeyD') ? 1 : 0) - (keys.has('KeyA') ? 1 : 0);
-  const keyboardRoll = (keys.has('KeyE') ? 1 : 0) - (keys.has('KeyQ') ? 1 : 0);
+  const keyboardRoll = (keys.has('KeyD') ? 1 : 0) - (keys.has('KeyA') ? 1 : 0);
+  const keyboardYaw = (keys.has('KeyE') ? 1 : 0) - (keys.has('KeyQ') ? 1 : 0);
 
   if (!state.mouseSteer || document.pointerLockElement !== renderer.domElement) {
     const damp = Math.max(0, 1 - dt * mouseSettings.returnSpeed);
