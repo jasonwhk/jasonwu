@@ -24,6 +24,7 @@ You pilot a small plane through a sequence of sky hoops as quickly as possible.
 - `Ctrl`: Decrease throttle
 - `R`: Restart run
 - `Space`: Respawn at last checkpoint
+- `C`: Toggle camera view (chase / first-person)
 
 ### Mouse Steering
 

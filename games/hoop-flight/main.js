@@ -126,7 +126,8 @@ const state = {
   currentHoop: 0,
   lastCheckpoint: 0,
   invertPitch: localStorage.getItem('hoopFlightInvertPitch') === 'true',
-  mouseSteer: localStorage.getItem('hoopFlightMouseSteer') === 'true'
+  mouseSteer: localStorage.getItem('hoopFlightMouseSteer') === 'true',
+  cameraMode: localStorage.getItem('hoopFlightCameraMode') || 'chase'
 };
 
 const ui = {
@@ -191,6 +192,10 @@ window.addEventListener('keydown', (event) => {
     if (document.pointerLockElement === renderer.domElement) {
       document.exitPointerLock();
     }
+  }
+  if (event.code === 'KeyC') {
+    state.cameraMode = state.cameraMode === 'chase' ? 'cockpit' : 'chase';
+    localStorage.setItem('hoopFlightCameraMode', state.cameraMode);
   }
 });
 window.addEventListener('keyup', (event) => keys.delete(event.code));
@@ -258,6 +263,7 @@ const toPlane = new THREE.Vector3();
 const local = new THREE.Vector3();
 const camTarget = new THREE.Vector3();
 const camDesired = new THREE.Vector3();
+const cockpitLook = new THREE.Vector3();
 const smokeOrigin = new THREE.Vector3();
 const smokeVel = new THREE.Vector3();
 const worldRight = new THREE.Vector3();
@@ -465,6 +471,17 @@ function updateSmoke(dt) {
 function updateCamera(dt) {
   worldForward.set(0, 0, -1).applyQuaternion(plane.quaternion).normalize();
   worldUp.set(0, 1, 0).applyQuaternion(plane.quaternion).normalize();
+
+  if (state.cameraMode === 'cockpit') {
+    camDesired.copy(plane.position)
+      .addScaledVector(worldForward, -0.65)
+      .addScaledVector(worldUp, 0.26);
+    camera.position.lerp(camDesired, Math.min(1, dt * 11));
+    camera.quaternion.slerp(plane.quaternion, Math.min(1, dt * 10));
+    cockpitLook.copy(plane.position).addScaledVector(worldForward, -40).addScaledVector(worldUp, 1.5);
+    camera.lookAt(cockpitLook);
+    return;
+  }
 
   camDesired.copy(plane.position)
     .addScaledVector(worldForward, -16)
