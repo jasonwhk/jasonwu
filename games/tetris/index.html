@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tetris Classic</title>
+    <script>
+      if (location.protocol.startsWith('http') && !location.pathname.endsWith('/')) {
+        location.replace(`${location.pathname}/${location.search}${location.hash}`);
+      }
+    </script>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="board-panel">
+        <canvas id="game" width="300" height="600" aria-label="Tetris game board"></canvas>
+        <div id="overlay" class="overlay hidden">
+          <h2 id="overlay-title">Game Over</h2>
+          <button id="restart-btn" type="button">Restart</button>
+        </div>
+      </section>
+
+      <section class="touch-controls" aria-label="Mobile controls">
+        <button type="button" class="touch-btn" id="touch-left" aria-label="Move left">◀</button>
+        <button type="button" class="touch-btn" id="touch-right" aria-label="Move right">▶</button>
+        <button type="button" class="touch-btn" id="touch-rotate-left" aria-label="Rotate counterclockwise">⟲</button>
+        <button type="button" class="touch-btn" id="touch-rotate-right" aria-label="Rotate clockwise">⟳</button>
+        <button type="button" class="touch-btn" id="touch-soft-drop" aria-label="Soft drop">▼</button>
+        <button type="button" class="touch-btn" id="touch-hard-drop" aria-label="Hard drop">⤓</button>
+        <button type="button" class="touch-btn" id="touch-hold" aria-label="Hold piece">Hold</button>
+        <button type="button" class="touch-btn" id="touch-pause" aria-label="Pause game">Pause</button>
+      </section>
+
+      <aside class="hud">
+        <h1>Tetris</h1>
+        <div class="stat"><span>Score</span><strong id="score">0</strong></div>
+        <div class="stat"><span>Level</span><strong id="level">1</strong></div>
+        <div class="stat"><span>Lines</span><strong id="lines">0</strong></div>
+        <div class="stat"><span>High Score</span><strong id="high-score">0</strong></div>
+
+        <section>
+          <h2>Hold</h2>
+          <canvas id="hold" width="120" height="120"></canvas>
+        </section>
+
+        <section>
+          <h2>Next</h2>
+          <canvas id="next" width="120" height="300"></canvas>
+        </section>
+
+        <p class="controls">
+          Desktop: A / D move · ← / → rotate · ↓ soft drop · Z rotate CCW · Space hard drop · C hold · P pause
+        </p>
+      </aside>
+    </main>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
