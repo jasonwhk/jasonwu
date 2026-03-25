@@ -69,6 +69,12 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.07);
   background: linear-gradient(180deg, #1d2952 0%, #121a37 100%);
   padding: 1rem;
+  transition: box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.display.running {
+  border-color: rgba(141, 255, 212, 0.4);
+  box-shadow: inset 0 0 18px rgba(122, 162, 255, 0.18);
 }
 
 .tempo-readout {
@@ -80,6 +86,29 @@ body {
   font-size: clamp(2.8rem, 7vw, 3.8rem);
   line-height: 1;
   letter-spacing: 0.04em;
+  display: inline-block;
+}
+
+.tempo-readout span.pulse {
+  animation: bpmPulse 200ms ease-out;
+}
+
+.pendulum-wrap {
+  height: 48px;
+  display: grid;
+  place-items: center;
+  margin-top: 0.6rem;
+}
+
+.pendulum {
+  width: 68px;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #8dffd4, #7aa2ff);
+  box-shadow: 0 0 16px rgba(122, 162, 255, 0.4);
+  transform-origin: 50% 50%;
+  transform: rotate(var(--pendulum-angle, 0deg));
+  transition: transform 140ms ease-out;
 }
 
 .tempo-readout small {
@@ -108,6 +137,7 @@ body {
   background: var(--accent);
   box-shadow: 0 0 14px rgba(122, 162, 255, 0.75);
   transform: scale(1.15);
+  animation: beatPop 180ms ease-out;
 }
 
 .beat-dot.accent.active {
@@ -207,6 +237,33 @@ button.primary.running {
   color: var(--muted);
   text-align: center;
   font-size: 0.88rem;
+}
+
+@keyframes beatPop {
+  0% {
+    transform: scale(0.92);
+  }
+  55% {
+    transform: scale(1.22);
+  }
+  100% {
+    transform: scale(1.15);
+  }
+}
+
+@keyframes bpmPulse {
+  0% {
+    transform: scale(1);
+    text-shadow: 0 0 0 rgba(141, 255, 212, 0);
+  }
+  50% {
+    transform: scale(1.06);
+    text-shadow: 0 0 14px rgba(141, 255, 212, 0.5);
+  }
+  100% {
+    transform: scale(1);
+    text-shadow: 0 0 0 rgba(141, 255, 212, 0);
+  }
 }
 
 :focus-visible {

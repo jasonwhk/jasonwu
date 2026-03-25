@@ -34,6 +34,8 @@
       this.bpmValueEl = document.getElementById("bpmValue");
       this.bpmRangeEl = document.getElementById("bpmRange");
       this.indicatorsEl = document.getElementById("beatIndicators");
+      this.displayEl = document.querySelector(".display");
+      this.pendulumEl = document.getElementById("pendulum");
       this.beatsPerBarEl = document.getElementById("beatsPerBar");
       this.soundEnabledEl = document.getElementById("soundEnabled");
       this.startStopBtn = document.getElementById("startStopBtn");
@@ -174,6 +176,19 @@
       for (let i = 0; i < dots.length; i += 1) {
         dots[i].classList.toggle("active", i === index);
       }
+
+      if (index >= 0) {
+        // Trigger a subtle pulse animation on the BPM text each beat.
+        this.bpmValueEl.classList.remove("pulse");
+        // Force reflow so repeated beats retrigger the animation class.
+        void this.bpmValueEl.offsetWidth;
+        this.bpmValueEl.classList.add("pulse");
+
+        // Pendulum-like swing synced with beat position.
+        const phase = index / Math.max(1, this.beatsPerBar - 1);
+        const angle = -20 + phase * 40;
+        this.pendulumEl.style.setProperty("--pendulum-angle", `${angle.toFixed(1)}deg`);
+      }
     }
 
     // ----- Web Audio scheduling -----
@@ -239,6 +254,7 @@
       this.currentBeat = 0;
       this.nextNoteTime = this.audioContext.currentTime + 0.05;
       this.timerId = window.setInterval(() => this.schedulerTick(), this.lookaheadMs);
+      this.displayEl.classList.add("running");
       this.updateStartStopButton();
     }
 
@@ -252,6 +268,8 @@
       }
 
       this.highlightBeat(-1);
+      this.displayEl.classList.remove("running");
+      this.pendulumEl.style.setProperty("--pendulum-angle", "0deg");
       this.updateStartStopButton();
     }
 
