@@ -20,6 +20,7 @@
       this.timerId = null;
       this.lookaheadMs = 25;
       this.scheduleAheadSec = 0.12;
+      this.masterGain = null;
 
       // Musical state
       this.bpm = DEFAULT_BPM;
@@ -98,14 +99,22 @@
 
       this.soundEnabledEl.addEventListener("change", (event) => {
         this.soundEnabled = Boolean(event.target.checked);
+        if (this.soundEnabled) {
+          // Prime audio immediately from a user interaction when possible.
+          this.primeAudio();
+        }
         this.saveSettings();
       });
 
       this.startStopBtn.addEventListener("click", () => {
+        this.primeAudio();
         this.toggleStartStop();
       });
 
-      this.tapBtn.addEventListener("click", () => this.tapTempo());
+      this.tapBtn.addEventListener("click", () => {
+        this.primeAudio();
+        this.tapTempo();
+      });
       this.resetBtn.addEventListener("click", () => this.reset());
 
       window.addEventListener("keydown", (event) => this.onKeyDown(event));
@@ -195,9 +204,20 @@
     async ensureAudioContext() {
       if (!this.audioContext) {
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        this.masterGain = this.audioContext.createGain();
+        this.masterGain.gain.value = 0.9;
+        this.masterGain.connect(this.audioContext.destination);
       }
       if (this.audioContext.state === "suspended") {
         await this.audioContext.resume();
+      }
+    }
+
+    async primeAudio() {
+      try {
+        await this.ensureAudioContext();
+      } catch {
+        // If browser blocks audio initialization, keep UI working silently.
       }
     }
 
@@ -211,13 +231,13 @@
       oscillator.frequency.setValueAtTime(accented ? 1600 : 980, when);
 
       gainNode.gain.setValueAtTime(0.0001, when);
-      gainNode.gain.exponentialRampToValueAtTime(accented ? 0.2 : 0.13, when + 0.003);
-      gainNode.gain.exponentialRampToValueAtTime(0.0001, when + 0.055);
+      gainNode.gain.exponentialRampToValueAtTime(accented ? 0.38 : 0.24, when + 0.002);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, when + 0.07);
 
       oscillator.connect(gainNode);
-      gainNode.connect(this.audioContext.destination);
+      gainNode.connect(this.masterGain || this.audioContext.destination);
       oscillator.start(when);
-      oscillator.stop(when + 0.06);
+      oscillator.stop(when + 0.075);
     }
 
     scheduleNote(beat, when) {
@@ -249,7 +269,11 @@
     async start() {
       if (this.isRunning) return;
 
-      await this.ensureAudioContext();
+      try {
+        await this.ensureAudioContext();
+      } catch {
+        return;
+      }
       this.isRunning = true;
       this.currentBeat = 0;
       this.nextNoteTime = this.audioContext.currentTime + 0.05;
