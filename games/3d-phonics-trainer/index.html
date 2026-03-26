@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>3D Phonics Trainer</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="top-bar">
+      <button class="logo" id="logoButton" aria-label="3D Phonics Trainer">
+        <span class="logo-mark">★</span>
+        <span class="logo-text">3D Phonics Trainer</span>
+      </button>
+      <div class="progress" aria-live="polite">
+        <span class="progress-label">Star Jar</span>
+        <span class="progress-count" id="starCount">0</span>
+      </div>
+    </header>
+
+    <section class="scene-wrap">
+      <canvas id="scene"></canvas>
+      <div class="prompt" id="promptText">Loading...</div>
+      <div class="hint" id="hintText" aria-live="polite"></div>
+    </section>
+
+    <section class="controls">
+      <button class="btn" id="listenBtn">Listen</button>
+      <button class="btn mic" id="micBtn">
+        <span class="mic-ring" id="micRing"></span>
+        <span class="mic-label">Hold to Speak</span>
+      </button>
+      <button class="btn" id="revealBtn">Reveal</button>
+      <button class="btn" id="nextBtn">Next</button>
+      <button class="btn ghost" id="shuffleBtn">Shuffle</button>
+      <button class="btn ghost" id="modeBtn">Mode: Phoneme</button>
+    </section>
+  </main>
+
+  <div class="parent" id="parentPanel" aria-hidden="true">
+    <div class="parent-card">
+      <header>
+        <h2>Parent View</h2>
+        <button class="btn small" id="parentClose">Close</button>
+      </header>
+      <div class="parent-actions">
+        <button class="btn" id="resetProgress">Reset Progress</button>
+      </div>
+      <div class="parent-table" id="parentTable"></div>
+    </div>
+  </div>
+
+  <div class="fx-layer" id="fxLayer"></div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

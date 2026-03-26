@@ -1,0 +1,257 @@
+:root {
+  color-scheme: light;
+  font-family: "Nunito", "Trebuchet MS", system-ui, sans-serif;
+  --bg: #f6f4ff;
+  --accent: #6c63ff;
+  --accent-soft: #b8b2ff;
+  --text: #1f1d2b;
+  --muted: #5b5f77;
+  --panel: #ffffffdd;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+}
+
+.app {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+}
+
+.logo {
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.logo-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 6px 12px rgba(108, 99, 255, 0.3);
+}
+
+.progress {
+  background: var(--panel);
+  padding: 8px 16px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 6px 14px rgba(31, 29, 43, 0.1);
+}
+
+.scene-wrap {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#scene {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.prompt {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--panel);
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 700;
+  box-shadow: 0 8px 16px rgba(31, 29, 43, 0.12);
+}
+
+.hint {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffffffee;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  color: var(--muted);
+  min-height: 24px;
+  transition: opacity 0.3s ease;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  padding: 16px 20px 24px;
+}
+
+.btn {
+  border: none;
+  background: var(--accent);
+  color: white;
+  border-radius: 16px;
+  padding: 14px 18px;
+  font-size: 16px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 10px 20px rgba(108, 99, 255, 0.3);
+  min-height: 52px;
+  touch-action: manipulation;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn.ghost {
+  background: white;
+  color: var(--text);
+  box-shadow: 0 10px 16px rgba(31, 29, 43, 0.12);
+}
+
+.btn.small {
+  font-size: 14px;
+  padding: 8px 12px;
+  min-height: 36px;
+}
+
+.btn.mic {
+  position: relative;
+  overflow: hidden;
+}
+
+.mic-ring {
+  position: absolute;
+  inset: 8px;
+  border-radius: 14px;
+  border: 3px solid rgba(255, 255, 255, 0.6);
+  opacity: 0.4;
+  transform: scale(var(--mic-scale, 1));
+  transition: transform 0.1s ease, opacity 0.2s ease;
+}
+
+.mic-label {
+  position: relative;
+  z-index: 1;
+}
+
+.parent {
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 13, 30, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.parent.active {
+  display: flex;
+}
+
+.parent-card {
+  background: white;
+  border-radius: 18px;
+  padding: 20px;
+  max-width: 720px;
+  width: 100%;
+  max-height: 80vh;
+  overflow: auto;
+}
+
+.parent-card header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.parent-table {
+  margin-top: 16px;
+  display: grid;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.parent-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f4f3ff;
+}
+
+.fx-layer {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle, #fff7c4 0%, #f9d97b 60%, #f5b349 100%);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  opacity: 0.9;
+  animation: sparkle 1.2s ease-out forwards;
+}
+
+@keyframes sparkle {
+  from {
+    transform: translate(0, 0) scale(0.6);
+    opacity: 0.9;
+  }
+  to {
+    transform: translate(var(--dx), var(--dy)) scale(0.2);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .controls {
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+  }
+
+  .logo-text {
+    display: none;
+  }
+}
