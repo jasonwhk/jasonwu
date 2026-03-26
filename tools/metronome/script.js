@@ -233,9 +233,9 @@
         void this.bpmValueEl.offsetWidth;
         this.bpmValueEl.classList.add("pulse");
 
-        // Pendulum-like swing synced with beat position.
+        // Inverted pendulum swing synced with beat position.
         this.swingDirection *= -1;
-        const angle = this.swingDirection * 28;
+        const angle = this.swingDirection * 24;
         this.pendulumEl.style.setProperty("--pendulum-angle", `${angle.toFixed(1)}deg`);
       }
     }
