@@ -41,6 +41,7 @@
       // UI / input helpers
       this.tapTimes = [];
       this.maxTapAgeMs = 2200;
+      this.swingDirection = 1;
 
       // Element references
       this.bpmValueEl = document.getElementById("bpmValue");
@@ -62,6 +63,7 @@
       this.loadSettings();
       this.syncUI();
       this.renderIndicators();
+      this.updatePendulumSwingDuration();
       this.bindEvents();
     }
 
@@ -164,6 +166,7 @@
       this.bpm = this.clampBpm(value);
       this.bpmValueEl.textContent = String(this.bpm);
       this.bpmRangeEl.value = String(this.bpm);
+      this.updatePendulumSwingDuration();
       this.saveSettings();
     }
 
@@ -175,6 +178,7 @@
       this.stop();
       this.currentBeat = 0;
       this.tapTimes.length = 0;
+      this.swingDirection = 1;
       this.setBpm(DEFAULT_BPM);
       this.beatsPerBar = DEFAULT_BEATS;
       this.soundEnabled = true;
@@ -229,11 +233,17 @@
         void this.bpmValueEl.offsetWidth;
         this.bpmValueEl.classList.add("pulse");
 
-        // Pendulum-like swing synced with beat position.
-        const phase = index / Math.max(1, this.beatsPerBar - 1);
-        const angle = -20 + phase * 40;
+        // Inverted pendulum swing synced with beat position.
+        this.swingDirection *= -1;
+        const angle = this.swingDirection * 24;
         this.pendulumEl.style.setProperty("--pendulum-angle", `${angle.toFixed(1)}deg`);
       }
+    }
+
+    updatePendulumSwingDuration() {
+      const msPerBeat = this.getSecondsPerBeat() * 1000;
+      const swingDuration = Math.round(Math.max(70, Math.min(320, msPerBeat * 0.72)));
+      this.pendulumEl.style.setProperty("--swing-duration", `${swingDuration}ms`);
     }
 
     // ----- Web Audio scheduling -----
@@ -388,6 +398,7 @@
       }
       this.isRunning = true;
       this.currentBeat = 0;
+      this.swingDirection = 1;
       this.nextNoteTime = this.audioContext.currentTime + 0.05;
       this.timerId = window.setInterval(() => this.schedulerTick(), this.lookaheadMs);
       this.displayEl.classList.add("running");
