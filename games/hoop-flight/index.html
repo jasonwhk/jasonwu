@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hoop Flight</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.166.1/build/three.module.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="ui" class="ui">
+      <div class="panel">
+        <div><strong>Hoops:</strong> <span id="score">0</span>/<span id="total">0</span></div>
+        <div><strong>Time:</strong> <span id="timer">0.00</span>s</div>
+        <div><strong>Speed:</strong> <span id="speed">0</span></div>
+        <label class="toggle-row" for="invertPitchToggle">
+          <input id="invertPitchToggle" type="checkbox" />
+          Invert pitch
+        </label>
+        <label class="toggle-row" for="mouseSteerToggle">
+          <input id="mouseSteerToggle" type="checkbox" />
+          Mouse steer (click game to lock cursor)
+        </label>
+      </div>
+      <div class="controls">
+        W/S Pitch · A/D Roll · Q/E Yaw · Mouse steer optional (Esc/M to exit) · C Camera View · Shift/Ctrl Throttle · R Restart · Space Respawn
+      </div>
+      <div id="mouseModeHint" class="mouse-mode-hint hidden">Mouse mode active · Press Esc or M to unlock</div>
+      <div id="finish" class="finish hidden"></div>
+    </div>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
