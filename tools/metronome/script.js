@@ -9,6 +9,14 @@
   const MAX_BPM = 240;
   const DEFAULT_BPM = 100;
   const DEFAULT_BEATS = 4;
+  const DEFAULT_SOUND_TYPE = "classic";
+  const SOUND_TYPES = {
+    classic: { label: "Classic metronome" },
+    mechanical: { label: "Mechanical wood" },
+    digital: { label: "Digital beep" },
+    wood: { label: "Wood block" },
+    soft: { label: "Soft click" },
+  };
 
   class Metronome {
     constructor() {
@@ -26,6 +34,7 @@
       this.bpm = DEFAULT_BPM;
       this.beatsPerBar = DEFAULT_BEATS;
       this.soundEnabled = true;
+      this.soundType = DEFAULT_SOUND_TYPE;
 
       // UI / input helpers
       this.tapTimes = [];
@@ -39,6 +48,7 @@
       this.pendulumEl = document.getElementById("pendulum");
       this.beatsPerBarEl = document.getElementById("beatsPerBar");
       this.soundEnabledEl = document.getElementById("soundEnabled");
+      this.soundTypeEl = document.getElementById("soundType");
       this.startStopBtn = document.getElementById("startStopBtn");
       this.tapBtn = document.getElementById("tapBtn");
       this.testSoundBtn = document.getElementById("testSoundBtn");
@@ -61,6 +71,9 @@
         if (Number.isFinite(stored.bpm)) this.bpm = this.clampBpm(stored.bpm);
         if ([2, 3, 4, 5, 6].includes(stored.beatsPerBar)) this.beatsPerBar = stored.beatsPerBar;
         if (typeof stored.soundEnabled === "boolean") this.soundEnabled = stored.soundEnabled;
+        if (typeof stored.soundType === "string" && SOUND_TYPES[stored.soundType]) {
+          this.soundType = stored.soundType;
+        }
       } catch {
         // Ignore malformed storage and continue with defaults.
       }
@@ -71,6 +84,7 @@
         bpm: this.bpm,
         beatsPerBar: this.beatsPerBar,
         soundEnabled: this.soundEnabled,
+        soundType: this.soundType,
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
     }
@@ -80,6 +94,7 @@
       this.bpmRangeEl.value = String(this.bpm);
       this.beatsPerBarEl.value = String(this.beatsPerBar);
       this.soundEnabledEl.checked = this.soundEnabled;
+      this.soundTypeEl.value = this.soundType;
       this.updateStartStopButton();
     }
 
@@ -105,6 +120,14 @@
           this.primeAudio();
         }
         this.saveSettings();
+      });
+
+      this.soundTypeEl.addEventListener("change", (event) => {
+        const selected = String(event.target.value);
+        if (SOUND_TYPES[selected]) {
+          this.soundType = selected;
+          this.saveSettings();
+        }
       });
 
       this.startStopBtn.addEventListener("click", () => {
@@ -146,6 +169,7 @@
       this.setBpm(DEFAULT_BPM);
       this.beatsPerBar = DEFAULT_BEATS;
       this.soundEnabled = true;
+      this.soundType = DEFAULT_SOUND_TYPE;
       this.syncUI();
       this.renderIndicators();
       this.saveSettings();
@@ -259,18 +283,57 @@
 
       const oscillator = this.audioContext.createOscillator();
       const gainNode = this.audioContext.createGain();
+      const filterNode = this.audioContext.createBiquadFilter();
+      const config = this.getSoundConfig(accented);
 
-      oscillator.type = accented ? "triangle" : "square";
-      oscillator.frequency.setValueAtTime(accented ? 1600 : 980, when);
-
+      oscillator.type = config.oscillatorType;
+      oscillator.frequency.setValueAtTime(config.frequency, when);
       gainNode.gain.setValueAtTime(0.0001, when);
-      gainNode.gain.exponentialRampToValueAtTime(accented ? 0.38 : 0.24, when + 0.002);
-      gainNode.gain.exponentialRampToValueAtTime(0.0001, when + 0.07);
+      gainNode.gain.exponentialRampToValueAtTime(config.peakGain, when + config.attack);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, when + config.decay);
+      filterNode.type = "lowpass";
+      filterNode.frequency.setValueAtTime(config.filterHz, when);
 
       oscillator.connect(gainNode);
-      gainNode.connect(this.masterGain || this.audioContext.destination);
+      gainNode.connect(filterNode);
+      filterNode.connect(this.masterGain || this.audioContext.destination);
       oscillator.start(when);
-      oscillator.stop(when + 0.075);
+      oscillator.stop(when + config.decay + 0.005);
+    }
+
+    getSoundConfig(accented) {
+      const soundType = SOUND_TYPES[this.soundType] ? this.soundType : DEFAULT_SOUND_TYPE;
+      if (soundType === "mechanical") {
+        return accented
+          ? { oscillatorType: "triangle", frequency: 2180, peakGain: 0.48, attack: 0.0008, decay: 0.05, filterHz: 2500 }
+          : { oscillatorType: "triangle", frequency: 1420, peakGain: 0.3, attack: 0.0008, decay: 0.042, filterHz: 2250 };
+      }
+      if (soundType === "digital") {
+        return accented
+          ? { oscillatorType: "square", frequency: 2000, peakGain: 0.28, attack: 0.001, decay: 0.055, filterHz: 5200 }
+          : { oscillatorType: "square", frequency: 1280, peakGain: 0.16, attack: 0.001, decay: 0.045, filterHz: 4200 };
+      }
+      if (soundType === "wood") {
+        return accented
+          ? {
+              oscillatorType: "triangle",
+              frequency: 980,
+              peakGain: 0.42,
+              attack: 0.0015,
+              decay: 0.09,
+              filterHz: 2200,
+            }
+          : { oscillatorType: "triangle", frequency: 650, peakGain: 0.24, attack: 0.0015, decay: 0.075, filterHz: 1900 };
+      }
+      if (soundType === "soft") {
+        return accented
+          ? { oscillatorType: "sine", frequency: 1300, peakGain: 0.25, attack: 0.003, decay: 0.11, filterHz: 3000 }
+          : { oscillatorType: "sine", frequency: 900, peakGain: 0.14, attack: 0.003, decay: 0.085, filterHz: 2400 };
+      }
+      // Classic metronome (default)
+      return accented
+        ? { oscillatorType: "triangle", frequency: 1600, peakGain: 0.38, attack: 0.002, decay: 0.07, filterHz: 3600 }
+        : { oscillatorType: "square", frequency: 980, peakGain: 0.24, attack: 0.002, decay: 0.07, filterHz: 3200 };
     }
 
     scheduleNote(beat, when) {
