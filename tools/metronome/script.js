@@ -12,6 +12,7 @@
   const DEFAULT_SOUND_TYPE = "classic";
   const SOUND_TYPES = {
     classic: { label: "Classic metronome" },
+    mechanical: { label: "Mechanical wood" },
     digital: { label: "Digital beep" },
     wood: { label: "Wood block" },
     soft: { label: "Soft click" },
@@ -302,6 +303,11 @@
 
     getSoundConfig(accented) {
       const soundType = SOUND_TYPES[this.soundType] ? this.soundType : DEFAULT_SOUND_TYPE;
+      if (soundType === "mechanical") {
+        return accented
+          ? { oscillatorType: "triangle", frequency: 2180, peakGain: 0.48, attack: 0.0008, decay: 0.05, filterHz: 2500 }
+          : { oscillatorType: "triangle", frequency: 1420, peakGain: 0.3, attack: 0.0008, decay: 0.042, filterHz: 2250 };
+      }
       if (soundType === "digital") {
         return accented
           ? { oscillatorType: "square", frequency: 2000, peakGain: 0.28, attack: 0.001, decay: 0.055, filterHz: 5200 }
