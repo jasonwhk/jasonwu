@@ -222,6 +222,11 @@ button.primary.running {
   background: linear-gradient(135deg, var(--danger), #ffb36b);
 }
 
+button.off {
+  background: linear-gradient(135deg, #3e4d78, #2e3859);
+  color: var(--muted);
+}
+
 .toggle-sound {
   display: inline-flex;
   gap: 0.5rem;

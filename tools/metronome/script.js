@@ -10,6 +10,7 @@
   const DEFAULT_BPM = 100;
   const DEFAULT_BEATS = 4;
   const DEFAULT_SOUND_TYPE = "classic";
+  const DEFAULT_STRONG_BEAT_ENABLED = true;
   const SOUND_TYPES = {
     classic: { label: "Classic metronome" },
     mechanical: { label: "Mechanical wood" },
@@ -35,6 +36,7 @@
       this.beatsPerBar = DEFAULT_BEATS;
       this.soundEnabled = true;
       this.soundType = DEFAULT_SOUND_TYPE;
+      this.strongBeatEnabled = DEFAULT_STRONG_BEAT_ENABLED;
 
       // UI / input helpers
       this.tapTimes = [];
@@ -52,6 +54,7 @@
       this.startStopBtn = document.getElementById("startStopBtn");
       this.tapBtn = document.getElementById("tapBtn");
       this.testSoundBtn = document.getElementById("testSoundBtn");
+      this.strongBeatBtn = document.getElementById("strongBeatBtn");
       this.resetBtn = document.getElementById("resetBtn");
       this.decrease5Btn = document.getElementById("decrease5");
       this.increase5Btn = document.getElementById("increase5");
@@ -74,6 +77,9 @@
         if (typeof stored.soundType === "string" && SOUND_TYPES[stored.soundType]) {
           this.soundType = stored.soundType;
         }
+        if (typeof stored.strongBeatEnabled === "boolean") {
+          this.strongBeatEnabled = stored.strongBeatEnabled;
+        }
       } catch {
         // Ignore malformed storage and continue with defaults.
       }
@@ -85,6 +91,7 @@
         beatsPerBar: this.beatsPerBar,
         soundEnabled: this.soundEnabled,
         soundType: this.soundType,
+        strongBeatEnabled: this.strongBeatEnabled,
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
     }
@@ -95,6 +102,7 @@
       this.beatsPerBarEl.value = String(this.beatsPerBar);
       this.soundEnabledEl.checked = this.soundEnabled;
       this.soundTypeEl.value = this.soundType;
+      this.updateStrongBeatButton();
       this.updateStartStopButton();
     }
 
@@ -140,6 +148,7 @@
         this.tapTempo();
       });
       this.testSoundBtn.addEventListener("click", () => this.testSound());
+      this.strongBeatBtn.addEventListener("click", () => this.toggleStrongBeat());
       this.resetBtn.addEventListener("click", () => this.reset());
 
       window.addEventListener("keydown", (event) => this.onKeyDown(event));
@@ -170,6 +179,7 @@
       this.beatsPerBar = DEFAULT_BEATS;
       this.soundEnabled = true;
       this.soundType = DEFAULT_SOUND_TYPE;
+      this.strongBeatEnabled = DEFAULT_STRONG_BEAT_ENABLED;
       this.syncUI();
       this.renderIndicators();
       this.saveSettings();
@@ -272,9 +282,15 @@
         this.soundEnabledEl.checked = true;
       }
       const when = this.audioContext.currentTime + 0.01;
-      this.playClick(when, true);
+      this.playClick(when, this.strongBeatEnabled);
       setTimeout(() => this.highlightBeat(0), 10);
       this.soundEnabled = true;
+      this.saveSettings();
+    }
+
+    toggleStrongBeat() {
+      this.strongBeatEnabled = !this.strongBeatEnabled;
+      this.updateStrongBeatButton();
       this.saveSettings();
     }
 
@@ -337,7 +353,7 @@
     }
 
     scheduleNote(beat, when) {
-      const accented = beat === 0;
+      const accented = beat === 0 && this.strongBeatEnabled;
       this.playClick(when, accented);
 
       // Visual update aligned to the scheduled audio time.
@@ -405,6 +421,12 @@
       this.startStopBtn.textContent = this.isRunning ? "Stop" : "Start";
       this.startStopBtn.classList.toggle("running", this.isRunning);
       this.startStopBtn.setAttribute("aria-pressed", this.isRunning ? "true" : "false");
+    }
+
+    updateStrongBeatButton() {
+      this.strongBeatBtn.textContent = this.strongBeatEnabled ? "Strong Beat: On" : "Strong Beat: Off";
+      this.strongBeatBtn.classList.toggle("off", !this.strongBeatEnabled);
+      this.strongBeatBtn.setAttribute("aria-pressed", this.strongBeatEnabled ? "true" : "false");
     }
 
     // ----- Keyboard shortcuts -----
