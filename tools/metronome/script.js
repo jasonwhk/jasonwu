@@ -41,6 +41,7 @@
       this.soundEnabledEl = document.getElementById("soundEnabled");
       this.startStopBtn = document.getElementById("startStopBtn");
       this.tapBtn = document.getElementById("tapBtn");
+      this.testSoundBtn = document.getElementById("testSoundBtn");
       this.resetBtn = document.getElementById("resetBtn");
       this.decrease5Btn = document.getElementById("decrease5");
       this.increase5Btn = document.getElementById("increase5");
@@ -115,6 +116,7 @@
         this.primeAudio();
         this.tapTempo();
       });
+      this.testSoundBtn.addEventListener("click", () => this.testSound());
       this.resetBtn.addEventListener("click", () => this.reset());
 
       window.addEventListener("keydown", (event) => this.onKeyDown(event));
@@ -216,9 +218,40 @@
     async primeAudio() {
       try {
         await this.ensureAudioContext();
+        this.unlockAudioGraph();
       } catch {
         // If browser blocks audio initialization, keep UI working silently.
       }
+    }
+
+    unlockAudioGraph() {
+      if (!this.audioContext || !this.masterGain) return;
+      const now = this.audioContext.currentTime;
+      const unlockOsc = this.audioContext.createOscillator();
+      const unlockGain = this.audioContext.createGain();
+      unlockOsc.type = "sine";
+      unlockOsc.frequency.setValueAtTime(440, now);
+      unlockGain.gain.setValueAtTime(0.00001, now);
+      unlockGain.gain.exponentialRampToValueAtTime(0.00001, now + 0.02);
+      unlockOsc.connect(unlockGain);
+      unlockGain.connect(this.masterGain);
+      unlockOsc.start(now);
+      unlockOsc.stop(now + 0.02);
+    }
+
+    async testSound() {
+      await this.primeAudio();
+      if (!this.audioContext) return;
+      const wasEnabled = this.soundEnabled;
+      if (!wasEnabled) {
+        this.soundEnabled = true;
+        this.soundEnabledEl.checked = true;
+      }
+      const when = this.audioContext.currentTime + 0.01;
+      this.playClick(when, true);
+      setTimeout(() => this.highlightBeat(0), 10);
+      this.soundEnabled = true;
+      this.saveSettings();
     }
 
     playClick(when, accented) {

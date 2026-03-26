@@ -173,6 +173,10 @@ input[type="range"] {
   margin-top: 0.65rem;
 }
 
+.button-grid.single-row {
+  grid-template-columns: 1fr;
+}
+
 .row-controls {
   display: grid;
   grid-template-columns: 1fr auto;
