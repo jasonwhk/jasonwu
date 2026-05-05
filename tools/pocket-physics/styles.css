@@ -1,0 +1,17 @@
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body, .app { margin: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 20%, #16203a 0%, #070b14 60%); font-family: Inter, system-ui, sans-serif; color: #f4f8ff; }
+#labCanvas { width: 100%; height: 100%; display: block; touch-action: none; }
+.overlay { position: fixed; inset: 0; display: grid; place-content: center; gap: .7rem; padding: 1.25rem; text-align: center; background: rgba(3,7,15,.7); backdrop-filter: blur(12px); z-index: 6; opacity: 0; pointer-events: none; transition: opacity .25s; }
+.overlay.visible { opacity: 1; pointer-events: auto; }
+.hud { position: fixed; inset: 0 0 auto 0; padding: .65rem; display: grid; gap: .5rem; z-index: 5; }
+.glass { background: rgba(14, 22, 35, .58); backdrop-filter: blur(10px); border: 1px solid rgba(180, 210, 255, .2); border-radius: 14px; }
+.top-row, .control-row { padding: .5rem; display: flex; gap: .45rem; align-items: center; flex-wrap: wrap; }
+.badge { font-size: .78rem; padding: .2rem .45rem; border-radius: 999px; background: rgba(90,130,255,.2); }
+.btn, .input { border: 1px solid rgba(180, 210, 255, .35); border-radius: 10px; background: rgba(6, 12, 24, .85); color: #dbe9ff; padding: .42rem .6rem; font-size: .9rem; }
+.btn.primary { font-size: 1.05rem; background: linear-gradient(120deg, #467bff, #7f69ff); color: #fff; }
+.mode-info { padding: .45rem .6rem; font-size: .83rem; min-height: 1.5rem; }
+.perf-overlay { position: fixed; right: .7rem; bottom: .7rem; margin: 0; white-space: pre; background: rgba(0,0,0,.58); border: 1px solid rgba(190,220,255,.2); border-radius: 10px; padding: .45rem .58rem; font-size: .74rem; z-index: 7; }
+.hidden { display: none; }
+.meta { color: #b5c7e7; font-size: .85rem; }
+@media (min-width: 900px) { .hud { max-width: 920px; margin: 0 auto; left: 0; right: 0; } }
