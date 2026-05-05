@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Pocket WebGPU Physics Lab</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <canvas id="labCanvas" aria-label="Physics simulation canvas"></canvas>
+
+      <section id="startScreen" class="overlay visible">
+        <h1>Pocket WebGPU Physics Lab</h1>
+        <p>Tilt your phone. Shake it. Touch the field.</p>
+        <button id="startBtn" class="btn primary">Start Lab</button>
+        <p id="startMeta" class="meta"></p>
+      </section>
+
+      <section class="hud">
+        <div class="top-row glass">
+          <span id="rendererBadge" class="badge">Initializing…</span>
+          <span id="sensorBadge" class="badge">Sensors: idle</span>
+          <button id="perfToggle" class="btn">FPS</button>
+        </div>
+        <div class="control-row glass">
+          <select id="modeSelect" class="input">
+            <option value="sandbox">Gravity Sandbox</option>
+            <option value="stability">Stability Trainer</option>
+            <option value="field">Field Visualizer</option>
+            <option value="chaos">Chaos Mode</option>
+          </select>
+          <select id="qualitySelect" class="input">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="ultra">Ultra</option>
+          </select>
+          <button id="calibrateBtn" class="btn">Calibrate</button>
+          <button id="resetBtn" class="btn">Reset</button>
+        </div>
+        <div id="modeInfo" class="mode-info glass"></div>
+      </section>
+
+      <pre id="perfOverlay" class="perf-overlay hidden"></pre>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
