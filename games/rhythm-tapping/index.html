@@ -1,97 +1,13 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Rhythm Tap Trainer</title>
-    <link rel="stylesheet" href="./rhythm-game.css" />
-  </head>
-  <body>
-    <main class="app">
-      <header class="topbar">
-        <h1>🎵 Rhythm Tap Trainer</h1>
-        <div class="topbar-actions">
-          <a class="home-link" href="/games/">← Games</a>
-          <button id="muteToggle" class="ghost-btn" aria-pressed="false">🔊 Sound On</button>
-        </div>
-      </header>
-
-      <section class="panel level-select" id="levelSelectPanel">
-        <h2>Select a Level</h2>
-        <p>Tap/click the pad or press <strong>Space</strong> in sync with the notes.</p>
-        <div id="levelCards" class="level-cards"></div>
-      </section>
-
-      <section class="panel game-panel">
-        <div class="game-head">
-          <div>
-            <h2 id="currentLevelTitle">Choose a level</h2>
-            <p id="currentLevelMeta">BPM -- • --</p>
-          </div>
-          <button id="startBtn" class="primary-btn" disabled>Start</button>
-        </div>
-
-        <div id="countdown" class="countdown" aria-live="polite"></div>
-
-        <div class="rhythm-card">
-          <div class="timeline" id="timeline"></div>
-          <div class="playhead" id="playhead"></div>
-        </div>
-
-        <div id="feedback" class="feedback">Ready when you are.</div>
-
-        <button id="tapPad" class="tap-pad" disabled>Tap Here / Press Space</button>
-
-        <div class="live-stats">
-          <div><span>Score</span><strong id="scoreVal">0</strong></div>
-          <div><span>Accuracy</span><strong id="accuracyVal">0%</strong></div>
-          <div><span>Streak</span><strong id="streakVal">0</strong></div>
-        </div>
-      </section>
-
-      <section class="panel" id="resultsPanel" hidden>
-        <h2>Results</h2>
-        <div class="results-grid">
-          <div><span>Final Score</span><strong id="finalScore">0</strong></div>
-          <div><span>Accuracy</span><strong id="finalAccuracy">0%</strong></div>
-          <div><span>Best Streak</span><strong id="bestStreak">0</strong></div>
-          <div><span>Perfect/Good/Okay/Miss</span><strong id="ratingBreakdown">0 / 0 / 0 / 0</strong></div>
-        </div>
-        <div class="results-actions">
-          <button id="retryBtn" class="primary-btn">Retry</button>
-        </div>
-      </section>
-
-      <section class="panel">
-        <h2>Create Custom Level</h2>
-        <div class="form-grid">
-          <label>Level name<input id="customName" value="My rhythm" /></label>
-          <label>BPM<input id="customBpm" type="number" min="40" max="220" value="100" /></label>
-          <label>Beats / bar<input id="customBeats" type="number" min="2" max="12" value="4" /></label>
-          <label>Bars<input id="customBars" type="number" min="1" max="8" value="2" /></label>
-          <label>Difficulty<input id="customDifficulty" value="Custom" /></label>
-          <label>Resolution
-            <select id="customResolution">
-              <option value="4">Quarter</option>
-              <option value="8">Eighth</option>
-              <option value="16" selected>Sixteenth</option>
-            </select>
-          </label>
-        </div>
-
-        <div id="customGrid" class="custom-grid"></div>
-        <p class="pattern-preview">Pattern: <code id="patternPreview">[]</code></p>
-
-        <div class="custom-actions">
-          <button id="playCustomBtn" class="primary-btn">Play Custom Level</button>
-          <button id="saveCustomBtn" class="ghost-btn">Save custom level</button>
-          <button id="loadCustomBtn" class="ghost-btn">Load saved custom level</button>
-          <button id="deleteCustomBtn" class="ghost-btn">Delete saved custom level</button>
-          <button id="resetCustomBtn" class="ghost-btn">Reset custom pattern</button>
-        </div>
-      </section>
-    </main>
-
-    <script src="./rhythm-game.js"></script>
-  </body>
-</html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Rhythm Tap Trainer</title><link rel="stylesheet" href="./rhythm-game.css"/></head><body>
+<main class="mobile-app">
+  <header class="app-header"><a href="/games/" class="icon-btn">‹</a><h1>Rhythm Trainer</h1><button id="muteToggle" class="icon-btn">🔊</button></header>
+  <section class="screen-card level-select" id="levelSelectPanel"><h2>Quarters & Eighths</h2><div id="levelCards" class="level-cards"></div></section>
+  <section class="screen-card game-panel"><div class="game-head"><div><h3 id="currentLevelTitle">Choose a level</h3><p id="currentLevelMeta">BPM --</p></div><button id="startBtn" class="pill" disabled>Start</button></div><div id="countdown" class="countdown"></div>
+    <div class="notation-wrap"><div class="timeline" id="timeline"></div><div class="playhead" id="playhead"></div><div class="progress" id="progress"></div></div>
+    <div id="feedback" class="feedback">Tap in sync with the rhythm</div>
+    <button id="tapPad" class="tap-zone" disabled><span>Tap your foot / click / space</span></button>
+    <div class="live-stats"><div><small>Score</small><strong id="scoreVal">0</strong></div><div><small>Accuracy</small><strong id="accuracyVal">0%</strong></div><div><small>Streak</small><strong id="streakVal">0</strong></div></div>
+  </section>
+  <section class="screen-card" id="resultsPanel" hidden><h2>Results</h2><div class="results-grid"><div><small>Final Score</small><strong id="finalScore">0</strong></div><div><small>Accuracy</small><strong id="finalAccuracy">0%</strong></div><div><small>Best Streak</small><strong id="bestStreak">0</strong></div><div><small>Perfect/Good/Okay/Miss</small><strong id="ratingBreakdown">0/0/0/0</strong></div></div><button id="retryBtn" class="pill">Retry</button></section>
+  <section class="screen-card"><details><summary>Create Custom Level</summary><div class="form-grid"><label>Name<input id="customName" value="My rhythm"/></label><label>BPM<input id="customBpm" type="number" min="40" max="220" value="100"/></label><label>Beats/bar<input id="customBeats" type="number" min="2" max="12" value="4"/></label><label>Bars<input id="customBars" type="number" min="1" max="8" value="2"/></label><label>Difficulty<input id="customDifficulty" value="Custom"/></label><label>Resolution<select id="customResolution"><option value="4">Quarter</option><option value="8">Eighth</option><option value="16" selected>Sixteenth</option></select></label></div><div id="customGrid" class="custom-grid"></div><p>Pattern: <code id="patternPreview">[]</code></p><div class="custom-actions"><button id="playCustomBtn" class="pill">Play</button><button id="saveCustomBtn">Save</button><button id="loadCustomBtn">Load</button><button id="deleteCustomBtn">Delete</button><button id="resetCustomBtn">Reset</button></div></details></section>
+</main><script src="./rhythm-game.js"></script></body></html>
