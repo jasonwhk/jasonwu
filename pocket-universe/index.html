@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Pocket Universe Lab</title>
+    <meta name="description" content="A mobile-first Three.js wow lab: tilt, touch, shake, explore." />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="app" class="app">
+      <canvas id="scene" aria-label="Pocket Universe 3D scene"></canvas>
+
+      <section id="startScreen" class="overlay start-screen" aria-live="polite">
+        <h1>Pocket Universe Lab</h1>
+        <p>Tilt. Touch. Shake. Explore.</p>
+        <button id="startBtn" class="btn btn-primary">Start Experience</button>
+        <p class="hint">Best on phone. Desktop controls: 1-5, Space, R, F.</p>
+      </section>
+
+      <section id="hud" class="hud hidden">
+        <div class="panel">
+          <label>Mode</label>
+          <select id="modeSelect" aria-label="Universe mode"></select>
+        </div>
+        <div class="panel row">
+          <button id="calibrateBtn" class="btn">Calibrate</button>
+          <button id="burstBtn" class="btn">Burst</button>
+          <button id="tutorialBtn" class="btn">Tutorial</button>
+        </div>
+        <div class="panel row">
+          <label for="qualitySelect">Quality</label>
+          <select id="qualitySelect"></select>
+          <label class="toggle"><input id="fpsToggle" type="checkbox" /> FPS</label>
+        </div>
+        <div class="panel tiny" id="sensorStatus">Sensors: waiting…</div>
+        <div class="panel tiny" id="modeStatus">Mode ready.</div>
+      </section>
+
+      <section id="tutorial" class="overlay tutorial hidden" aria-live="polite"></section>
+      <section id="error" class="overlay hidden"></section>
+      <section id="perf" class="perf hidden"></section>
+    </div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

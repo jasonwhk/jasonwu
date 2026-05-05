@@ -1,0 +1,25 @@
+import { Universe } from './universe.js';
+import { SensorController } from './sensors.js';
+import { bindTouch } from './controls.js';
+import { MODES } from './modes.js';
+import { loadState, saveState } from './storage.js';
+import { PerfMonitor } from './performance.js';
+import { tutorialFlow } from './ui.js';
+const state=loadState();
+const el=id=>document.getElementById(id); const canvas=el('scene');
+if(!window.WebGLRenderingContext){el('error').classList.remove('hidden');el('error').innerHTML='<h2>WebGL unavailable</h2><p>Try a newer browser/device.</p>';throw new Error('no-webgl');}
+const u=new Universe(canvas,el('modeStatus')); u.quality=state.quality; u.init(); u.setMode(state.mode);
+const sensors=new SensorController(el('sensorStatus'),state.calibration); sensors.enabled=false;
+const perf=new PerfMonitor(el('perf'),()=>{const chain=['ultra','high','medium','low'];const i=chain.indexOf(state.quality);if(i<chain.length-1){state.quality=chain[i+1];u.setQuality(state.quality);el('qualitySelect').value=state.quality;saveState(state);}});
+bindTouch(canvas,u,sensors); sensors.onShake(()=>u.burst());
+MODES.forEach(m=>el('modeSelect').add(new Option(m.name,m.id))); el('modeSelect').value=state.mode;
+['low','medium','high','ultra'].forEach(q=>el('qualitySelect').add(new Option(q,q))); el('qualitySelect').value=state.quality;
+el('fpsToggle').checked=state.fps;el('perf').classList.toggle('hidden',!state.fps);
+el('modeSelect').onchange=e=>{state.mode=e.target.value;u.setMode(state.mode);saveState(state)};
+el('qualitySelect').onchange=e=>{state.quality=e.target.value;u.setQuality(state.quality);saveState(state)};
+el('fpsToggle').onchange=e=>{state.fps=e.target.checked;el('perf').classList.toggle('hidden',!state.fps);saveState(state)};
+el('calibrateBtn').onclick=()=>{sensors.calibrate();state.calibration=sensors.cal;saveState(state)};el('burstBtn').onclick=()=>u.burst();el('tutorialBtn').onclick=()=>tutorialFlow(el('tutorial'),()=>{state.tutorialDone=true;saveState(state)});
+el('startBtn').onclick=async()=>{el('startScreen').classList.add('hidden');el('hud').classList.remove('hidden');sensors.enabled=await sensors.init();if(!state.tutorialDone)tutorialFlow(el('tutorial'),()=>{state.tutorialDone=true;saveState(state)});};
+addEventListener('keydown',e=>{if('12345'.includes(e.key)){const idx=Number(e.key)-1;if(MODES[idx]){state.mode=MODES[idx].id;el('modeSelect').value=state.mode;u.setMode(state.mode);saveState(state);}}if(e.key==='f'||e.key==='F'){el('fpsToggle').click();}});
+let last=performance.now();function frame(t){const dt=(t-last)/1000;last=t;u.applyTilt(sensors.tilt);u.update(dt);if(state.mode==='blackhole')state.bestBlackHole=Math.max(state.bestBlackHole,(state.bestBlackHole||0)+dt);if(!document.hidden)perf.tick(dt,u.particleCount,state.quality);requestAnimationFrame(frame);}requestAnimationFrame(frame);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)last=performance.now();});
