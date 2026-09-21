@@ -26,17 +26,17 @@ jobs:
         working-directory: android-nfc-reader
         run: gradle assembleDebug
       - name: Prepare versioned APK
-        run: cp android-nfc-reader/app/build/outputs/apk/debug/app-debug.apk FireNfcReader-v1.2.apk
+        run: cp android-nfc-reader/app/build/outputs/apk/debug/app-debug.apk FireNfcReader-v1.3.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: FireNfcReader-v1.2
-          path: FireNfcReader-v1.2.apk
+          name: FireNfcReader-v1.3
+          path: FireNfcReader-v1.3.apk
           retention-days: 30
-      - name: Publish v1.2 APK release
+      - name: Publish v1.3 APK release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release delete fire-nfc-reader-v1.2 --cleanup-tag --yes || true
-          gh release create fire-nfc-reader-v1.2 FireNfcReader-v1.2.apk \
-            --title "Fire NFC Reader v1.2" \
-            --notes "v1.2 diagnostic build: manual PN532 diagnostics with Wake, Get Firmware, SAM initialization, Poll Once, raw TX/RX bytes, and tag UID decoding."
+          gh release delete fire-nfc-reader-v1.3 --cleanup-tag --yes || true
+          gh release create fire-nfc-reader-v1.3 FireNfcReader-v1.3.apk \
+            --title "Fire NFC Reader v1.3" \
+            --notes "v1.3 diagnostic build: automatic PN532 recovery with startup delay, DTR/RTS combinations, repeated wake and firmware probes, plus manual diagnostics."
