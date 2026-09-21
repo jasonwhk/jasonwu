@@ -1,0 +1,22 @@
+package com.jasonwu.firenfcreader;
+import android.app.*; import android.os.*; import android.hardware.usb.*; import android.content.*; import android.graphics.Typeface; import android.view.*; import android.widget.*;
+import com.hoho.android.usbserial.driver.*; import java.util.*;
+public class MainActivity extends Activity {
+ static final String ACT="com.jasonwu.firenfcreader.USB_PERMISSION"; TextView status,uid; UsbSerialPort port; UsbManager mgr; volatile boolean running; Handler ui=new Handler(Looper.getMainLooper());
+ static final byte[] WAKE={(byte)0x55,(byte)0x55,0,0,0};
+ static final byte[] SAM={0,0,(byte)0xff,5,(byte)0xfb,(byte)0xd4,0x14,0x01,0x14,0x01,0x02,0};
+ static final byte[] POLL={0,0,(byte)0xff,4,(byte)0xfc,(byte)0xd4,0x4a,0x01,0x00,(byte)0xe1,0};
+ BroadcastReceiver rx=new BroadcastReceiver(){public void onReceive(Context c,Intent i){if(ACT.equals(i.getAction())){UsbDevice d=i.getParcelableExtra(UsbManager.EXTRA_DEVICE);if(i.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED,false)&&d!=null)connect(d);else msg("USB permission denied");}}};
+ public void onCreate(Bundle b){super.onCreate(b); LinearLayout x=new LinearLayout(this);x.setOrientation(LinearLayout.VERTICAL);x.setPadding(48,80,48,40);x.setGravity(Gravity.CENTER_HORIZONTAL);
+  TextView t=new TextView(this);t.setText("Fire NFC Reader");t.setTextSize(30);t.setTypeface(null,Typeface.BOLD); status=new TextView(this);status.setTextSize(20);status.setPadding(0,60,0,40);uid=new TextView(this);uid.setTextSize(25);uid.setTypeface(Typeface.MONOSPACE,Typeface.BOLD);uid.setTextIsSelectable(true);
+  Button r=new Button(this);r.setText("Connect / Retry");r.setOnClickListener(v->find());x.addView(t);x.addView(status);x.addView(uid);x.addView(r);setContentView(x);mgr=(UsbManager)getSystemService(USB_SERVICE);
+  IntentFilter f=new IntentFilter(ACT);if(Build.VERSION.SDK_INT>=33)registerReceiver(rx,f,Context.RECEIVER_NOT_EXPORTED);else registerReceiver(rx,f);find();}
+ void find(){msg("Looking for CH34x / USB serial reader...");uid.setText("");List<UsbSerialDriver>d=UsbSerialProber.getDefaultProber().findAllDrivers(mgr);if(d.isEmpty()){msg("No supported USB serial device found.\nConnect the PN532 and tap Retry.");return;}UsbDevice u=d.get(0).getDevice();if(!mgr.hasPermission(u)){PendingIntent p=PendingIntent.getBroadcast(this,0,new Intent(ACT),Build.VERSION.SDK_INT>=31?PendingIntent.FLAG_MUTABLE:0);mgr.requestPermission(u,p);}else connect(u);}
+ void connect(UsbDevice d){try{UsbSerialDriver q=null;for(UsbSerialDriver z:UsbSerialProber.getDefaultProber().findAllDrivers(mgr))if(z.getDevice().getDeviceId()==d.getDeviceId())q=z;if(q==null)throw new Exception("serial driver not found");port=q.getPorts().get(0);port.open(mgr.openDevice(d));port.setParameters(115200,8,UsbSerialPort.STOPBITS_1,UsbSerialPort.PARITY_NONE);running=true;msg("USB serial connected\nInitializing PN532...");new Thread(this::loop).start();}catch(Exception e){msg("Connection error: "+e.getMessage());}}
+ void loop(){try{port.write(WAKE,1000);Thread.sleep(100);drain();port.write(SAM,1000);Thread.sleep(150);drain();msg("PN532 connected\nPlace an NFC tag on the reader");while(running){drain();port.write(POLL,1000);String id=parse(read(600));if(id!=null){String s=id;ui.post(()->uid.setText("TAG DETECTED\n\nUID: "+s));Thread.sleep(700);}else Thread.sleep(120);}}catch(Exception e){msg("PN532 communication error: "+e.getMessage());}}
+ byte[] read(int wait)throws Exception{long end=System.currentTimeMillis()+wait;java.io.ByteArrayOutputStream o=new java.io.ByteArrayOutputStream();byte[]b=new byte[256];while(System.currentTimeMillis()<end){int n=port.read(b,80);if(n>0)o.write(b,0,n);}return o.toByteArray();}
+ void drain(){try{byte[]b=new byte[256];while(port.read(b,30)>0){}}catch(Exception e){}}
+ String parse(byte[]a){for(int i=0;i+10<a.length;i++)if((a[i]&255)==0xd5&&(a[i+1]&255)==0x4b&&(a[i+2]&255)>=1){int p=i+3;p++;p+=2;p++;int n=a[p++]&255;if(n<4||n>10||p+n>a.length)continue;StringBuilder s=new StringBuilder();for(int k=0;k<n;k++){if(k>0)s.append(':');s.append(String.format(Locale.US,"%02X",a[p+k]&255));}return s.toString();}return null;}
+ void msg(String s){ui.post(()->status.setText(s));}
+ protected void onDestroy(){running=false;try{if(port!=null)port.close();}catch(Exception e){}unregisterReceiver(rx);super.onDestroy();}
+}
