@@ -25,18 +25,18 @@ jobs:
       - name: Build debug APK
         working-directory: android-nfc-reader
         run: gradle assembleDebug
-      - name: Rename APK
-        run: cp android-nfc-reader/app/build/outputs/apk/debug/app-debug.apk FireNfcReader.apk
+      - name: Prepare versioned APK
+        run: cp android-nfc-reader/app/build/outputs/apk/debug/app-debug.apk FireNfcReader-v1.1.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: FireNfcReader
-          path: FireNfcReader.apk
+          name: FireNfcReader-v1.1
+          path: FireNfcReader-v1.1.apk
           retention-days: 30
-      - name: Publish latest APK release
+      - name: Publish v1.1 APK release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release delete fire-nfc-reader-latest --cleanup-tag --yes || true
-          gh release create fire-nfc-reader-latest FireNfcReader.apk \
-            --title "Fire NFC Reader" \
-            --notes "Latest installable Fire NFC Reader APK. Built automatically from main."
+          gh release delete fire-nfc-reader-v1.1 --cleanup-tag --yes || true
+          gh release create fire-nfc-reader-v1.1 FireNfcReader-v1.1.apk \
+            --title "Fire NFC Reader v1.1" \
+            --notes "v1.1 diagnostic build: live USB serial and PN532 reader state, poll counters, raw RX bytes, and tag UID diagnostics."
