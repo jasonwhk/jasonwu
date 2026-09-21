@@ -1,7 +1,7 @@
 name: Build Fire NFC Reader APK
 on:
   push:
-    branches: [nfc-reader-fire7]
+    branches: [main, nfc-reader-fire7]
     paths:
       - 'android-nfc-reader/**'
       - '.github/workflows/build-fire-nfc-reader.yml'
