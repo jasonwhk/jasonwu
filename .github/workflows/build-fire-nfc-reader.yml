@@ -26,17 +26,17 @@ jobs:
         working-directory: android-nfc-reader
         run: gradle assembleDebug
       - name: Prepare versioned APK
-        run: cp android-nfc-reader/app/build/outputs/apk/debug/app-debug.apk FireNfcReader-v1.4.apk
+        run: cp android-nfc-reader/app/build/outputs/apk/debug/app-debug.apk FireNfcReader-v1.5.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: FireNfcReader-v1.4
-          path: FireNfcReader-v1.4.apk
+          name: FireNfcReader-v1.5
+          path: FireNfcReader-v1.5.apk
           retention-days: 30
-      - name: Publish v1.4 APK release
+      - name: Publish v1.5 APK release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release delete fire-nfc-reader-v1.4 --cleanup-tag --yes || true
-          gh release create fire-nfc-reader-v1.4 FireNfcReader-v1.4.apk \
-            --title "Fire NFC Reader v1.4" \
-            --notes "v1.4 diagnostic build: long PN532 HSU wake preamble and firmware probe in one serial write, with response diagnostics."
+          gh release delete fire-nfc-reader-v1.5 --cleanup-tag --yes || true
+          gh release create fire-nfc-reader-v1.5 FireNfcReader-v1.5.apk \
+            --title "Fire NFC Reader v1.5" \
+            --notes "v1.5 diagnostic build: Elechouse HSU sequence: long-wake firmware probe, long-wake SAMConfiguration, RFConfiguration, and ISO14443A tag polling."
