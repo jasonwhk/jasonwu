@@ -1,0 +1,30 @@
+name: Build Fire NFC Reader APK
+on:
+  push:
+    branches: [nfc-reader-fire7]
+    paths:
+      - 'android-nfc-reader/**'
+      - '.github/workflows/build-fire-nfc-reader.yml'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Build debug APK
+        working-directory: android-nfc-reader
+        run: gradle assembleDebug
+      - name: Rename APK
+        run: cp android-nfc-reader/app/build/outputs/apk/debug/app-debug.apk FireNfcReader.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FireNfcReader
+          path: FireNfcReader.apk
+          retention-days: 30
