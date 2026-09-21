@@ -26,17 +26,17 @@ jobs:
         working-directory: android-nfc-reader
         run: gradle assembleDebug
       - name: Prepare versioned APK
-        run: cp android-nfc-reader/app/build/outputs/apk/debug/app-debug.apk FireNfcReader-v1.5.apk
+        run: cp android-nfc-reader/app/build/outputs/apk/debug/app-debug.apk FireNfcReader-v1.6.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: FireNfcReader-v1.5
-          path: FireNfcReader-v1.5.apk
+          name: FireNfcReader-v1.6
+          path: FireNfcReader-v1.6.apk
           retention-days: 30
-      - name: Publish v1.5 APK release
+      - name: Publish v1.6 APK release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release delete fire-nfc-reader-v1.5 --cleanup-tag --yes || true
-          gh release create fire-nfc-reader-v1.5 FireNfcReader-v1.5.apk \
-            --title "Fire NFC Reader v1.5" \
-            --notes "v1.5 diagnostic build: Elechouse HSU sequence: long-wake firmware probe, long-wake SAMConfiguration, RFConfiguration, and ISO14443A tag polling."
+          gh release delete fire-nfc-reader-v1.6 --cleanup-tag --yes || true
+          gh release create fire-nfc-reader-v1.6 FireNfcReader-v1.6.apk \
+            --title "Fire NFC Reader v1.6" \
+            --notes "v1.6 diagnostic build: first NFC Music Box build: continuous PN532 tag polling, tag-to-audio assignment, persistent mappings, and playback."
