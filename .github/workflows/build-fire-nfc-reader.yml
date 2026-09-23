@@ -26,17 +26,17 @@ jobs:
         working-directory: android-nfc-reader
         run: gradle assembleDebug
       - name: Prepare versioned APK
-        run: cp android-nfc-reader/app/build/outputs/apk/debug/app-debug.apk FireNfcReader-v1.8.apk
+        run: cp android-nfc-reader/app/build/outputs/apk/debug/app-debug.apk FireNfcReader-v1.9.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: FireNfcReader-v1.8
-          path: FireNfcReader-v1.8.apk
+          name: FireNfcReader-v1.9
+          path: FireNfcReader-v1.9.apk
           retention-days: 30
-      - name: Publish v1.8 APK release
+      - name: Publish v1.9 APK release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release delete fire-nfc-reader-v1.8 --cleanup-tag --yes || true
-          gh release create fire-nfc-reader-v1.8 FireNfcReader-v1.8.apk \
-            --title "Fire NFC Reader v1.8" \
-            --notes "v1.8 diagnostic build: tag-presence playback: folder playlists pause automatically when the NFC tag is removed and restart when the tag is placed back."
+          gh release delete fire-nfc-reader-v1.9 --cleanup-tag --yes || true
+          gh release create fire-nfc-reader-v1.9 FireNfcReader-v1.9.apk \
+            --title "Fire NFC Reader v1.9" \
+            --notes "v1.9 diagnostic build: per-tag resume: removing a tag saves its track and playback position; replacing it resumes from the same track and second."
