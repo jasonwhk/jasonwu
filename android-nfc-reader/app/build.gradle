@@ -3,7 +3,7 @@ plugins { id 'com.android.application' }
 android {
  namespace 'com.jasonwu.firenfcreader'
  compileSdk 35
- defaultConfig { applicationId 'com.jasonwu.firenfcreader'; minSdk 22; targetSdk 28; versionCode 7; versionName '1.6' }
+ defaultConfig { applicationId 'com.jasonwu.firenfcreader'; minSdk 22; targetSdk 28; versionCode 8; versionName '1.7' }
 }
 
 dependencies { implementation 'com.github.mik3y:usb-serial-for-android:3.9.0' }
