@@ -26,17 +26,17 @@ jobs:
         working-directory: android-nfc-reader
         run: gradle assembleDebug
       - name: Prepare versioned APK
-        run: cp android-nfc-reader/app/build/outputs/apk/debug/app-debug.apk FireNfcReader-v1.6.apk
+        run: cp android-nfc-reader/app/build/outputs/apk/debug/app-debug.apk FireNfcReader-v1.7.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: FireNfcReader-v1.6
-          path: FireNfcReader-v1.6.apk
+          name: FireNfcReader-v1.7
+          path: FireNfcReader-v1.7.apk
           retention-days: 30
-      - name: Publish v1.6 APK release
+      - name: Publish v1.7 APK release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release delete fire-nfc-reader-v1.6 --cleanup-tag --yes || true
-          gh release create fire-nfc-reader-v1.6 FireNfcReader-v1.6.apk \
-            --title "Fire NFC Reader v1.6" \
-            --notes "v1.6 diagnostic build: first NFC Music Box build: continuous PN532 tag polling, tag-to-audio assignment, persistent mappings, and playback."
+          gh release delete fire-nfc-reader-v1.7 --cleanup-tag --yes || true
+          gh release create fire-nfc-reader-v1.7 FireNfcReader-v1.7.apk \
+            --title "Fire NFC Reader v1.7" \
+            --notes "v1.7 diagnostic build: folder playlists: assign a tag to a folder, play all audio files in sequence, auto-advance, previous/next, and persistent folder mappings."
