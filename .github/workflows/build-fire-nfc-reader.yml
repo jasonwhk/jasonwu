@@ -1,4 +1,5 @@
 name: Build Fire NFC Reader APK
+# Re-trigger v1.9 build after Java newline fix
 on:
   push:
     branches: [main]
